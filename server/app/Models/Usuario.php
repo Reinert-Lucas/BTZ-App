@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Models;
+
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+
+class Usuario extends Authenticatable
+{
+    use HasFactory, Notifiable;
+    protected $guarded = [];
+    protected $table = 'usuarios';
+    protected $primaryKey = 'usuario_id';
+
+    public function aviso(): BelongsTo
+    {
+        return $this->belongsTo(Aviso::class);
+    }
+}
