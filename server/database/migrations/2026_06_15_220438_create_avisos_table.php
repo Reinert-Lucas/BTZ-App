@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -21,6 +20,8 @@ return new class extends Migration
             $table->text('observacion');
             $table->enum('estado', ['pendiente', 'finalizado']);
             $table->enum('urgencia', ['urgente', 'media', 'baja']);
+            $table->foreignId('usuario_id')->constrained('usuarios', 'usuario_id');
+            $table->foreignId('cliente_id')->constrained('clientes', 'cliente_id');
             $table->timestamps();
         });
     }
