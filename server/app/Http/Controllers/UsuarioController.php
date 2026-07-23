@@ -11,7 +11,7 @@ class UsuarioController extends Controller
 {
     public function index()
     {
-        $usuarios = Usuario::all();
+        $usuarios = Usuario::all()->where('activo', true);
         return UsuarioResource::collection($usuarios)->additional([
             'status' => true,
             'message' => 'Usuarios obtenidos con exito'
@@ -19,6 +19,12 @@ class UsuarioController extends Controller
     }
     public function show(Usuario $usuario)
     {
+        if (!$usuario->activo) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Usuario no encontrado'
+            ], 404);
+        }
         return (new UsuarioResource($usuario))->additional([
             'status' => true,
             'message' => 'Usuario obtenido con exito'
@@ -43,7 +49,7 @@ class UsuarioController extends Controller
     }
     public function delete(Usuario $usuario)
     {
-        $usuario->delete();
+        $usuario->update(['activo' => false]);
         return response()->json([
             'status' => true,
             'message' => 'Usuario eliminado con exito'

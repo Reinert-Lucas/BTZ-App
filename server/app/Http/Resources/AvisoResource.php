@@ -15,7 +15,7 @@ class AvisoResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'aviso_id' => $this->aviso_id,
+            'id' => $this->aviso_id,
             'fecha' => $this->fecha,
             'hora' => $this->hora,
             'direccion' => $this->direccion,

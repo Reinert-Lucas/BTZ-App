@@ -4,6 +4,7 @@ use App\Http\Controllers\AvisoController;
 use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ClienteController;
 
 // Rutas publicas de auth
 // Route::post('/create', [AuthController::class, 'create'])->name('register'); // <--- Ruta innecesaria, el registro se hace desde el panel de administración, no desde la app
@@ -26,5 +27,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/avisos', [AvisoController::class, 'store'])->name('aviso.store');
         Route::put('/avisos/{aviso}', [AvisoController::class, 'update'])->name('aviso.update');
         Route::delete('/avisos/{aviso}', [AvisoController::class, 'delete'])->name('aviso.delete');
+        // ABM Clientes
+        Route::get('/clientes', [ClienteController::class, 'index'])->name('cliente.index');
+        Route::get('/clientes/{cliente}', [ClienteController::class, 'show'])->name('cliente.show');
+        Route::post('/clientes', [ClienteController::class, 'store'])->name('cliente.store');
+        Route::put('/clientes/{cliente}', [ClienteController::class, 'update'])->name('cliente.update');
+        Route::delete('/clientes/{cliente}', [ClienteController::class, 'delete'])->name('cliente.delete');
     });
 });

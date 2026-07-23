@@ -25,6 +25,7 @@ class UsuarioFactory extends Factory
             ),
             'dni' => fake()->numberBetween('11111111', '99999999'),
             'telefono' => fake()->phoneNumber(),
+            'activo' => true,
         ];
     }
 }

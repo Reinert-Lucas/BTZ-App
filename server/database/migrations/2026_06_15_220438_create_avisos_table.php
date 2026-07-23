@@ -14,14 +14,14 @@ return new class extends Migration {
             $table->unsignedBigInteger('aviso_id')->autoIncrement();
             $table->date('fecha');
             $table->time('hora');
-            $table->string('direccion', 50);
+            $table->string('direccion', 100);
             $table->string('telefono', 20);
             $table->text('mensaje');
             $table->text('observacion');
-            $table->enum('estado', ['pendiente', 'finalizado']);
+            $table->enum('estado', ['pendiente', 'finalizado', 'cancelado']);
             $table->enum('urgencia', ['urgente', 'media', 'baja']);
-            $table->foreignId('usuario_id')->constrained('usuarios', 'usuario_id');
-            $table->foreignId('cliente_id')->constrained('clientes', 'cliente_id');
+            $table->foreignId('usuario_id')->constrained('usuarios', 'usuario_id')->cascadeOnDelete();
+            $table->foreignId('cliente_id')->constrained('clientes', 'cliente_id')->cascadeOnDelete();
             $table->timestamps();
         });
     }
