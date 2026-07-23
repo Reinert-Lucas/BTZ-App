@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Notifications\Notifiable;
 
 class Cliente extends Model
@@ -13,9 +14,8 @@ class Cliente extends Model
     protected $guarded = [];
     protected $table = 'clientes';
     protected $primaryKey = 'cliente_id';
-
-    public function aviso(): BelongsTo
+    public function aviso(): HasOne
     {
-        return $this->belongsTo(Aviso::class);
+        return $this->hasOne(Aviso::class, 'cliente_id');
     }
 }

@@ -14,8 +14,12 @@ class Aviso extends Model
     protected $table = 'avisos';
     protected $primaryKey = 'aviso_id';
 
-    public function detalle_aviso(): BelongsTo
+    public function usuario(): BelongsTo
     {
-        return $this->belongsTo(DetalleAviso::class);
+        return $this->belongsTo(Usuario::class, 'usuario_id');
+    }
+    public function cliente(): BelongsTo
+    {
+        return $this->belongsTo(Cliente::class, 'cliente_id');
     }
 }

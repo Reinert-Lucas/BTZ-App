@@ -15,13 +15,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'isAdmin' => \App\Http\Middleware\isAdmin::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->render(function (
-            \Illuminate\Auth\AuthenticationException $e,
-            $request
-        ) {
+        $exceptions->render(function (\Illuminate\Auth\AuthenticationException $e, $request) {
             if ($request->is('api/*')) {
                 return response()->json([
                     'status' => false,
@@ -30,14 +29,6 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         });
         $exceptions->render(function (ModelNotFoundException $e, Request $request) {
-            if ($request->is('api/*')) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Recurso no encontrado'
-                ], 404);
-            }
-        });
-        $exceptions->render(function (NotFoundHttpException $e, Request $request) {
             if ($request->is('api/*')) {
                 return response()->json([
                     'status' => false,
