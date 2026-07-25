@@ -10,11 +10,10 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('detalle_avisos', function (Blueprint $table) {
-            $table->id('detalle_aviso_id')->autoIncrement();
-            $table->text('trabajo_realizado');
-            $table->text('material');
-            $table->text('desperfecto');
+        Schema::create('materiales', function (Blueprint $table) {
+            $table->id('material_id');
+            $table->string('nombre', 50);
+            $table->string('detalle', 100)->nullable();
             $table->timestamps();
         });
     }
@@ -24,6 +23,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('detalle_avisos');
+        Schema::dropIfExists('materiales');
     }
 };
