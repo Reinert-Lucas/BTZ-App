@@ -11,14 +11,14 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('avisos', function (Blueprint $table) {
-            $table->unsignedBigInteger('aviso_id')->autoIncrement();
+            $table->id('aviso_id')->autoIncrement();
             $table->date('fecha');
             $table->time('hora');
             $table->string('direccion', 100);
             $table->string('telefono', 20);
             $table->text('mensaje');
             $table->text('observacion');
-            $table->enum('estado', ['pendiente', 'finalizado', 'cancelado']);
+            $table->enum('estado', ['pendiente', 'finalizado', 'cancelado'])->default('pendiente');
             $table->enum('urgencia', ['urgente', 'media', 'baja']);
             $table->foreignId('usuario_id')->constrained('usuarios', 'usuario_id')->cascadeOnDelete();
             $table->foreignId('cliente_id')->constrained('clientes', 'cliente_id')->cascadeOnDelete();

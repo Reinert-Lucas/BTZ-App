@@ -33,6 +33,12 @@ class AvisoResource extends JsonResource
                 'nombre' => $this->cliente->nombre,
                 'asegurado' => $this->cliente->asegurado,
                 'asegurado_detalle' => $this->cliente->asegurado_detalle,
+            ],
+            'trabajo_realizado' => [/* 
+'trabajo_realizado' => $this->trabajo->trabajo_realizado,
+'desperfecto' => $this->trabajo->desperfecto,
+'materiales' => $this->trabajo */
+                new TrabajoResource($this->whenLoaded('trabajo'))
             ]
         ];
     }
