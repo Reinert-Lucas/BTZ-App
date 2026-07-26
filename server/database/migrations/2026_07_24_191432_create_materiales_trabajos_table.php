@@ -12,8 +12,8 @@ return new class extends Migration {
     {
         Schema::create('materiales_trabajos', function (Blueprint $table) {
             $table->id('materiales_trabajos_id');
-            $table->foreignId('material_id')->constrained('materiales', 'material_id');
-            $table->foreignId('trabajo_id')->constrained('trabajos', 'trabajo_id');
+            $table->foreignId('material_id')->constrained('materiales', 'material_id')->cascadeOnDelete();
+            $table->foreignId('trabajo_id')->constrained('trabajos', 'trabajo_id')->cascadeOnDelete();
             $table->integer('cantidad')->unsigned();
             $table->timestamps();
         });

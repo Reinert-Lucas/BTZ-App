@@ -3,14 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Material extends Model
 {
-    protected $guarded = [];
+    use SoftDeletes;
     protected $table = 'materiales';
     protected $primaryKey = 'material_id';
-
-    public function trabajos()
+    protected $fillable = ['nombre', 'detalle'];
+    public function trabajos(): BelongsToMany
     {
         return $this->belongsToMany(
             Trabajo::class,

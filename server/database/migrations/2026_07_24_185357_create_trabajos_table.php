@@ -14,7 +14,8 @@ return new class extends Migration {
             $table->id('trabajo_id');
             $table->string('trabajo_realizado');
             $table->string('desperfecto');
-            $table->foreignId('aviso_id')->constrained('avisos', 'aviso_id');
+            $table->foreignId('aviso_id')->unique()->constrained('avisos', 'aviso_id')->cascadeOnDelete();
+            $table->softDeletes('deleted_at', 0);
             $table->timestamps();
         });
     }
