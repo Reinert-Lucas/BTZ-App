@@ -22,6 +22,7 @@ return new class extends Migration {
             $table->enum('urgencia', ['urgente', 'media', 'baja']);
             $table->foreignId('usuario_id')->constrained('usuarios', 'usuario_id')->cascadeOnDelete();
             $table->foreignId('cliente_id')->constrained('clientes', 'cliente_id')->cascadeOnDelete();
+            $table->softDeletes('deleted_at', 0);
             $table->timestamps();
         });
     }

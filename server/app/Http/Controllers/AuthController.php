@@ -25,11 +25,7 @@ class AuthController extends Controller
 {
     public function create(CreateUserRequest $request)
     {
-        $usuario = Usuario::create([
-            'nombre' => $request->nombre,
-            'password' => Hash::make($request->password),
-            'rol' => $request->rol
-        ]);
+        $usuario = Usuario::create($request->validated());
         return response()->json([
             'status' => true,
             'message' => 'usuario registrado con exito',
@@ -38,7 +34,7 @@ class AuthController extends Controller
     }
     public function login(LoginUserRequest $request)
     {
-        if (!Auth::attempt(['nombre' => $request->nombre, 'password' => $request->password])) {
+        if (!Auth::attempt(['dni' => $request->dni, 'password' => $request->password])) {
             return response()->json([
                 'status' => false,
                 'message' => 'credenciales erroneas'

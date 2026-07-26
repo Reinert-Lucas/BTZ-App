@@ -9,7 +9,7 @@ class AvisoController extends Controller
 {
     public function index()
     {
-        $avisos = Aviso::all();
+        $avisos = Aviso::with(['usuario', 'cliente'])->where('estado', 'pendiente')->get();
         return AvisoResource::collection($avisos)->additional([
             'status' => true,
             'message' => 'Avisos obtenidos con exito'
@@ -25,7 +25,7 @@ class AvisoController extends Controller
 
     public function store(AvisoRequest $request)
     {
-        $aviso = Aviso::create($request->all());
+        $aviso = Aviso::create($request->validated());
         return (new AvisoResource($aviso))->additional([
             'status' => true,
             'message' => 'Aviso creado con exito'
@@ -33,7 +33,7 @@ class AvisoController extends Controller
     }
     public function update(AvisoRequest $request, Aviso $aviso)
     {
-        $aviso->update($request->all());
+        $aviso->update($request->validated());
         return (new AvisoResource($aviso))->additional([
             'status' => true,
             'message' => 'Aviso actualizado con exito'
@@ -41,7 +41,7 @@ class AvisoController extends Controller
     }
     public function delete(Aviso $aviso)
     {
-        $aviso->delete();
+        $aviso->update(['estado' => 'cancelado']);
         return response()->json([
             'status' => true,
             'message' => 'Aviso eliminado con exito'

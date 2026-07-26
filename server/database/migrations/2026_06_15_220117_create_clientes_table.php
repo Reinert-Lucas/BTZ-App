@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->string('email', 50);
             $table->boolean('asegurado')->default(false);
             $table->string('asegurado_detalle')->nullable();
-            $table->boolean('activo')->default(true);
+            $table->softDeletes('deleted_at', 0);
             $table->timestamps();
         });
     }

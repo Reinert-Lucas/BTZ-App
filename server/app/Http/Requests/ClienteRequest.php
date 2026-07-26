@@ -23,10 +23,10 @@ class ClienteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nombre' => 'required|string|max:50',
-            'email' => 'required|email|max:50',
-            'asegurado' => 'required|boolean',
-            'asegurado_detalle' => 'required_if:asegurado,1|string|max:255'
+            'nombre' => ['required', 'max:50'],
+            'email' => ['required', 'email', 'max:50'],
+            'asegurado' => ['required', 'boolean'],
+            'asegurado_detalle' => ['nullable', 'max:255']
         ];
     }
 }

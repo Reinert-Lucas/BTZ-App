@@ -10,7 +10,7 @@ class ClienteController extends Controller
 {
     public function index()
     {
-        $clientes = Cliente::all()->where('activo', true);
+        $clientes = Cliente::all();
         return ClienteResource::collection($clientes)->additional([
             'status' => true,
             'message' => 'Clientes obtenidos con exito'
@@ -32,7 +32,7 @@ class ClienteController extends Controller
 
     public function store(ClienteRequest $request)
     {
-        $cliente = Cliente::create($request->all());
+        $cliente = Cliente::create($request->validated());
         return (new ClienteResource($cliente))->additional([
             'status' => true,
             'message' => 'Cliente creado con exito'
@@ -40,7 +40,7 @@ class ClienteController extends Controller
     }
     public function update(ClienteRequest $request, Cliente $cliente)
     {
-        $cliente->update($request->all());
+        $cliente->update($request->validated());
         return (new ClienteResource($cliente))->additional([
             'status' => true,
             'message' => 'Cliente actualizado con exito'
@@ -48,7 +48,7 @@ class ClienteController extends Controller
     }
     public function delete(Cliente $cliente)
     {
-        $cliente->update(['activo' => false]);
+        $cliente->delete();
         return response()->json([
             'status' => true,
             'message' => 'Cliente eliminado con exito'

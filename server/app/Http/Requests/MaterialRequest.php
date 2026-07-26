@@ -12,7 +12,7 @@ class MaterialRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,8 +23,8 @@ class MaterialRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nombre' => 'required|max:50',
-            'detalle' => 'required|max:100'
+            'nombre' => ['required', 'max:50'],
+            'detalle' => ['required', 'max:100']
         ];
     }
 }

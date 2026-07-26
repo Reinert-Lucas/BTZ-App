@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->id('material_id');
             $table->string('nombre', 50);
             $table->string('detalle', 100)->nullable();
+            $table->softDeletes('deleted_at', 0);
             $table->timestamps();
         });
     }

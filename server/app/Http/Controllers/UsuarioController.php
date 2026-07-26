@@ -11,7 +11,7 @@ class UsuarioController extends Controller
 {
     public function index()
     {
-        $usuarios = Usuario::all()->where('activo', true);
+        $usuarios = Usuario::all();
         return UsuarioResource::collection($usuarios)->additional([
             'status' => true,
             'message' => 'Usuarios obtenidos con exito'
@@ -33,7 +33,7 @@ class UsuarioController extends Controller
 
     public function store(CreateUserRequest $request)
     {
-        $usuario = Usuario::create($request->all());
+        $usuario = Usuario::create($request->validated());
         return (new UsuarioResource($usuario))->additional([
             'status' => true,
             'message' => 'Usuario creado con exito'
@@ -41,7 +41,7 @@ class UsuarioController extends Controller
     }
     public function update(CreateUserRequest $request, Usuario $usuario)
     {
-        $usuario->update($request->all());
+        $usuario->update($request->validated());
         return (new UsuarioResource($usuario))->additional([
             'status' => true,
             'message' => 'Usuario actualizado con exito'
@@ -49,7 +49,7 @@ class UsuarioController extends Controller
     }
     public function delete(Usuario $usuario)
     {
-        $usuario->update(['activo' => false]);
+        $usuario->delete();
         return response()->json([
             'status' => true,
             'message' => 'Usuario eliminado con exito'

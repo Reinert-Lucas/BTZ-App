@@ -23,16 +23,16 @@ class AvisoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'fecha' => 'required',
-            'hora' => 'required',
-            'direccion' => 'required|max:50',
-            'telefono' => 'required|max:20',
-            'mensaje' => 'max:255',
-            'observacion' => 'max:255',
-            'estado' => 'required',
-            'urgencia' => 'required',
-            'usuario_id' => 'required',
-            'cliente_id' => 'required'
+            'fecha' => ['required', 'date'],
+            'hora' => ['required'],
+            'direccion' => ['required', 'max:50'],
+            'telefono' => ['required', 'max:20'],
+            'mensaje' => ['max:255'],
+            'observacion' => ['max:255'],
+            'estado' => ['required'],
+            'urgencia' => ['required'],
+            'usuario_id' => ['required', 'exists:usuarios,usuario_id'],
+            'cliente_id' => ['required', 'exists:clientes,cliente_id'],
         ];
     }
 }

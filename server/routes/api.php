@@ -10,7 +10,7 @@ use App\Http\Controllers\TrabajoController;
 
 // Rutas publicas de auth
 // Route::post('/create', [AuthController::class, 'create'])->name('register'); // <--- Ruta innecesaria, el registro se hace desde el panel de administración, no desde la app
-Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1')->name('login');
 // auth:sanctum es el middleware que protege las rutas 
 Route::middleware('auth:sanctum')->group(function () {
     // Rutas que solo pueden acceder los usuarios autenticados
@@ -30,6 +30,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/avisos', [AvisoController::class, 'store'])->name('aviso.store');
         Route::put('/avisos/{aviso}', [AvisoController::class, 'update'])->name('aviso.update');
         Route::delete('/avisos/{aviso}', [AvisoController::class, 'delete'])->name('aviso.delete');
+        // Ver trabajos finalizados c/materiales usados
+        Route::get('/trabajos/finalizados/{usuario_id?}', [TrabajoController::class, 'indexFinalizado'])->name('trabajo.indexFinalizado');
         // ABM Clientes
         Route::get('/clientes', [ClienteController::class, 'index'])->name('cliente.index');
         Route::get('/clientes/{cliente}', [ClienteController::class, 'show'])->name('cliente.show');
@@ -49,6 +51,4 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/trabajos', [TrabajoController::class, 'index'])->name('trabajo.index');
     // Cargar datos del trabajo 
     Route::post('/trabajos', [TrabajoController::class, 'store'])->name('trabajo.store');
-    // Ver trabajos finalizados c/materiales usados
-    Route::get('/trabajos/finalizados/{usuario_id?}', [TrabajoController::class, 'indexFinalizado'])->name('trabajo.indexFinalizado');
 });

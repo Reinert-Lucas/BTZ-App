@@ -27,7 +27,7 @@ class MaterialController extends Controller
 
     public function store(MaterialRequest $request)
     {
-        $material = Material::create($request->all());
+        $material = Material::create($request->validated());
         return (new MaterialResource($material))->additional([
             'status' => true,
             'message' => 'Material creado con exito'
@@ -35,7 +35,7 @@ class MaterialController extends Controller
     }
     public function update(MaterialRequest $request, Material $material)
     {
-        $material->update($request->all());
+        $material->update($request->validated());
         return (new MaterialResource($material))->additional([
             'status' => true,
             'message' => 'Material actualizado con exito'
