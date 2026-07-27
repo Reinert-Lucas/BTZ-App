@@ -41,7 +41,7 @@ class AvisoController extends Controller
     }
     public function delete(Aviso $aviso)
     {
-        $aviso->update(['estado' => 'cancelado']);
+        $aviso->delete();
         return response()->json([
             'status' => true,
             'message' => 'Aviso eliminado con exito'

@@ -25,7 +25,7 @@ class TrabajoRequest extends FormRequest
         return [
             'trabajo_realizado' => ['required', 'max:255'],
             'desperfecto' => ['required', 'max:255'],
-            'aviso_id' => ['required'],
+            'aviso_id' => ['required', 'exists:avisos,aviso_id', 'unique:trabajos,aviso_id'],
             'materiales' => ['required', 'array'],
             'materiales.*.material_id' => ['required', 'exists:materiales,material_id'],
             'materiales.*.cantidad' => ['required', 'integer', 'min:1'],

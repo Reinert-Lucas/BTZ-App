@@ -15,11 +15,13 @@ class isAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user()->rol !== 'admin') {
-            return response()->json([
-                'message' => 'Acceso denegado',
-                'status' => false
-            ], 403);
+        if ($request->user()) {
+            if ($request->user()->rol !== 'admin') {
+                return response()->json([
+                    'message' => 'Acceso denegado',
+                    'status' => false
+                ], 403);
+            }
         }
         return $next($request);
     }

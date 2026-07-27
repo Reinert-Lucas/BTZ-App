@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -16,7 +16,7 @@ class Usuario extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
     protected $table = 'usuarios';
     protected $primaryKey = 'usuario_id';
-    protected $fillable = ['nombre', 'password', 'dni', 'telefono', 'rol', 'activo'];
+    protected $fillable = ['nombre', 'password', 'dni', 'telefono', 'rol'];
     protected $hidden = ['password'];
     protected function password(): Attribute
     {
@@ -24,8 +24,8 @@ class Usuario extends Authenticatable
             set: fn(string $value) => Hash::make($value),
         );
     }
-    public function aviso(): HasOne
+    public function aviso(): HasMany
     {
-        return $this->hasOne(Aviso::class, 'usuario_id');
+        return $this->hasMany(Aviso::class, 'usuario_id');
     }
 }

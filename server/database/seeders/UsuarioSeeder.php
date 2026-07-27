@@ -14,5 +14,12 @@ class UsuarioSeeder extends Seeder
     public function run(): void
     {
         Usuario::factory(10)->create();
+        Usuario::create([
+            'nombre' => 'admin',
+            'password' => '123',
+            'rol' => 'admin',
+            'dni' => 'admin',
+            'telefono' => 'admin'
+        ]);
     }
 }

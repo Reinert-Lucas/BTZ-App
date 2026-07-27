@@ -19,12 +19,6 @@ class UsuarioController extends Controller
     }
     public function show(Usuario $usuario)
     {
-        if (!$usuario->activo) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Usuario no encontrado'
-            ], 404);
-        }
         return (new UsuarioResource($usuario))->additional([
             'status' => true,
             'message' => 'Usuario obtenido con exito'

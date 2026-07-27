@@ -17,12 +17,20 @@ class ClienteFactory extends Factory
      */
     public function definition(): array
     {
+        $asegurado = fake()->boolean();
         return [
             'nombre' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
-            'asegurado' => $this->faker->boolean(),
-            'asegurado_detalle' => $this->faker->boolean() ? $this->faker->sentence() : null,
-            'activo' => true,
+            'asegurado' => $asegurado,
+            'asegurado_detalle' => $asegurado
+                ? fake()->randomElement([
+                    'Sancor Seguros - Póliza vigente, cobertura de daños por agua',
+                    'La Caja Seguros - Cobertura de instalaciones eléctricas',
+                    'Mercantil Andina - Cobertura total del hogar',
+                    'Federación Patronal - Cobertura de plomería y gas',
+                ])
+                : null,
+
         ];
     }
 }
