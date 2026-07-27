@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Notifications\Notifiable;
 
 class MaterialesTrabajos extends Model
 {
+    use HasFactory, Notifiable;
     protected $table = 'materiales_trabajos';
     protected $primaryKey = 'materiales_trabajos_id';
 

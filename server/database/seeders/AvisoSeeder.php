@@ -13,6 +13,7 @@ class AvisoSeeder extends Seeder
      */
     public function run(): void
     {
-        Aviso::factory(5)->create();
+        Aviso::factory(12)->pendiente()->create();
+        Aviso::factory(3)->cancelado()->create();
     }
 }

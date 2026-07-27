@@ -15,7 +15,7 @@ class TrabajoController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $trabajos = Aviso::where('usuario_id', $user->usuario_id)->get();
+        $trabajos = Aviso::with(['usuario', 'cliente'])->where('usuario_id', $user->usuario_id)->get();
         return AvisoResource::collection($trabajos)->additional([
             'status' => true,
             'message' => 'Trabajos asignados al operario'
@@ -23,11 +23,19 @@ class TrabajoController extends Controller
     }
     public function store(TrabajoRequest $request)
     {
+        $aviso = Aviso::findOrFail($request->aviso_id);
         // Verificar que el operario sea el asignado al Aviso
-        if (Aviso::findOrFail($request->aviso_id)->usuario_id !== Auth::id()) {
+        if ($aviso->usuario_id !== Auth::id()) {
             return response()->json([
                 'status' => false,
                 'message' => 'No tiene permisos para cargar el trabajo de este aviso',
+            ], 403);
+        }
+        // Verificar que el aviso no esta cancelado o finalizado
+        if ($aviso->estado === 'cancelado' || $aviso->estado === 'finalizado') {
+            return response()->json([
+                'status' => false,
+                'message' => 'Este aviso ya fue resuelto o cancelado',
             ], 403);
         }
         // Transaction evita datos "huerfanos" si falla alguna parte del create() o attach()

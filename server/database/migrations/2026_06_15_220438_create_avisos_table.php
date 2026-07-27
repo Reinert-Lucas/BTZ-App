@@ -16,8 +16,8 @@ return new class extends Migration {
             $table->time('hora');
             $table->string('direccion', 100);
             $table->string('telefono', 20);
-            $table->text('mensaje');
-            $table->text('observacion');
+            $table->text('mensaje')->nullable();
+            $table->text('observacion')->nullable();
             $table->enum('estado', ['pendiente', 'finalizado', 'cancelado'])->default('pendiente');
             $table->enum('urgencia', ['urgente', 'media', 'baja']);
             $table->foreignId('usuario_id')->constrained('usuarios', 'usuario_id')->cascadeOnDelete();

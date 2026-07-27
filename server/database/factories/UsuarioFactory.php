@@ -19,13 +19,19 @@ class UsuarioFactory extends Factory
     {
         return [
             'nombre' => fake()->name(),
-            'password' => '$2y$10$BPmILeM9352hpMzgqqDT8u2EnBa8kjBNinDFz7R/ZbcIRbznJ0BNW',
+            'password' => '123',
             'rol' => fake()->randomElement(
                 ['admin', 'operario']
             ),
-            'dni' => fake()->numberBetween('11111111', '99999999'),
-            'telefono' => fake()->phoneNumber(),
-            'activo' => true,
+            'dni' => fake()->unique()->numberBetween('11111111', '99999999'),
+            'telefono' => fake()->phoneNumber()
         ];
     }
+    public function operario(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'rol' => 'operario',
+        ]);
+    }
+
 }

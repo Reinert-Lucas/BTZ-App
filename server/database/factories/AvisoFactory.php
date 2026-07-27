@@ -3,6 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\Aviso;
+use App\Models\Cliente;
+use App\Models\Usuario;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -10,6 +12,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class AvisoFactory extends Factory
 {
+    protected $model = Aviso::class;
+
     /**
      * Define the model's default state.
      *
@@ -18,16 +22,44 @@ class AvisoFactory extends Factory
     public function definition(): array
     {
         return [
-            'fecha' => $this->faker->date(),
-            'hora' => $this->faker->time(),
-            'direccion' => $this->faker->address(),
-            'telefono' => $this->faker->phoneNumber(),
-            'mensaje' => $this->faker->sentence(),
-            'observacion' => $this->faker->sentence(),
-            'estado' => $this->faker->randomElement(['pendiente', 'finalizado', 'cancelado']),
-            'urgencia' => $this->faker->randomElement(['urgente', 'media', 'baja']),
-            'usuario_id' => \App\Models\Usuario::factory(),
-            'cliente_id' => \App\Models\Cliente::factory(),
+            'fecha' => fake()->dateTimeBetween('-2 months', '+1 week')->format('Y-m-d'),
+            'hora' => fake()->time('H:i:s'),
+            'direccion' => fake()->streetAddress(),
+            'telefono' => fake()->phoneNumber(),
+            'mensaje' => fake()->randomElement([
+                'Pérdida de agua en el baño principal',
+                'No funciona ninguna toma de electricidad',
+                'Cañería tapada en la cocina',
+                'Termotanque no calienta el agua',
+                'Corte de luz en el tablero general',
+                'Grifería de la cocina pierde agua',
+            ]),
+            'observacion' => fake()->randomElement([
+                'Cliente solicita turno por la mañana',
+                'Acceso al edificio por portería',
+                'Traer repuestos para grifería monocomando',
+                'Cliente presente todo el día',
+                'Sin observaciones adicionales',
+            ]),
+            'estado' => 'pendiente',
+            'urgencia' => fake()->randomElement(['urgente', 'media', 'baja']),
+            'usuario_id' => Usuario::factory()->operario(),
+            'cliente_id' => Cliente::factory(),
         ];
+    }
+
+    public function pendiente(): static
+    {
+        return $this->state(fn(array $attributes) => ['estado' => 'pendiente']);
+    }
+
+    public function finalizado(): static
+    {
+        return $this->state(fn(array $attributes) => ['estado' => 'finalizado']);
+    }
+
+    public function cancelado(): static
+    {
+        return $this->state(fn(array $attributes) => ['estado' => 'cancelado']);
     }
 }

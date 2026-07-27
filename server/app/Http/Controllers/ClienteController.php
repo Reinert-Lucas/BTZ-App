@@ -18,12 +18,6 @@ class ClienteController extends Controller
     }
     public function show(Cliente $cliente)
     {
-        if (!$cliente->activo) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Cliente no encontrado'
-            ], 404);
-        }
         return (new ClienteResource($cliente))->additional([
             'status' => true,
             'message' => 'Cliente obtenido con exito'

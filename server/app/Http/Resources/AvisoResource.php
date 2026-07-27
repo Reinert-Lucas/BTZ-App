@@ -33,9 +33,7 @@ class AvisoResource extends JsonResource
                 'asegurado' => $this->cliente->asegurado,
                 'asegurado_detalle' => $this->cliente->asegurado_detalle,
             ],
-            'trabajo_realizado' => [
-                new TrabajoResource($this->whenLoaded('trabajo'))
-            ]
+            'trabajo' => new TrabajoResource($this->whenLoaded('trabajo'))
         ];
     }
 }
