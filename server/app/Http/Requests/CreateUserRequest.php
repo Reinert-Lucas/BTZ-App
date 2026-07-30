@@ -25,6 +25,7 @@ class CreateUserRequest extends FormRequest
     {
         /** @var \App\Models\Usuario|null $usuario */
         $usuario = $this->route('usuario');
+        // dd($this->route('usuario'));
 
         return [
             'nombre' => ['required', 'string', 'max:60'],

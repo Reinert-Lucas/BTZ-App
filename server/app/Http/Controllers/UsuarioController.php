@@ -5,21 +5,27 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Resources\UsuarioResource;
 use App\Models\Usuario;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Request;
+use App\Services\UsuarioService;
+
 class UsuarioController extends Controller
 {
+    private UsuarioService $service;
+    public function __construct(UsuarioService $service)
+    {
+        $this->service = $service;
+    }
     public function index()
     {
-        $usuarios = Usuario::all();
+        $usuarios = $this->service->index();
         return UsuarioResource::collection($usuarios)->additional([
             'status' => true,
             'message' => 'Usuarios obtenidos con exito'
         ]);
     }
-    public function show(Usuario $usuario)
+    public function show(int $usuario)
     {
-        return (new UsuarioResource($usuario))->additional([
+        $usuarioObtenido = $this->service->show($usuario);
+        return (new UsuarioResource($usuarioObtenido))->additional([
             'status' => true,
             'message' => 'Usuario obtenido con exito'
         ]);
@@ -27,7 +33,7 @@ class UsuarioController extends Controller
 
     public function store(CreateUserRequest $request)
     {
-        $usuario = Usuario::create($request->validated());
+        $usuario = $this->service->create($request->validated());
         return (new UsuarioResource($usuario))->additional([
             'status' => true,
             'message' => 'Usuario creado con exito'
@@ -35,15 +41,15 @@ class UsuarioController extends Controller
     }
     public function update(CreateUserRequest $request, Usuario $usuario)
     {
-        $usuario->update($request->validated());
-        return (new UsuarioResource($usuario))->additional([
+        $usuarioActualizado = $this->service->update($request->validated(), $usuario);
+        return (new UsuarioResource($usuarioActualizado))->additional([
             'status' => true,
             'message' => 'Usuario actualizado con exito'
         ]);
     }
-    public function delete(Usuario $usuario)
+    public function delete(int $usuario)
     {
-        $usuario->delete();
+        $this->service->delete($usuario);
         return response()->json([
             'status' => true,
             'message' => 'Usuario eliminado con exito'
