@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Http\Resources\AvisoResource;
 use App\Models\Aviso;
 use App\Models\Cliente;
 use App\Models\Usuario;
@@ -66,7 +67,8 @@ class AvisoService
     }
     public function index()
     {
-        return Aviso::all();
+        return Aviso::with(['usuario', 'cliente'])->get();
+
     }
     public function show(int $aviso)
     {

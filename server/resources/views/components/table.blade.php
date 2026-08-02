@@ -21,6 +21,12 @@
                 <tr>
 
                     @foreach ($columns as $column)
+                        @if ($column['field'] === 'estado' && data_get($row, $column['field']) === 'finalizado')
+                            <td>
+                                {{ data_get($row, $column['field']) }}
+                                <a href="{{ route('admin.trabajos.show', [$parameter => $id]) }}">Ver Trabajo</a>
+                            </td>
+                        @endif
                         <td>{{ data_get($row, $column['field']) }}</td>
                     @endforeach
 

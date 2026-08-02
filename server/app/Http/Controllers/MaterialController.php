@@ -5,21 +5,28 @@ namespace App\Http\Controllers;
 use App\Http\Requests\MaterialRequest;
 use App\Http\Resources\MaterialResource;
 use App\Models\Material;
+use App\Services\MaterialService;
 use Illuminate\Http\Request;
 
 class MaterialController extends Controller
 {
+    private MaterialService $service;
+    public function __construct(MaterialService $service)
+    {
+        $this->service = $service;
+    }
     public function index()
     {
-        $materiales = Material::all();
+        $materiales = $this->service->index();
         return MaterialResource::collection($materiales)->additional([
             'status' => true,
             'message' => 'Materiales obtenidos con exito'
         ]);
     }
-    public function show(Material $material)
+    public function show(int $material)
     {
-        return (new MaterialResource($material))->additional([
+        $materialObtenido = $this->service->show($material);
+        return (new MaterialResource($materialObtenido))->additional([
             'status' => true,
             'message' => 'Material obtenido con exito'
         ]);
@@ -27,7 +34,7 @@ class MaterialController extends Controller
 
     public function store(MaterialRequest $request)
     {
-        $material = Material::create($request->validated());
+        $material = $this->service->create($request->validated());
         return (new MaterialResource($material))->additional([
             'status' => true,
             'message' => 'Material creado con exito'
@@ -35,15 +42,15 @@ class MaterialController extends Controller
     }
     public function update(MaterialRequest $request, Material $material)
     {
-        $material->update($request->validated());
+        $materialActualizado = $this->service->update($request->validated(), $material);
         return (new MaterialResource($material))->additional([
             'status' => true,
             'message' => 'Material actualizado con exito'
         ]);
     }
-    public function delete(Material $material)
+    public function delete(int $material)
     {
-        $material->delete();
+        $this->service->delete($material);
         return response()->json([
             'status' => true,
             'message' => 'Material eliminado con exito'

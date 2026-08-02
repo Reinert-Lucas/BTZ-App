@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AvisoRequest;
 use App\Http\Resources\AvisoResource;
+use App\Http\Resources\TrabajoResource;
 use App\Models\Aviso;
+use App\Models\Trabajo;
 use App\Services\AvisoService;
 
 class WebAvisoController extends Controller
@@ -59,9 +61,12 @@ class WebAvisoController extends Controller
             'columns' => $columns
         ]);
     }
-    public function show()
+    public function show(int $aviso)
     {
-        //
+        $trabajo = Trabajo::with('materiales', 'aviso.usuario', 'aviso.cliente')->where('aviso_id', $aviso)->firstOrFail();
+        return view('admin.trabajo', [
+            'trabajo' => $trabajo,
+        ]);
     }
     public function create()
     {
