@@ -5,20 +5,27 @@ namespace App\Http\Controllers;
 use App\Models\Cliente;
 use App\Http\Requests\ClienteRequest;
 use App\Http\Resources\ClienteResource;
+use App\Services\ClienteService;
 
 class ClienteController extends Controller
 {
+    private ClienteService $service;
+    public function __construct(ClienteService $service)
+    {
+        $this->service = $service;
+    }
     public function index()
     {
-        $clientes = Cliente::all();
+        $clientes = $this->service->index();
         return ClienteResource::collection($clientes)->additional([
             'status' => true,
             'message' => 'Clientes obtenidos con exito'
         ]);
     }
-    public function show(Cliente $cliente)
+    public function show(int $cliente)
     {
-        return (new ClienteResource($cliente))->additional([
+        $clienteObtenido = $this->service->show($cliente);
+        return (new ClienteResource($clienteObtenido))->additional([
             'status' => true,
             'message' => 'Cliente obtenido con exito'
         ]);
@@ -26,7 +33,7 @@ class ClienteController extends Controller
 
     public function store(ClienteRequest $request)
     {
-        $cliente = Cliente::create($request->validated());
+        $cliente = $this->service->create($request->validated());
         return (new ClienteResource($cliente))->additional([
             'status' => true,
             'message' => 'Cliente creado con exito'
@@ -34,15 +41,15 @@ class ClienteController extends Controller
     }
     public function update(ClienteRequest $request, Cliente $cliente)
     {
-        $cliente->update($request->validated());
+        $clienteActualizado = $this->service->update($request->validated(), $cliente);
         return (new ClienteResource($cliente))->additional([
             'status' => true,
             'message' => 'Cliente actualizado con exito'
         ]);
     }
-    public function delete(Cliente $cliente)
+    public function delete(int $cliente)
     {
-        $cliente->delete();
+        $this->service->delete($cliente);
         return response()->json([
             'status' => true,
             'message' => 'Cliente eliminado con exito'

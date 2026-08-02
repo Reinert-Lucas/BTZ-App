@@ -15,6 +15,11 @@ class isAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if ($request->route()->getPrefix() === '/admin') {
+            if ($request->user() && $request->user()->rol !== 'admin') {
+                return redirect()->route('admin.noaccess');
+            }
+        }
         if ($request->user()) {
             if ($request->user()->rol !== 'admin') {
                 return response()->json([

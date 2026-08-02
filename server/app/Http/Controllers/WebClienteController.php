@@ -17,6 +17,12 @@ class WebClienteController extends Controller
     public function index()
     {
         $clientes = $this->service->index();
+        // Convertir "asegurado(bool) a SI/NO"
+        $clientes->transform(function ($cliente) {
+            $cliente->asegurado = $cliente->asegurado ? 'SI' : 'NO';
+            $cliente->asegurado_detalle = $cliente->asegurado_detalle ?? '-';
+            return $cliente;
+        });
         $columns = [
             [
                 'label' => 'Nombre',

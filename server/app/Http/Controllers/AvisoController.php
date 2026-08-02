@@ -5,18 +5,26 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AvisoRequest;
 use App\Http\Resources\AvisoResource;
 use App\Models\Aviso;
+use App\Services\AvisoService;
+
 class AvisoController extends Controller
 {
+    private AvisoService $service;
+    public function __construct(AvisoService $service)
+    {
+        $this->service = $service;
+    }
     public function index()
     {
-        $avisos = Aviso::with(['usuario', 'cliente'])->where('estado', 'pendiente')->get();
+        $avisos = $this->service->index();
         return AvisoResource::collection($avisos)->additional([
             'status' => true,
             'message' => 'Avisos obtenidos con exito'
         ]);
     }
-    public function show(Aviso $aviso)
+    public function show(int $aviso)
     {
+        $avisoObtenido = $this->service->show($aviso);
         return (new AvisoResource($aviso))->additional([
             'status' => true,
             'message' => 'Aviso obtenido con exito'
@@ -25,7 +33,7 @@ class AvisoController extends Controller
 
     public function store(AvisoRequest $request)
     {
-        $aviso = Aviso::create($request->validated());
+        $aviso = $this->service->create($request->validated());
         return (new AvisoResource($aviso))->additional([
             'status' => true,
             'message' => 'Aviso creado con exito'
@@ -33,15 +41,15 @@ class AvisoController extends Controller
     }
     public function update(AvisoRequest $request, Aviso $aviso)
     {
-        $aviso->update($request->validated());
-        return (new AvisoResource($aviso))->additional([
+        $avisoActualizado = $this->service->update($request->validated(), $aviso);
+        return (new AvisoResource($avisoActualizado))->additional([
             'status' => true,
             'message' => 'Aviso actualizado con exito'
         ]);
     }
-    public function delete(Aviso $aviso)
+    public function delete(int $aviso)
     {
-        $aviso->delete();
+        $this->service->delete($aviso);
         return response()->json([
             'status' => true,
             'message' => 'Aviso eliminado con exito'

@@ -32,9 +32,9 @@
                     <input
                     type="checkbox" 
                     name="{{ $input['field'] }}"
-                    id="{{ $input['field'] }}">    
-                        {{ ${$parameter}->{$input['field']} }}
-                    </input>
+                    id="{{ $input['field'] }}"
+                    value="1"
+                    @checked(old($input['field'], ${$parameter}?->{$input['field']}) == 1)></input>
                     @break
                 @default
                     <input 
@@ -73,6 +73,13 @@
                     name="{{ $input['field'] }}"
                     id="{{ $input['field'] }}"
                     placeholder="{{ $input['label'] }}"></textarea>
+                    @break
+                @case('checkbox')
+                    <input
+                    type="checkbox" 
+                    name="{{ $input['field'] }}"
+                    id="{{ $input['field'] }}"
+                    value="1"></input>
                     @break
                 @default
                     <input 

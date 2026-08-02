@@ -10,7 +10,7 @@ use App\Http\Controllers\TrabajoController;
 
 // Rutas publicas de auth
 // Route::post('/create', [AuthController::class, 'create'])->name('register'); // <--- Ruta innecesaria, el registro se hace desde el panel de administración, no desde la app
-Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1')->name('login');
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1')->name('api.login');
 // auth:sanctum es el middleware que protege las rutas 
 Route::middleware('auth:sanctum')->group(function () {
     // Rutas que solo pueden acceder los usuarios autenticados
