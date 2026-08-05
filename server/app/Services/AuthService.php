@@ -19,7 +19,8 @@ class AuthService
         }
         /** @var Usuario $user */
         $user = Auth::user();
-        $token = $user->createToken('API TOKEN')->plainTextToken;
+        $user->tokens()->delete(); // Borra tokens previos si es que hay (Evita acumular tokens)
+        $token = $user->createToken('API TOKEN', expiresAt: now()->addDays(7));
         return [
             'user' => $user,
             'token' => $token,

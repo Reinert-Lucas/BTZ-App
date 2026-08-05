@@ -25,7 +25,7 @@ class AvisoController extends Controller
     public function show(int $aviso)
     {
         $avisoObtenido = $this->service->show($aviso);
-        return (new AvisoResource($aviso))->additional([
+        return (new AvisoResource($avisoObtenido))->additional([
             'status' => true,
             'message' => 'Aviso obtenido con exito'
         ]);

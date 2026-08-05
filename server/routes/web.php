@@ -8,7 +8,7 @@ use App\Http\Controllers\WebUsuarioController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn() => view('index'))->name("login");
-Route::post('/login', [WebAuthController::class, 'login'])->name('admin.login');
+Route::post('/login', [WebAuthController::class, 'login'])->middleware('throttle:5,1')->name('admin.login');
 Route::get('/noaccess', fn() => view('noaccess'))->name('admin.noaccess');
 Route::middleware(['auth'])->post('/logout', [WebAuthController::class, 'logout'])->name('admin.logout');
 Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(function () {

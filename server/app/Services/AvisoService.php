@@ -85,6 +85,6 @@ class AvisoService
     }
     public function delete(int $aviso)
     {
-        return Aviso::find($aviso)->deleteOrFail();
+        return Aviso::findOrFail($aviso)->delete();
     }
 }

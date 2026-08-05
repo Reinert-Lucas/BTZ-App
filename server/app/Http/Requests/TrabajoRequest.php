@@ -26,7 +26,16 @@ class TrabajoRequest extends FormRequest
             'trabajo_realizado' => ['required', 'max:255'],
             'desperfecto' => ['required', 'max:255'],
             'aviso_id' => ['required', 'exists:avisos,aviso_id', 'unique:trabajos,aviso_id'],
-            'materiales' => ['required', 'array'],
+            'materiales' => [
+                'required',
+                'array',
+                function ($attribute, $value, $fail) {
+                    $ids = array_column($value, 'material_id');
+                    if (count($ids) !== count(array_unique($ids))) {
+                        $fail('No se puede repetir el mismo material.');
+                    }
+                }
+            ],
             'materiales.*.material_id' => ['required', 'exists:materiales,material_id'],
             'materiales.*.cantidad' => ['required', 'integer', 'min:1'],
         ];

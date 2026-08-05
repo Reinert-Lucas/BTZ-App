@@ -43,7 +43,7 @@ class MaterialController extends Controller
     public function update(MaterialRequest $request, Material $material)
     {
         $materialActualizado = $this->service->update($request->validated(), $material);
-        return (new MaterialResource($material))->additional([
+        return (new MaterialResource($materialActualizado))->additional([
             'status' => true,
             'message' => 'Material actualizado con exito'
         ]);
