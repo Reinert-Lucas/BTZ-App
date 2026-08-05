@@ -15,18 +15,17 @@ class isAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->route()->getPrefix() === '/admin') {
-            if ($request->user() && $request->user()->rol !== 'admin') {
-                return redirect()->route('admin.noaccess');
-            }
-        }
-        if ($request->user()) {
-            if ($request->user()->rol !== 'admin') {
+        // Revisa que haya una sesion
+        $user = $request->user();
+        // Revisa Rol, Diferencia entre peticion de API y WEB
+        if (!$user || $user->rol !== 'admin') {
+            if ($request->is('api/*') || $request->expectsJson()) {
                 return response()->json([
-                    'message' => 'Acceso denegado',
-                    'status' => false
-                ], 403);
+                    'status' => false,
+                    'message' => $user ? 'Acceso denegado' : 'No autenticado',
+                ], $user ? 403 : 401);
             }
+            return redirect()->route('admin.noaccess');
         }
         return $next($request);
     }

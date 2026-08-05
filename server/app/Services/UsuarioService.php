@@ -25,6 +25,6 @@ class UsuarioService
     }
     public function delete(int $usuario)
     {
-        return Usuario::find($usuario)->deleteOrFail();
+        return Usuario::findOrFail($usuario)->delete();
     }
 }

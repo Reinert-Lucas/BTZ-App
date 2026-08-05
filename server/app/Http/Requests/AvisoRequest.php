@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class AvisoRequest extends FormRequest
 {
@@ -29,8 +30,8 @@ class AvisoRequest extends FormRequest
             'telefono' => ['required', 'max:20'],
             'mensaje' => ['max:255'],
             'observacion' => ['max:255'],
-            'estado' => ['required'],
-            'urgencia' => ['required'],
+            'estado' => ['required', Rule::in(['pendiente', 'finalizado', 'cancelado'])],
+            'urgencia' => ['required', Rule::in(['urgente', 'media', 'baja'])],
             'usuario_id' => ['required', 'exists:usuarios,usuario_id'],
             'cliente_id' => ['required', 'exists:clientes,cliente_id'],
         ];

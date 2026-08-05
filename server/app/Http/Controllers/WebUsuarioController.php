@@ -6,8 +6,6 @@ use App\Http\Requests\CreateUserRequest;
 use App\Http\Resources\UsuarioResource;
 use App\Models\Usuario;
 use App\Services\UsuarioService;
-use Illuminate\Http\Request;
-use phpDocumentor\Reflection\Types\Void_;
 
 class WebUsuarioController extends Controller
 {

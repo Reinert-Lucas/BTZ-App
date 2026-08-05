@@ -42,7 +42,7 @@ class ClienteController extends Controller
     public function update(ClienteRequest $request, Cliente $cliente)
     {
         $clienteActualizado = $this->service->update($request->validated(), $cliente);
-        return (new ClienteResource($cliente))->additional([
+        return (new ClienteResource($clienteActualizado))->additional([
             'status' => true,
             'message' => 'Cliente actualizado con exito'
         ]);

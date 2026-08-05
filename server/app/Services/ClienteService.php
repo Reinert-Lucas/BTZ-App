@@ -24,6 +24,6 @@ class ClienteService
     }
     public function delete(int $cliente)
     {
-        return Cliente::find($cliente)->deleteOrFail();
+        return Cliente::findOrFail($cliente)->delete();
     }
 }

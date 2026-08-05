@@ -24,6 +24,6 @@ class MaterialService
     }
     public function delete(int $material)
     {
-        return Material::find($material)->deleteOrFail();
+        return Material::findOrFail($material)->delete();
     }
 }
