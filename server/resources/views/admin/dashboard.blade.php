@@ -13,7 +13,21 @@
         <a href={{ route("admin.avisos.index") }}>Gestion de Aviso</a>
         <a href={{ route("admin.materiales.index") }}>Gestion de Materiales</a>
         <a href={{ route("admin.clientes.index") }}>Gestion de Clientes</a>
-        {{-- <a href={{ route("admin.trabajos.index") }}>Gestion de Trabajos</a>
+        {{--
+        Metricas a mostrar: (Actualizar al entrar al panel de admin)
+        - Ultimos 5 trabajos realizados
+        - Usuarios mas activos (5 o 10)
+        - Materiales mas usados (con cantidades)
         --}}
+        @foreach ($metricas as $metrica)
+            <div>
+                <h1>{{ $metrica['label'] }}</h1>
+                <ul>
+                    @foreach ($metrica['content'] as $content)
+                        <li>{{ $content }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endforeach
     </section>
 @endsection
