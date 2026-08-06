@@ -7,7 +7,7 @@ class ClienteService
 {
     public function index()
     {
-        return Cliente::all();
+        return Cliente::paginate(10);
     }
     public function show(int $cliente)
     {

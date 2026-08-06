@@ -8,7 +8,7 @@ class UsuarioService
 {
     public function index()
     {
-        return Usuario::all();
+        return Usuario::paginate(10);
     }
     public function show(int $usuario)
     {

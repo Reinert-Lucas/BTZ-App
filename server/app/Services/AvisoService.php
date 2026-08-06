@@ -67,7 +67,7 @@ class AvisoService
     }
     public function index()
     {
-        return Aviso::with(['usuario', 'cliente'])->get();
+        return Aviso::with(['usuario', 'cliente'])->paginate(10);
 
     }
     public function show(int $aviso)
