@@ -7,7 +7,7 @@ class MaterialService
 {
     public function index()
     {
-        return Material::all();
+        return Material::paginate(10);
     }
     public function show(int $material)
     {
