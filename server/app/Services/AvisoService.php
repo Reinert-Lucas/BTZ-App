@@ -5,6 +5,7 @@ use App\Http\Resources\AvisoResource;
 use App\Models\Aviso;
 use App\Models\Cliente;
 use App\Models\Usuario;
+use Illuminate\Http\Request;
 
 class AvisoService
 {
@@ -65,10 +66,29 @@ class AvisoService
             ]
         ];
     }
-    public function index()
+    public function index(Request $request)
     {
-        return Aviso::with(['usuario', 'cliente'])->paginate(10);
-
+        return Aviso::query()
+            ->when($request->aviso_id, function ($query, $aviso_id) {
+                $query->where('aviso_id', $aviso_id);
+            })
+            ->when($request->fecha, function ($query, $fecha) {
+                $query->where('fecha', $fecha);
+            })
+            ->when($request->hora, function ($query, $hora) {
+                $query->where('hora', $hora);
+            })
+            ->when($request->direccion, function ($query, $direccion) {
+                $query->where('direccion', 'like', "%{$direccion}%");
+            })
+            ->when($request->telefono, function ($query, $telefono) {
+                $query->where('telefono', $telefono);
+            })
+            ->when($request->estado, function ($query, $estado) {
+                $query->where('estado', $estado);
+            })
+            ->paginate(10)
+            ->withQueryString();
     }
     public function show(int $aviso)
     {

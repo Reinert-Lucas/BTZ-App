@@ -6,6 +6,7 @@ use App\Http\Requests\ClienteRequest;
 use App\Http\Resources\ClienteResource;
 use App\Models\Cliente;
 use App\Services\ClienteService;
+use Illuminate\Http\Request;
 
 class WebClienteController extends Controller
 {
@@ -14,9 +15,9 @@ class WebClienteController extends Controller
     {
         $this->service = $service;
     }
-    public function index()
+    public function index(Request $request)
     {
-        $clientes = $this->service->index();
+        $clientes = $this->service->index($request);
         // Convertir "asegurado(bool) a SI/NO"
         $clientes->transform(function ($cliente) {
             $cliente->asegurado = $cliente->asegurado ? 'SI' : 'NO';
@@ -24,6 +25,10 @@ class WebClienteController extends Controller
             return $cliente;
         });
         $columns = [
+            [
+                'label' => 'Nro',
+                'field' => 'cliente_id'
+            ],
             [
                 'label' => 'Nombre',
                 'field' => 'nombre',
@@ -41,12 +46,32 @@ class WebClienteController extends Controller
                 'field' => 'asegurado_detalle',
             ]
         ];
+        $filters = [
+            [
+                'label' => 'Nombre',
+                'field' => 'nombre',
+                'type' => 'text'
+            ],
+            [
+                'label' => 'Email',
+                'field' => 'email',
+                'type' => 'email'
+            ],
+            [
+                'label' => 'Asegurado',
+                'field' => 'asegurado',
+                'type' => 'checkbox'
+            ],
+            [
+                'label' => 'Asegurado Detalle',
+                'field' => 'asegurado_detalle',
+                'type' => 'text'
+            ]
+        ];
         return view('admin.clientes.index', [
-            'clientes' => ClienteResource::collection($clientes)->additional([
-                'status' => true,
-                'message' => 'Clientes obtenidos con exito'
-            ]),
-            'columns' => $columns
+            'clientes' => ClienteResource::collection($clientes),
+            'columns' => $columns,
+            'filtros' => $filters
         ]);
     }
     public function show()
