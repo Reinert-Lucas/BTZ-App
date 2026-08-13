@@ -8,6 +8,7 @@ use App\Http\Resources\TrabajoResource;
 use App\Models\Aviso;
 use App\Models\Trabajo;
 use App\Services\AvisoService;
+use Illuminate\Http\Request;
 
 class WebAvisoController extends Controller
 {
@@ -16,10 +17,14 @@ class WebAvisoController extends Controller
     {
         $this->service = $service;
     }
-    public function index()
+    public function index(Request $request)
     {
-        $avisos = $this->service->index();
+        $avisos = $this->service->index($request);
         $columns = [
+            [
+                'label' => 'Nro',
+                'field' => 'aviso_id'
+            ],
             [
                 'label' => 'Fecha',
                 'field' => 'fecha',
@@ -53,12 +58,52 @@ class WebAvisoController extends Controller
                 'field' => 'urgencia',
             ]
         ];
+        $filters = [
+            [
+                'label' => 'Fecha',
+                'field' => 'fecha',
+                'type' => 'date'
+            ],
+            [
+                'label' => 'Hora',
+                'field' => 'hora',
+                'type' => 'time'
+            ],
+            [
+                'label' => 'Direccion',
+                'field' => 'direccion',
+                'type' => 'text'
+            ],
+            [
+                'label' => 'Telefono',
+                'field' => 'telefono',
+                'type' => 'tel'
+            ],
+            [
+                'label' => 'Estado',
+                'field' => 'estado',
+                'type' => 'select',
+                'options' => [
+                    'pendiente' => 'Pendiente',
+                    'finalizado' => 'Finalizado',
+                    'cancelado' => 'Cancelado'
+                ]
+            ],
+            [
+                'label' => 'Urgencia',
+                'field' => 'urgencia',
+                'type' => 'select',
+                'options' => [
+                    'urgente' => 'Urgente',
+                    'media' => 'Media',
+                    'baja' => 'Alta'
+                ]
+            ]
+        ];
         return view('admin.avisos.index', [
-            'avisos' => AvisoResource::collection($avisos)->additional([
-                'status' => true,
-                'message' => 'Avisos obtenidos con exito'
-            ]),
-            'columns' => $columns
+            'avisos' => AvisoResource::collection($avisos),
+            'columns' => $columns,
+            'filtros' => $filters
         ]);
     }
     public function show(int $aviso)

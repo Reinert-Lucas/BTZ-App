@@ -6,6 +6,7 @@ use App\Http\Requests\MaterialRequest;
 use App\Http\Resources\MaterialResource;
 use App\Models\Material;
 use App\Services\MaterialService;
+use Illuminate\Http\Request;
 
 class WebMaterialController extends Controller
 {
@@ -14,10 +15,14 @@ class WebMaterialController extends Controller
     {
         $this->service = $service;
     }
-    public function index()
+    public function index(Request $request)
     {
-        $materiales = $this->service->index();
+        $materiales = $this->service->index($request);
         $columns = [
+            [
+                'label' => 'Nro',
+                'field' => 'material_id'
+            ],
             [
                 'label' => 'Nombre',
                 'field' => 'nombre',
@@ -27,12 +32,17 @@ class WebMaterialController extends Controller
                 'field' => 'detalle',
             ]
         ];
+        $filters = [
+            [
+                'label' => 'Nombre',
+                'field' => 'nombre',
+                'type' => 'text'
+            ]
+        ];
         return view('admin.materiales.index', [
-            'materiales' => MaterialResource::collection($materiales)->additional([
-                'status' => true,
-                'message' => 'Materiales obtenidos con exito'
-            ]),
-            'columns' => $columns
+            'materiales' => MaterialResource::collection($materiales),
+            'columns' => $columns,
+            'filtros' => $filters
         ]);
     }
     public function show()
