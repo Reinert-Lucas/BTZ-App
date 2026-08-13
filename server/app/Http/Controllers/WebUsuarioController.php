@@ -6,6 +6,7 @@ use App\Http\Requests\CreateUserRequest;
 use App\Http\Resources\UsuarioResource;
 use App\Models\Usuario;
 use App\Services\UsuarioService;
+use Illuminate\Http\Request;
 
 class WebUsuarioController extends Controller
 {
@@ -14,10 +15,14 @@ class WebUsuarioController extends Controller
     {
         $this->service = $service;
     }
-    public function index()
+    public function index(Request $request)
     {
-        $usuarios = $this->service->index();
+        $usuarios = $this->service->index($request);
         $columns = [
+            [
+                'label' => 'Nro',
+                'field' => 'usuario_id'
+            ],
             [
                 'label' => 'Nombre',
                 'field' => 'nombre',
@@ -35,12 +40,36 @@ class WebUsuarioController extends Controller
                 'field' => 'rol',
             ],
         ];
+        $filters = [
+            [
+                'label' => 'Nombre',
+                'field' => 'nombre',
+                'type' => 'text'
+            ],
+            [
+                'label' => 'DNI',
+                'field' => 'dni',
+                'type' => 'text'
+            ],
+            [
+                'label' => 'Telefono',
+                'field' => 'telefono',
+                'type' => 'tel'
+            ],
+            [
+                'label' => 'Rol',
+                'field' => 'rol',
+                'type' => 'select',
+                'options' => [
+                    'admin' => 'admin',
+                    'operario' => 'operario'
+                ]
+            ],
+        ];
         return view('admin.usuarios.index', [
-            'usuarios' => UsuarioResource::collection($usuarios)->additional([
-                'status' => true,
-                'message' => 'Usuarios obtenidos con exito'
-            ]),
-            'columns' => $columns
+            'usuarios' => UsuarioResource::collection($usuarios),
+            'columns' => $columns,
+            'filtros' => $filters
         ]);
     }
     public function show()
