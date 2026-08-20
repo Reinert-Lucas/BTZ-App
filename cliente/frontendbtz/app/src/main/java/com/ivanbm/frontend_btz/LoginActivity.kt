@@ -13,6 +13,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.ivanbm.frontend_btz.model.LoginRequest
 import com.ivanbm.frontend_btz.model.LoginResponse
 import com.ivanbm.frontend_btz.network.RetrofitClient
+import com.ivanbm.frontend_btz.network.SessionManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -26,6 +27,7 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
+        SessionManager.inicializar(applicationContext)
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_login)
@@ -91,15 +93,15 @@ class LoginActivity : AppCompatActivity() {
                         // Login correcto
                         val usuarioLogueado = loginResponse.user
                         val token = loginResponse.token?.plainTextToken
+                        if (!token.isNullOrEmpty()) {
+                            SessionManager.guardarToken(token)
+                        }
 
                         Toast.makeText(
                             this@LoginActivity,
                             "Bienvenido ${usuarioLogueado?.nombre}",
                             Toast.LENGTH_LONG
                         ).show()
-
-                        println("TOKEN: $token")
-                        println("ROL: ${usuarioLogueado?.rol}")
 
                         //Navegación
                         val intent = Intent(this@LoginActivity, HomeActivity::class.java)

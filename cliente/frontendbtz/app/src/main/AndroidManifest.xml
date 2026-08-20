@@ -10,6 +10,15 @@
         android:theme="@style/Theme.Frontendbtz"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".EditarClienteActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CrearClienteActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ClientesActivity"
+            android:exported="false" />
+        <activity
             android:name=".OperarioActivity"
             android:exported="false" />
         <activity
@@ -24,6 +33,7 @@
             android:theme="@style/Theme.App.Starting">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
