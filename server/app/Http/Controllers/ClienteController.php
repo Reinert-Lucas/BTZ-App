@@ -6,6 +6,7 @@ use App\Models\Cliente;
 use App\Http\Requests\ClienteRequest;
 use App\Http\Resources\ClienteResource;
 use App\Services\ClienteService;
+use Illuminate\Http\Request;
 
 class ClienteController extends Controller
 {
@@ -14,9 +15,9 @@ class ClienteController extends Controller
     {
         $this->service = $service;
     }
-    public function index()
-    {
-        $clientes = $this->service->index();
+    public function index(Request $request){
+
+        $clientes = $this->service->index($request);
         return ClienteResource::collection($clientes)->additional([
             'status' => true,
             'message' => 'Clientes obtenidos con exito'

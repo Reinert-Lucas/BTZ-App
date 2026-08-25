@@ -15,9 +15,9 @@ class MaterialController extends Controller
     {
         $this->service = $service;
     }
-    public function index()
+    public function index(Request $request)
     {
-        $materiales = $this->service->index();
+        $materiales = $this->service->index($request);
         return MaterialResource::collection($materiales)->additional([
             'status' => true,
             'message' => 'Materiales obtenidos con exito'

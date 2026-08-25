@@ -6,6 +6,7 @@ use App\Http\Requests\AvisoRequest;
 use App\Http\Resources\AvisoResource;
 use App\Models\Aviso;
 use App\Services\AvisoService;
+use Illuminate\Http\Request;
 
 class AvisoController extends Controller
 {
@@ -14,9 +15,9 @@ class AvisoController extends Controller
     {
         $this->service = $service;
     }
-    public function index()
+    public function index(Request $request)
     {
-        $avisos = $this->service->index();
+        $avisos = $this->service->index($request);
         return AvisoResource::collection($avisos)->additional([
             'status' => true,
             'message' => 'Avisos obtenidos con exito'
