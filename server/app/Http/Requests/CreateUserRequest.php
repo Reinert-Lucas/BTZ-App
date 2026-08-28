@@ -38,7 +38,6 @@ class CreateUserRequest extends FormRequest
                 Rule::unique('usuarios', 'dni')->ignore($usuario?->usuario_id, 'usuario_id'),
             ],
             'telefono' => ['required', 'string', 'max:25'],
-            'activo' => ['sometimes', 'boolean'],
         ];
 
     }

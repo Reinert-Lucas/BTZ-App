@@ -6,6 +6,7 @@ use App\Http\Requests\CreateUserRequest;
 use App\Http\Resources\UsuarioResource;
 use App\Models\Usuario;
 use App\Services\UsuarioService;
+use Illuminate\Http\Request;
 
 class UsuarioController extends Controller
 {
@@ -14,9 +15,11 @@ class UsuarioController extends Controller
     {
         $this->service = $service;
     }
-    public function index()
+
+    public function index(Request $request)
     {
-        $usuarios = $this->service->index();
+        $usuarios = $this->service->index($request);
+    
         return UsuarioResource::collection($usuarios)->additional([
             'status' => true,
             'message' => 'Usuarios obtenidos con exito'
