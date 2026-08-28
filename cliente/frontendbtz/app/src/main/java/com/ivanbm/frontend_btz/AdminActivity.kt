@@ -45,5 +45,19 @@ class AdminActivity : AppCompatActivity() {
 
             startActivity(intent)
         }
+
+        val btnGestionUsuarios = findViewById<Button>(
+            R.id.btnGestionUsuarios
+        )
+
+        btnGestionUsuarios.setOnClickListener {
+
+            val intent = Intent(
+                this@AdminActivity,
+                PersonalActivity::class.java
+            )
+
+            startActivity(intent)
+        }
     }
 }
