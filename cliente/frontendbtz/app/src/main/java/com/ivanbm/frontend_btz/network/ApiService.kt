@@ -5,6 +5,9 @@ import com.ivanbm.frontend_btz.model.ClienteResponse
 import com.ivanbm.frontend_btz.model.ClientesResponse
 import com.ivanbm.frontend_btz.model.LoginRequest
 import com.ivanbm.frontend_btz.model.LoginResponse
+import com.ivanbm.frontend_btz.model.UsuarioRequest
+import com.ivanbm.frontend_btz.model.UsuarioResponse
+import com.ivanbm.frontend_btz.model.UsuariosResponse
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -16,14 +19,14 @@ import retrofit2.http.Query
 
 interface ApiService {
 
-    // LOGIN
+    // LOGIN --------------------------------------------------------------------------------
     @POST("login")
     fun login(
         @Body request: LoginRequest
     ): Call<LoginResponse>
 
 
-    // CLIENTES
+    // CLIENTES ------------------------------------------------------------------------------
 
     // Obtener todos los clientes
     @GET("clientes")
@@ -56,6 +59,39 @@ interface ApiService {
     // Eliminar cliente
     @DELETE("clientes/{id}")
     fun eliminarCliente(
+        @Path("id") id: Int
+    ): Call<Void>
+
+    // USUARIOS -------------------------------------------------------------------------------
+
+    // Obtener todos los usuarios
+    @GET("usuarios")
+    fun obtenerUsuarios(
+        @Query("page") pagina: Int
+    ): Call<UsuariosResponse>
+
+    // Obtener un usuario
+    @GET("usuarios/{id}")
+    fun obtenerUsuario(
+        @Path("id") id: Int
+    ): Call<UsuarioResponse>
+
+    // Crear usuario
+    @POST("usuarios")
+    fun crearUsuario(
+        @Body request: UsuarioRequest
+    ): Call<UsuarioResponse>
+
+    // Actualizar usuario
+    @PUT("usuarios/{id}")
+    fun actualizarUsuario(
+        @Path("id") id: Int,
+        @Body request: UsuarioRequest
+    ): Call<UsuarioResponse>
+
+    // Eliminar usuario
+    @DELETE("usuarios/{id}")
+    fun eliminarUsuario(
         @Path("id") id: Int
     ): Call<Void>
 }

@@ -10,6 +10,15 @@
         android:theme="@style/Theme.Frontendbtz"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".EditarUsuarioActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CrearUsuarioActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PersonalActivity"
+            android:exported="false" />
+        <activity
             android:name=".EditarClienteActivity"
             android:exported="false" />
         <activity
