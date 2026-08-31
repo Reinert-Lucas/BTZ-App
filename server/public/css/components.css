@@ -1,0 +1,21 @@
+.modal-body,
+.modal-footer {
+    background-color: var(--bg-gray);
+    border: none;
+}
+
+.modal-header {
+    background-color: var(--primary);
+    color: var(--text-white);
+    border: 2px solid var(--text-white);
+}
+
+.modal-title {
+    font-weight: bold;
+}
+
+.modal-footer .btn {
+    background-color: var(--primary);
+    color: var(--text-white);
+    font-weight: bold;
+}

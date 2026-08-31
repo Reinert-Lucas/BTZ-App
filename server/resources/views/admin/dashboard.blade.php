@@ -2,11 +2,6 @@
 
 @section('content')
     <h1>Panel de Admin</h1>
-    <form action="{{ route('admin.logout') }}" method="POST">
-        @csrf
-        @method('POST')
-        <input type="submit" value="Cerrar Sesion">
-    </form>
     <a href="{{ route('admin.me') }}">Me</a>
     <section>
         <a href={{ route("admin.usuarios.index") }}>Gestion de Usuarios</a>
