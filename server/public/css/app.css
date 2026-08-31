@@ -40,7 +40,8 @@
 .admin-card {
     border: 2px solid #000;
     width: 15rem;
-    height: 5rem;
+    height: 8rem;
+    margin: 1rem 0;
     padding: 1rem;
     border-radius: 5px;
     display: flex;
@@ -51,39 +52,88 @@
 }
 
 .stats-section {
-    width: 100%;
-    border-top: 2px solid #000;
-    margin: 1rem 0 0 0;
-    padding: 1rem 0 0 0;
-    display: flex;
-    justify-content: space-around;
-    align-items: flex-start;
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
 }
 
-.stat-card {
-    width: 30%;
-    padding: .5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.stats-widget {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
+    border: 1px solid #E5E7EB;
 }
 
-.stat-label {
-    font-size: 1.2em;
+.widget-header {
+    background: var(--primary);
+    color: white;
+    padding: .75rem 1rem;
+    text-align: center;
+}
+
+.widget-header h5 {
+    margin: 0;
+    font-size: 1rem;
     font-weight: 600;
 }
 
-.stats {
-    align-self: flex-start;
-    list-style: none;
-    padding: 0;
-    width: 100%;
+.widget-body {
+    padding: 1rem;
 }
 
-.stats li {
-    width: 100%;
-    border-radius: 5px;
-    background-color: var(--bg-gray);
-    margin: 1rem 0 0 0;
-    padding: .5rem;
+/* Trabajos */
+.work-item {
+    background: #F8FAFC;
+    border-left: 4px solid var(--primary);
+    padding: .75rem;
+    border-radius: 8px;
+    margin-bottom: .75rem;
+}
+
+.badge-date {
+    display: inline-block;
+    font-size: .75rem;
+    color: #6B7280;
+    margin-bottom: .25rem;
+}
+
+/* Ranking */
+.ranking-item {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    margin-bottom: .9rem;
+}
+
+.ranking-pos {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #E0E7FF;
+    color: var(--primary);
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ranking-item small {
+    display: block;
+    color: #6B7280;
+}
+
+/* Materiales */
+.material-item {
+    margin-bottom: 1rem;
+}
+
+.progress {
+    height: 8px;
+    background: #E5E7EB;
+}
+
+.progress-bar {
+    background: var(--primary);
 }

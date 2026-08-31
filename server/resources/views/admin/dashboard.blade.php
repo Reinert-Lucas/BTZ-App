@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>Panel de Administración</h1>
     <section class="cards-section">
         <a class="admin-card" href={{ route("admin.usuarios.index") }}>Gestion de Usuarios</a>
         <a class="admin-card" href={{ route("admin.avisos.index") }}>Gestion de Aviso</a>
@@ -9,42 +8,53 @@
         <a class="admin-card" href={{ route("admin.clientes.index") }}>Gestion de Clientes</a>
     </section>
     <section class="stats-section">
-        @foreach ($metricas as $metrica)
-            <section class="stat-card">
-                <p class="stat-label">{{ $metrica['label'] }}</p>
+        @foreach($metricas as $metrica)
+        <div class="stats-widget">
+            <div class="widget-header">
+                <h5>{{ $metrica['label'] }}</h5>
+            </div>
+            <div class="widget-body">
                 @switch($metrica['type'])
                     @case('trabajos')
-                        <ul class="stats">
-                            @foreach ($metrica['content'] as $content)
-                                <li>
-                                    <b>Trabajo: </b>{{ $content->trabajo_realizado }} <br>
-                                    <b>Fecha: </b>{{ $content->aviso?->fecha }}
-                                </li>
-                            @endforeach
-                        </ul>
-                        @break
+                        @foreach($metrica['content'] as $trabajo)
+                            <div class="work-item">
+                                <span class="badge-date">{{ $trabajo->aviso?->fecha }}</span>
+                                <strong>{{ $trabajo->trabajo_realizado }}</strong>
+                            </div>
+                        @endforeach
+                    @break
                     @case('usuarios')
-                        <ul class="stats">
-                            @foreach ($metrica['content'] as $content)
-                                <li>
-                                    <b>Nombre: </b>{{ $content->nombre }} <br>
-                                    <b>Avisos Finalizados: </b>{{ $content->avisos_finalizados_count }}
-                                </li>
-                            @endforeach
-                        </ul>
-                        @break
+                        @foreach($metrica['content'] as $i => $usuario)
+                            <div class="ranking-item">
+                                <div class="ranking-pos">{{ $i + 1 }}</div>
+                                <div>
+                                    <strong>{{ $usuario->nombre }}</strong>
+                                    <small>{{ $usuario->avisos_finalizados_count }}{{ $usuario->avisos_finalizados_count === 1 ? ' trabajo' : ' trabajos' }}</small>
+                                </div>
+                            </div>
+                        @endforeach
+                    @break
                     @case('materiales')
-                        <ul class="stats">
-                            @foreach ($metrica['content'] as $content)
-                                <li>
-                                    <b>Material: </b>{{ $content->material->nombre }} <br>
-                                    <b>Total Usado: </b>{{ $content->total }}
-                                </li>
-                            @endforeach
-                        </ul>
-                        @break
+                        @php
+                            $max = $metrica['content']->max('total');
+                        @endphp
+                        @foreach($metrica['content'] as $material)
+                            <div class="material-item">
+                                <div class="d-flex justify-content-between">
+                                    <span>{{ $material->material->nombre }}</span>
+                                    <strong>{{ $material->total }}</strong>
+                                </div>
+                                <div class="progress mt-1">
+                                    <div class="progress-bar"
+                                         style="width: {{ ($material->total / $max) * 100 }}%">
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    @break
                 @endswitch
-            </section>
-        @endforeach
+            </div>
+        </div>
+    @endforeach
     </section>
 @endsection
