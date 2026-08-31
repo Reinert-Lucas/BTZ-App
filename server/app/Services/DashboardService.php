@@ -11,14 +11,17 @@ class DashboardService
     {
         return [
             'trabajosRelizados' => [
+                'type' => "trabajos",
                 'label' => 'Ultimos 5 Trabajos Realizados',
                 'content' => $this->ultimosTrabajos(),
             ],
             'usuariosActivos' => [
+                'type' => "usuarios",
                 'label' => 'Usuarios con más Trabajos Relizados',
                 'content' => $this->usuariosMasActivos()
             ],
             'materialesUsados' => [
+                'type' => "materiales",
                 'label' => 'Materiales mas Usados',
                 'content' => $this->materialesMasUsados(),
             ]

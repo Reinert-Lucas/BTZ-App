@@ -12,6 +12,11 @@ body {
         "footer";
     grid-template-rows: auto 1fr auto;
     min-height: 100vh;
+    background-color: var(--bg-light);
+}
+
+.login-body {
+    place-content: center;
 }
 
 header {
@@ -61,7 +66,12 @@ header {
 
 main {
     grid-area: main;
+    height: 100%;
+    padding: 1rem;
     place-content: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 
 footer {

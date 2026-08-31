@@ -1,3 +1,89 @@
 @import './variables.css';
 @import './layout.css';
 @import './components.css';
+
+.login-form {
+    width: 35%;
+    place-self: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    padding: .5rem;
+}
+
+.login-form input {
+    margin: .5rem 0;
+}
+
+.login-form .btn-dark {
+    width: 100%;
+    font-weight: 600;
+}
+
+.login-form-title {
+    font-weight: 800;
+}
+
+.login-form-subtitle {
+    font-weight: 600;
+}
+
+.cards-section {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.admin-card {
+    border: 2px solid #000;
+    width: 15rem;
+    height: 5rem;
+    padding: 1rem;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+    text-decoration: none;
+}
+
+.stats-section {
+    width: 100%;
+    border-top: 2px solid #000;
+    margin: 1rem 0 0 0;
+    padding: 1rem 0 0 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+}
+
+.stat-card {
+    width: 30%;
+    padding: .5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat-label {
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
+.stats {
+    align-self: flex-start;
+    list-style: none;
+    padding: 0;
+    width: 100%;
+}
+
+.stats li {
+    width: 100%;
+    border-radius: 5px;
+    background-color: var(--bg-gray);
+    margin: 1rem 0 0 0;
+    padding: .5rem;
+}
