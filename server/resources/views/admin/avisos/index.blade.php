@@ -1,8 +1,10 @@
 @extends('layouts.app')
 
+@section('texto')
+    <x-text title="Gestion de Avisos"></x-text>
+@endsection
 @section('content')
     <section>
-        <h1>Gestion de Avisos</h1>
         <a href={{ route('admin.dashboard') }}>Inicio</a>
         <a class="btn btn-primary" href={{ route('admin.avisos.create') }}>+</a>
         <x-adv :filtros="$filtros" ruta="avisos" model="aviso"></x-adv>

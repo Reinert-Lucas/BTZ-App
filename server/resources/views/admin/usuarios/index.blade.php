@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('texto')
-    <x-text title="Gestion de Usuarios" class="title-comp"></x-text>
+    <x-text title="Gestion de Usuarios"></x-text>
 @endsection
 @section('content')
     <section>

@@ -154,10 +154,7 @@ class WebUsuarioController extends Controller
         ];
         $usuarioObtenido = $this->service->show($usuario);
         return view('admin.usuarios.edit', [
-            'usuario' => new UsuarioResource($usuarioObtenido)->additional([
-                'status' => true,
-                'message' => 'Usuarios obtenidos con exito'
-            ]),
+            'usuario' => new UsuarioResource($usuarioObtenido),
             'inputs' => $inputs
         ]);
     }
