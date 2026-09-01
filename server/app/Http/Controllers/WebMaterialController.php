@@ -89,10 +89,7 @@ class WebMaterialController extends Controller
         ];
         $materialObtenido = $this->service->show($material);
         return view('admin.materiales.edit', [
-            'material' => new MaterialResource($materialObtenido)->additional([
-                'status' => true,
-                'message' => 'Material obtenido con exito'
-            ]),
+            'material' => new MaterialResource($materialObtenido),
             'inputs' => $inputs
         ]);
     }

@@ -138,10 +138,7 @@ class WebClienteController extends Controller
         ];
         $clienteObtenido = $this->service->show($cliente);
         return view('admin.clientes.edit', [
-            'cliente' => new ClienteResource($clienteObtenido)->additional([
-                'status' => true,
-                'message' => 'Clientes obtenidos con exito'
-            ]),
+            'cliente' => new ClienteResource($clienteObtenido),
             'inputs' => $inputs
         ]);
     }
