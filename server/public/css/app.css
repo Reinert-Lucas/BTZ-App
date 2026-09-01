@@ -137,3 +137,27 @@
 .progress-bar {
     background: var(--primary);
 }
+
+.btns-section {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.btns-section a {
+    background-color: var(--primary);
+    border-radius: 10px;
+    width: 3.5rem;
+    height: 3.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+} 
+
+.btns-section a img {
+    width: 2.5rem;
+}
+.btns-section a:hover {
+    scale: 1.1;
+    transition: ease .2s;
+}
