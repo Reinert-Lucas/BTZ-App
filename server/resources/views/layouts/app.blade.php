@@ -16,6 +16,7 @@
         <div class="title-div">
             <img src="{{ asset('imgs/logo.png') }}" alt="Logo" class="img-fluid" style="max-height: 80px;">
             <a href={{ route("admin.dashboard") }} class="title">BTZ-APP</a>
+            @yield('texto')
         </div>
         <div class="user-div">
             <button class="user-btn" data-bs-toggle="modal" data-bs-target="#userModal" id="user-btn">
@@ -24,7 +25,7 @@
         </div>
     </header>
     <x-modal></x-modal>
-    <main class="flex-grow-1 py-4">
+    <main class=" flex-grow-1 py-4">
         @yield('content')
     </main>
     <footer class="py-3 bg-white border-top mt-auto">

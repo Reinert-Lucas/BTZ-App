@@ -7,7 +7,7 @@
         {{-- Filtro por defecto --}}
         <div class="mb-2">
             <label>Buscar por Nro</label>
-            <input class="form-control" type="number" name="usuario_id">
+            <input class="form-control" type="number" name="{{ $model }}_id">
         </div>
     </div>
     <button type="button" class="btn btn-secondary" id="add-filter">

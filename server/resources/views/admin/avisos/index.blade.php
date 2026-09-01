@@ -5,7 +5,7 @@
         <h1>Gestion de Avisos</h1>
         <a href={{ route('admin.dashboard') }}>Inicio</a>
         <a class="btn btn-primary" href={{ route('admin.avisos.create') }}>+</a>
-        <x-adv :filtros="$filtros" ruta="avisos"></x-adv>
+        <x-adv :filtros="$filtros" ruta="avisos" model="aviso"></x-adv>
     </section>
     <x-table :columns="$columns" :rows="$avisos" parameter="aviso" resource="avisos" />
 @endsection
