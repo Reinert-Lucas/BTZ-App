@@ -2,23 +2,23 @@
 @php
     $rutaCompleta = "admin.$ruta.index" 
 @endphp
-<form method="GET" action="{{ route($rutaCompleta) }}">
+<form method="GET" action="{{ route($rutaCompleta) }}" class="adv-form">
     <div id="filters">
         {{-- Filtro por defecto --}}
-        <div class="mb-2">
-            <label>Buscar por Nro</label>
-            <input class="form-control" type="number" name="{{ $model }}_id">
+        <div class="adv-form-search">
+            <input class="form-control number-search" type="number" name="{{ $model }}_id"
+                placeholder="Buscar por número">
+            <button type="button" id="add-filter">
+                <img src="{{ asset('imgs/add.png') }}" alt="Agregar filtro"> Agregar
+            </button>
+            <button>
+                <img src="{{ asset('imgs/search.png') }}" alt="Buscar"> Buscar
+            </button>
         </div>
     </div>
-    <button type="button" class="btn btn-secondary" id="add-filter">
-        + Agregar filtro
-    </button>
-    <button class="btn btn-primary">
-        Buscar
-    </button>
 </form>
 <template id="filter-template">
-    <div class="filter-row mb-2 d-flex gap-2">
+    <div class="filter-row">
         <select class="form-select filter-type">
             <option value="">Seleccionar...</option>
             @foreach ($filtros as $filtro)
@@ -26,9 +26,9 @@
                     data-options="{{ json_encode($filtro['options'] ?? []) }}">{{ $filtro['label'] }}</option>
             @endforeach
         </select>
-        <div class="filter-value flex-grow-1">
+        <div class="filter-value">
         </div>
-        <button type="button" class="btn btn-danger remove-filter">
+        <button type="button" class="remove-filter">
             X
         </button>
     </div>
@@ -57,7 +57,7 @@
                 );
                 let html = `
         <select
-            class="form-select"
+            class="form-select select-adpt"
             name="${e.target.value}">
     `;
                 for (const [value, label] of Object.entries(options)) {
@@ -85,7 +85,7 @@
             default:
                 container.innerHTML = `
                 <input
-                    class="form-control"
+                    class="form-control text-input"
                     type="${e.target.selectedOptions[0].dataset.tipo}"
                     name="${e.target.value}">
             `;

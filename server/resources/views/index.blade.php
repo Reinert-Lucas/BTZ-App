@@ -18,6 +18,7 @@
         </script>
     @endif
     <form action="{{ route('admin.login') }}" method="POST" class="login-form">
+        <img src="{{ asset('imgs/logo.png') }}" alt="Logo" class="logo-form">
         <h1 class="login-form-title">BTZ-APP</h1>
         @csrf
         @method('POST')
@@ -27,7 +28,7 @@
             class="@error('dni') is-invalid @enderror form-control" placeholder="DNI (Sin puntos)">
         <input type="password" name="password" id="password" class="@error('dni') is-invalid @enderror form-control"
             placeholder="Contraseña">
-        <input type="submit" value="Ingresar" class="btn btn-dark">
+        <input type="submit" value="Ingresar" class="btn btn-login">
         @error('dni')
             <span class="form-text text-danger">{{ $message }}</span>
         @enderror
