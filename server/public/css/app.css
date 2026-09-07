@@ -171,10 +171,73 @@
 .btns-section a:hover {
     scale: 1.1;
     transition: ease .2s;
+    background-color: var(--primary-hover);
 }
 .btn-warning {
     background-color: var(--secondary);
 }
 .btn-warning:hover {
     background-color: #dd8d1d;
+}
+
+.work-detail{
+    max-width: 1100px;
+    margin: auto;
+}
+
+.page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:1.5rem;
+}
+
+.detail-card{
+    background:#FFF;
+    border-radius:12px;
+    padding:1.5rem;
+    margin-bottom:1.25rem;
+    border:1px solid #E5E7EB;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.detail-card h5{
+    color:var(--primary);
+    margin-bottom:.75rem;
+    font-weight:700;
+}
+
+.info-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:1rem;
+}
+
+.info-item span{
+    display:block;
+    font-size:.85rem;
+    color:#6B7280;
+    margin-bottom:.25rem;
+}
+
+.info-item strong{
+    font-size:1rem;
+    color:#111827;
+}
+
+.detail-card p{
+    margin:0;
+    line-height:1.6;
+    color:#374151;
+}
+.back-btn{
+    background-color:var(--primary);
+    color:#FFF;
+    padding:.5rem 1rem;
+    border-radius:8px;
+    text-decoration:none;
+}
+.back-btn:hover{
+    background-color: var(--primary-hover);
+    color:#FFF;
 }

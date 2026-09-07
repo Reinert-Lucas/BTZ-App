@@ -14,7 +14,7 @@
                 <form action="{{ route('admin.logout') }}" method="POST">
                     @csrf
                     @method('POST')
-                    <button type="submit" class="btn" data-bs-dismiss="modal">Cerrar Sesion</button>
+                    <button type="submit" class="btn modal-btn" data-bs-dismiss="modal">Cerrar Sesion</button>
                 </form>
             </div>
 
