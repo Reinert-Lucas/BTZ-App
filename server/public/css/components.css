@@ -64,7 +64,7 @@
 .form-select,
 .text-input,
 .form-check {
-    height: 100%;
+    /* height: 100%; */
     background-color: #FFF;
     border: 2px solid var(--bg-gray);
 }
@@ -159,14 +159,19 @@
     justify-content: center;
     align-items: center;
 }
-.status-pendiente{
+.status-pendiente, .urgency-baja{
     background: #F3F4F6;
     color: #374151;
 }
 
-.status-finalizado{
+.status-finalizado, .trabajo-btn{
     background: #DCFCE7;
     color: #166534;
+}
+
+.status-cancelado{
+    background: #FEE2E2;
+    color: #B91C1C;
 }
 
 .urgency-urgente{
@@ -179,10 +184,6 @@
     color: #92400E;
 }
 
-.urgency-baja, .trabajo-btn{
-    background: #DBEAFE;
-    color: #1D4ED8;
-}
 .actions{
     white-space: nowrap;
 }
@@ -244,4 +245,59 @@
     background: #E5E7EB;
     color: #9CA3AF;
     box-shadow: none;
+}
+
+.admin-form-card{
+    background: #FFF;
+    border-radius: 14px;
+    padding: 1.75rem;
+    margin-top: 1rem;
+    border: 1px solid #E5E7EB;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+
+.admin-form-card .form-label{
+    color: #374151;
+    margin-bottom: .35rem;
+}
+
+.admin-form-card .form-control,
+.admin-form-card .form-select{
+    border-radius: 10px;
+    border: 1px solid #D1D5DB;
+    padding: .7rem .9rem;
+    transition: .2s;
+}
+
+.admin-form-card .form-control:focus,
+.admin-form-card .form-select:focus{
+    border-color: var(--primary);
+    box-shadow: 0 0 0 .2rem rgba(67,56,202,.15);
+}
+
+.admin-form-card textarea{
+    resize: vertical;
+    min-height: 110px;
+}
+
+.admin-form-card .form-check-input{
+    width: 1.1rem;
+    height: 1.1rem;
+}
+
+.admin-form-card .form-check-input:checked{
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.admin-form-card .btn-primary{
+    background: var(--primary);
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    padding: .65rem 1.5rem;
+}
+
+.admin-form-card .btn-primary:hover{
+    background: #3730A3;
 }

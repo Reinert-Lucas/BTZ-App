@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Http\Resources\AvisoResource;
@@ -68,6 +69,7 @@ class AvisoService
     }
     public function index(Request $request)
     {
+        // Devolver datos filtrados, paginados y ordenados del mas reciente al mas antiguo
         return Aviso::query()
             ->when($request->aviso_id, function ($query, $aviso_id) {
                 $query->where('aviso_id', $aviso_id);
@@ -87,6 +89,7 @@ class AvisoService
             ->when($request->estado, function ($query, $estado) {
                 $query->where('estado', $estado);
             })
+            ->orderBy('created_at', 'desc')
             ->paginate(10)
             ->withQueryString();
     }

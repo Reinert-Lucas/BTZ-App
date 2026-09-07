@@ -134,7 +134,7 @@ class WebUsuarioController extends Controller
             ],
             [
                 'label' => 'Contraseña',
-                'field' => '',
+                'field' => 'password',
                 'type' => 'text'
             ],
             [

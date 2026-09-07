@@ -172,3 +172,9 @@
     scale: 1.1;
     transition: ease .2s;
 }
+.btn-warning {
+    background-color: var(--secondary);
+}
+.btn-warning:hover {
+    background-color: #dd8d1d;
+}
