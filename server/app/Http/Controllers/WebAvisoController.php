@@ -115,7 +115,7 @@ class WebAvisoController extends Controller
     }
     public function create()
     {
-        return view('admin.avisos.create', ['inputs' => $this->service->getFields()]);
+        return view('admin.avisos.create', ['inputs' => $this->service->getFields(isUpdate: false)]);
     }
     public function store(AvisoRequest $request)
     {
@@ -130,7 +130,7 @@ class WebAvisoController extends Controller
         $avisoObtenido = $this->service->show($aviso);
         return view('admin.avisos.edit', [
             'aviso' => new AvisoResource($avisoObtenido),
-            'inputs' => $this->service->getFields()
+            'inputs' => $this->service->getFields(isUpdate: true)
         ]);
     }
     public function update(AvisoRequest $request, Aviso $aviso)
