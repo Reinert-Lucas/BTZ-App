@@ -15,7 +15,7 @@
     <header>
         <div class="title-div">
             <img src="{{ asset('imgs/logo.png') }}" alt="Logo" class="img-fluid" style="max-height: 80px;">
-            <a href={{ route("admin.dashboard") }} class="title">BTZ-APP</a>
+            <a href={{ route('admin.dashboard') }} class="title">BTZ-APP</a>
             @yield('texto')
         </div>
         <div class="user-div">

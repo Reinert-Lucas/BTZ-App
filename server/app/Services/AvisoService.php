@@ -10,9 +10,9 @@ use Illuminate\Http\Request;
 
 class AvisoService
 {
-    public function getFields()
+    public function getFields(bool $isUpdate)
     {
-        return $inputs = [
+        $inputs = [
             [
                 'label' => 'Fecha',
                 'field' => 'fecha',
@@ -48,9 +48,9 @@ class AvisoService
                 'field' => 'urgencia',
                 'type' => 'select',
                 'options' => [
-                    'urgente' => 'urgente',
-                    'media' => 'media',
-                    'baja' => 'baja'
+                    'urgente' => 'Urgente',
+                    'media' => 'Media',
+                    'baja' => 'Baja'
                 ]
             ],
             [
@@ -61,11 +61,24 @@ class AvisoService
             ],
             [
                 'label' => 'Operario',
-                'field' => 'operario_id',
+                'field' => 'usuario_id',
                 'type' => 'select',
                 'options' => Usuario::where('rol', 'operario')->pluck('nombre', 'usuario_id')
             ]
         ];
+        if ($isUpdate) {
+            $inputs[] = [
+                'label' => 'Estado',
+                'field' => 'estado',
+                'type' => 'select',
+                'options' => [
+                    'pendiente' => 'Pendiente',
+                    'finalizado' => 'Finalizado',
+                    'cancelado' => 'Cancelado',
+                ]
+            ];
+        }
+        return $inputs;
     }
     public function index(Request $request)
     {
@@ -99,6 +112,7 @@ class AvisoService
     }
     public function create(array $avisoValidado)
     {
+        $avisoValidado['estado'] = 'pendiente';
         return Aviso::create($avisoValidado);
     }
     public function update(array $newAviso, Aviso $aviso)
