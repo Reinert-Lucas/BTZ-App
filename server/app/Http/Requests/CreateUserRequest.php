@@ -27,9 +27,7 @@ class CreateUserRequest extends FormRequest
         $usuario = $this->route('usuario');
         return [
             'nombre' => ['required', 'string', 'max:60'],
-            'password' => $usuario
-                ? ['sometimes', 'string', 'min:8', 'max:255']
-                : ['required', 'string', 'min:8', 'max:255'],
+            'password' => ['string'],
             'rol' => ['required', Rule::in(['admin', 'operario'])],
             'dni' => [
                 'required',
@@ -38,8 +36,6 @@ class CreateUserRequest extends FormRequest
                 Rule::unique('usuarios', 'dni')->ignore($usuario?->usuario_id, 'usuario_id'),
             ],
             'telefono' => ['required', 'string', 'max:25'],
-            'activo' => ['sometimes', 'boolean'],
         ];
-
     }
 }
