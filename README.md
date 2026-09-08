@@ -37,35 +37,6 @@ API REST
 -   Gestión de materiales
 -   Respuestas en formato JSON
 
-Instalación
-
-1.  Clonar el repositorio.
-
-2.  Instalar dependencias de PHP:
-
-    composer install
-
-3.  Instalar dependencias de Node:
-
-    npm install
-
-4.  Copiar el archivo de entorno:
-
-    cp .env.example .env
-
-5.  Generar la clave de la aplicación:
-
-    php artisan key:generate
-
-6.  Configurar la base de datos en .env.
-
-7.  Ejecutar las migraciones:
-
-    php artisan migrate
-
-8.  Iniciar el proyecto:
-
-    php artisan serve npm run dev
 
 Estructura del proyecto
 
