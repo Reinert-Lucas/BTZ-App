@@ -1,21 +1,17 @@
 BTZ App
 
-Sistema de gestión de avisos y trabajos desarrollado como proyecto full
-stack con Laravel 12, MySQL y un Panel de Administración Web en Blade.
-Además, cuenta con una API REST preparada para ser consumida por una
-aplicación móvil desarrollada en Kotlin.
+  Sistema de gestión de avisos, trabajos y clientes desarrollado con
+  Laravel 12, Kotlin y MySQL.
 
-Tecnologías
+Tecnologías utilizadas
 
--   Laravel 12
--   PHP 8.3+
--   MySQL
--   Blade
--   Bootstrap 5
--   Sanctum
--   Vite
+  Backend            Frontend Web          App Móvil          Base de Datos
+  ------------------ --------------------- ------------------ ---------------
+  Laravel 12 (PHP)   Blade + Bootstrap 5   Kotlin (Android)   MySQL
 
-Funcionalidades
+Otras tecnologías: Sanctum · Vite · MVC · Service Layer
+
+Características
 
 Panel de Administración
 
@@ -25,37 +21,58 @@ Panel de Administración
 -   Gestión de materiales
 -   Dashboard con estadísticas
 -   Búsqueda avanzada y paginación
--   Autenticación por sesión para administradores
+-   Autenticación mediante sesiones
+
+Aplicación móvil
+
+-   Inicio de sesión
+-   Consumo de la API REST
+-   Consulta y gestión de avisos
+-   Integración mediante Kotlin
 
 API REST
 
--   Login mediante Sanctum
--   Gestión de usuarios
--   Gestión de clientes
--   Gestión de avisos
--   Gestión de trabajos
--   Gestión de materiales
--   Respuestas en formato JSON
-
-
-Estructura del proyecto
-
--   app/Http/Controllers → Controladores Web y API
--   app/Services → Lógica de negocio
--   app/Models → Modelos Eloquent
--   resources/views → Panel de administración
--   routes/web.php → Rutas del panel
--   routes/api.php → Endpoints REST
+-   Autenticación con Laravel Sanctum
+-   Endpoints para usuarios, clientes, avisos, trabajos y materiales
+-   Respuestas JSON estandarizadas
 
 Arquitectura
 
-El proyecto sigue una arquitectura MVC + Service Layer:
+    Kotlin App
+         │
+         │ HTTP / JSON
+         ▼
+    Laravel API REST
+         │
+    Service Layer
+         │
+    Eloquent ORM
+         │
+       MySQL
 
--   Controllers: reciben la petición y retornan vistas o respuestas
-    JSON.
--   Services: contienen la lógica de negocio y consultas complejas.
--   Models: representan las entidades y relaciones de la base de datos.
+El panel de administración comparte la misma lógica de negocio mediante
+los Services, utilizando vistas Blade para la interfaz web.
 
-Licencia
+Estructura del proyecto
 
-Proyecto desarrollado con fines académicos.
+    app/
+     ├── Http/
+     │   ├── Controllers/
+     │   └── Requests/
+     ├── Models/
+     └── Services/
+
+    resources/
+     ├── views/
+     └── css/
+
+    routes/
+     ├── web.php
+     └── api.php
+
+Autores
+
+Reinert Lucas Iván y Britez Medina Iván
+
+Proyecto desarrollado con fines académicos como sistema integral de
+gestión con panel web y aplicación móvil.
