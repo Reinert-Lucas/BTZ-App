@@ -25,10 +25,12 @@ class AvisoResource extends JsonResource
             'estado' => $this->estado,
             'urgencia' => $this->urgencia,
             'operario' => [
+                'id' => $this->usuario->usuario_id,
                 'nombre' => $this->usuario->nombre,
                 'telefono' => $this->usuario->telefono
             ],
             'cliente' => [
+                'id' => $this->cliente->cliente_id,
                 'nombre' => $this->cliente->nombre,
                 'asegurado' => $this->cliente->asegurado,
                 'asegurado_detalle' => $this->cliente->asegurado_detalle,
