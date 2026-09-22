@@ -2,10 +2,18 @@
 
 @section('content')
     <section class="cards-section">
-        <a class="admin-card" href={{ route('admin.usuarios.index') }}>Gestion de Usuarios</a>
-        <a class="admin-card" href={{ route('admin.avisos.index') }}>Gestion de Aviso</a>
-        <a class="admin-card" href={{ route('admin.materiales.index') }}>Gestion de Materiales</a>
-        <a class="admin-card" href={{ route('admin.clientes.index') }}>Gestion de Clientes</a>
+        <article class="admin-card" data-route="{{ route('admin.usuarios.index') }}">
+            <img src="{{ asset('imgs/tarjeta_usuarios.png') }}" alt="Gestion de Usuarios" class="admin-card-img">
+        </article>
+        <article class="admin-card" data-route="{{ route('admin.avisos.index') }}">
+            <img src="{{ asset('imgs/tarjeta_avisos.png') }}" alt="Gestion de Avisos" class="admin-card-img">
+        </article>
+        <article class="admin-card" data-route="{{ route('admin.materiales.index') }}">
+            <img src="{{ asset('imgs/tarjeta_materiales.png') }}" alt="Gestion de Materiales" class="admin-card-img">
+        </article>
+        <article class="admin-card" data-route="{{ route('admin.clientes.index') }}">
+            <img src="{{ asset('imgs/tarjeta_clientes.png') }}" alt="Gestion de Clientes" class="admin-card-img">
+        </article>
     </section>
     <section class="stats-section">
         @foreach ($metricas as $metrica)
@@ -60,3 +68,18 @@
         @endforeach
     </section>
 @endsection
+
+@section('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.admin-card');
+            cards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const route = this.getAttribute('data-route');
+                    if (route) {
+                        window.location.href = route;
+                    }
+                });
+            });
+        });
+    </script>
