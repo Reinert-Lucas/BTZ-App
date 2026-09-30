@@ -3,44 +3,124 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".AdminActivity">
+    android:layout_height="match_parent">
 
+    <!-- Barra superior -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/barraSuperiorAdministrador"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/fondo_barra_administrador"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textViewTituloAdministrador"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Administrador"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="20dp" />
+
+        <ImageButton
+            android:id="@+id/buttonMenuAdministrador"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="Menú"
+            android:src="@android:drawable/ic_menu_more"
+            android:tint="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <!-- Título de avisos -->
     <TextView
-        android:id="@+id/tvAdmin"
+        android:id="@+id/textViewTituloAvisosRecientes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ADMINISTRADOR"
-        android:textSize="30sp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:text="Avisos recientes"
+        android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/btnGestionClientes"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/barraSuperiorAdministrador" />
 
-    <Button
-        android:id="@+id/btnGestionClientes"
+
+    <!-- Lista de avisos -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewAvisosAdministrador"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@id/barraInferiorAdministrador"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewTituloAvisosRecientes" />
+
+
+    <!-- ProgressBar -->
+    <ProgressBar
+        android:id="@+id/progressBarCargaAvisosAdministrador"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Gestión de Clientes"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/recyclerViewAvisosAdministrador"
+        app:layout_constraintEnd_toEndOf="@id/recyclerViewAvisosAdministrador"
+        app:layout_constraintStart_toStartOf="@id/recyclerViewAvisosAdministrador"
+        app:layout_constraintTop_toTopOf="@id/recyclerViewAvisosAdministrador" />
 
-    <Button
-        android:id="@+id/btnGestionUsuarios"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Gestión de Usuarios"
+
+    <!-- Barra inferior -->
+    <LinearLayout
+        android:id="@+id/barraInferiorAdministrador"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        android:orientation="horizontal"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.578" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/buttonAvisosPendientesAdministrador"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Pendientes" />
+
+        <Button
+            android:id="@+id/buttonAvisosFinalizadosAdministrador"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Finalizados" />
+
+        <Button
+            android:id="@+id/buttonBuscarAvisosAdministrador"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Buscar" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

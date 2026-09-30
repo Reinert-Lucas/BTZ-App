@@ -1,5 +1,8 @@
 package com.ivanbm.frontend_btz.network
 
+import com.ivanbm.frontend_btz.model.AvisoRequest
+import com.ivanbm.frontend_btz.model.AvisoResponse
+import com.ivanbm.frontend_btz.model.AvisosResponse
 import com.ivanbm.frontend_btz.model.ClienteRequest
 import com.ivanbm.frontend_btz.model.ClienteResponse
 import com.ivanbm.frontend_btz.model.ClientesResponse
@@ -92,6 +95,39 @@ interface ApiService {
     // Eliminar usuario
     @DELETE("usuarios/{id}")
     fun eliminarUsuario(
+        @Path("id") id: Int
+    ): Call<Void>
+
+    // AVISOS -----------------------------------------------------------------------------------
+
+    // Obtener avisos
+    @GET("avisos")
+    fun obtenerAvisos(
+        @Query("page") pagina: Int
+    ): Call<AvisosResponse>
+
+    // Obtener un aviso
+    @GET("avisos/{id}")
+    fun obtenerAviso(
+        @Path("id") id: Int
+    ): Call<AvisoResponse>
+
+    // Crear aviso
+    @POST("avisos")
+    fun crearAviso(
+        @Body request: AvisoRequest
+    ): Call<AvisoResponse>
+
+    // Actualizar aviso
+    @PUT("avisos/{id}")
+    fun actualizarAviso(
+        @Path("id") id: Int,
+        @Body request: AvisoRequest
+    ): Call<AvisoResponse>
+
+    // Eliminar aviso
+    @DELETE("avisos/{id}")
+    fun eliminarAviso(
         @Path("id") id: Int
     ): Call<Void>
 }
