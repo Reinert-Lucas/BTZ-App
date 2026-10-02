@@ -8,6 +8,9 @@ import com.ivanbm.frontend_btz.model.ClienteResponse
 import com.ivanbm.frontend_btz.model.ClientesResponse
 import com.ivanbm.frontend_btz.model.LoginRequest
 import com.ivanbm.frontend_btz.model.LoginResponse
+import com.ivanbm.frontend_btz.model.MaterialRequest
+import com.ivanbm.frontend_btz.model.MaterialResponse
+import com.ivanbm.frontend_btz.model.MaterialesResponse
 import com.ivanbm.frontend_btz.model.UsuarioRequest
 import com.ivanbm.frontend_btz.model.UsuarioResponse
 import com.ivanbm.frontend_btz.model.UsuariosResponse
@@ -128,6 +131,34 @@ interface ApiService {
     // Eliminar aviso
     @DELETE("avisos/{id}")
     fun eliminarAviso(
+        @Path("id") id: Int
+    ): Call<Void>
+
+    // MATERIALES --------------------------------------------------------------------------------
+
+    @GET("materiales")
+    fun obtenerMateriales(
+        @Query("page") pagina: Int
+    ): Call<MaterialesResponse>
+
+    @GET("materiales/{id}")
+    fun obtenerMaterial(
+        @Path("id") id: Int
+    ): Call<MaterialResponse>
+
+    @POST("materiales")
+    fun crearMaterial(
+        @Body request: MaterialRequest
+    ): Call<MaterialResponse>
+
+    @PUT("materiales/{id}")
+    fun actualizarMaterial(
+        @Path("id") id: Int,
+        @Body request: MaterialRequest
+    ): Call<MaterialResponse>
+
+    @DELETE("materiales/{id}")
+    fun eliminarMaterial(
         @Path("id") id: Int
     ): Call<Void>
 }

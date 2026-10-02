@@ -11,6 +11,15 @@
         android:theme="@style/Theme.Frontendbtz"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".EditarMaterialActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CrearMaterialActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MaterialActivity"
+            android:exported="false" />
+        <activity
             android:name=".EditarAvisoActivity"
             android:exported="false" />
         <activity

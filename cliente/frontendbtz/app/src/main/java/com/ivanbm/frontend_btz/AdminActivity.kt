@@ -15,6 +15,7 @@ import com.ivanbm.frontend_btz.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.jvm.java
 
 class AdminActivity : AppCompatActivity() {
 
@@ -223,7 +224,7 @@ class AdminActivity : AppCompatActivity() {
                     true
                 }
 
-                "Añadir cliente" -> {
+                "Gestionar clientes" -> {
 
                     startActivity(
                         Intent(
@@ -244,6 +245,16 @@ class AdminActivity : AppCompatActivity() {
                         )
                     )
 
+                    true
+                }
+
+                "Gestionar herramientas y materiales" -> {
+                    startActivity(
+                        Intent(
+                            this,
+                            MaterialActivity::class.java
+                        )
+                    )
                     true
                 }
 
