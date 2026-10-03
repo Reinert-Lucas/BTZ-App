@@ -11,6 +11,9 @@
         android:theme="@style/Theme.Frontendbtz"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".TrabajoActivity"
+            android:exported="false" />
+        <activity
             android:name=".EditarMaterialActivity"
             android:exported="false" />
         <activity
