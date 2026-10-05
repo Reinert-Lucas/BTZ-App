@@ -11,7 +11,8 @@ import com.ivanbm.frontend_btz.R
 import com.ivanbm.frontend_btz.model.Aviso
 
 class AvisoAdapter(
-    private var avisos: List<Aviso>
+    private var avisos: List<Aviso>,
+    private val onAvisoClick: ((Aviso) -> Unit)? = null
 ) : RecyclerView.Adapter<AvisoAdapter.AvisoViewHolder>() {
 
     class AvisoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -61,14 +62,21 @@ class AvisoAdapter(
 
         holder.itemView.setOnClickListener {
 
-            val intent = Intent(
-                holder.itemView.context,
-                EditarAvisoActivity::class.java
-            )
+            if (onAvisoClick != null) {
 
-            intent.putExtra("AVISO_ID", aviso.id)
+                onAvisoClick.invoke(aviso)
 
-            holder.itemView.context.startActivity(intent)
+            } else {
+
+                val intent = Intent(
+                    holder.itemView.context,
+                    EditarAvisoActivity::class.java
+                )
+
+                intent.putExtra("AVISO_ID", aviso.id)
+
+                holder.itemView.context.startActivity(intent)
+            }
         }
     }
 

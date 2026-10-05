@@ -11,6 +11,9 @@ import com.ivanbm.frontend_btz.model.LoginResponse
 import com.ivanbm.frontend_btz.model.MaterialRequest
 import com.ivanbm.frontend_btz.model.MaterialResponse
 import com.ivanbm.frontend_btz.model.MaterialesResponse
+import com.ivanbm.frontend_btz.model.TrabajoRequest
+import com.ivanbm.frontend_btz.model.TrabajoResponse
+import com.ivanbm.frontend_btz.model.TrabajosResponse
 import com.ivanbm.frontend_btz.model.UsuarioRequest
 import com.ivanbm.frontend_btz.model.UsuarioResponse
 import com.ivanbm.frontend_btz.model.UsuariosResponse
@@ -161,4 +164,17 @@ interface ApiService {
     fun eliminarMaterial(
         @Path("id") id: Int
     ): Call<Void>
+
+    // TRABAJOS --------------------------------------------------------------------------------
+
+    // Obtener trabajos asignados al operario
+    @GET("trabajos")
+    fun obtenerTrabajosAsignados(
+        @Query("page") pagina: Int
+    ): Call<TrabajosResponse>
+    // Crear Trabajo
+    @POST("trabajos")
+    fun crearTrabajo(
+        @Body request: TrabajoRequest
+    ): Call<TrabajoResponse>
 }
