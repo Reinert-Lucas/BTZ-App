@@ -61,4 +61,14 @@ dependencies {
 
     //Icon
     implementation("androidx.core:core-splashscreen:1.0.1")
+
+    // Firebase
+    implementation("com.google.firebase:firebase-messaging")
+}
+
+// Firebase
+plugins {
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("com.google.gms.google-services")
 }

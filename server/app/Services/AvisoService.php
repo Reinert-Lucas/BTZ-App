@@ -10,6 +10,9 @@ use Illuminate\Http\Request;
 
 class AvisoService
 {
+    public function __construct(
+        protected FirebaseNotificationService $firebaseNotificationService
+    ) {}
     public function getFields(bool $isUpdate)
     {
         $inputs = [
@@ -113,7 +116,23 @@ class AvisoService
     public function create(array $avisoValidado)
     {
         $avisoValidado['estado'] = 'pendiente';
-        return Aviso::create($avisoValidado);
+        $aviso = Aviso::create($avisoValidado);
+
+        $usuario = $aviso->usuario;
+
+        if ($usuario && $usuario->fcm_token) {
+
+            $this->firebaseNotificationService->sendToToken(
+                $usuario->fcm_token,
+                'Nuevo aviso',
+                'Se te ha asignado un nuevo aviso',
+                [
+                    'aviso_id' => (string) $aviso->aviso_id,
+                ]
+            );
+        }
+
+        return $aviso;
     }
     public function update(array $newAviso, Aviso $aviso)
     {
