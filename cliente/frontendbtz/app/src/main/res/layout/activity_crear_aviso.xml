@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/textViewTituloCrearAviso"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CREAR AVISO"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/editTextFechaAviso"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:hint="Fecha"
+            android:inputType="date"
+            android:focusable="false"
+            android:clickable="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewTituloCrearAviso" />
+
+        <EditText
+            android:id="@+id/editTextHoraAviso"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Hora"
+            android:inputType="time"
+            android:focusable="false"
+            android:clickable="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/editTextFechaAviso" />
+
+        <EditText
+            android:id="@+id/editTextDireccionAviso"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Dirección"
+            android:inputType="text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/editTextHoraAviso" />
+
+        <EditText
+            android:id="@+id/editTextTelefonoAviso"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Teléfono"
+            android:inputType="phone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/editTextDireccionAviso" />
+
+        <EditText
+            android:id="@+id/editTextMensajeAviso"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Mensaje"
+            android:gravity="top"
+            android:minLines="3"
+            android:inputType="textMultiLine"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/editTextTelefonoAviso" />
+
+        <EditText
+            android:id="@+id/editTextObservacionAviso"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Observación"
+            android:gravity="top"
+            android:minLines="3"
+            android:inputType="textMultiLine"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/editTextMensajeAviso" />
+
+        <Spinner
+            android:id="@+id/spinnerUrgenciaAviso"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/editTextObservacionAviso" />
+
+        <TextView
+            android:id="@+id/textViewClienteAviso"
+            android:layout_width="312dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="20dp"
+            android:text="Cliente"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spinnerUrgenciaAviso" />
+
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteClienteAviso"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:completionThreshold="1"
+            android:hint="Buscar cliente"
+            android:inputType="text"
+            app:layout_constraintEnd_toStartOf="@+id/buttonAnadirClienteAviso"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewClienteAviso" />
+
+        <Button
+            android:id="@+id/buttonAnadirClienteAviso"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Crear"
+            app:layout_constraintBottom_toBottomOf="@+id/autoCompleteClienteAviso"
+            app:layout_constraintEnd_toEndOf="parent"
+
+            app:layout_constraintTop_toTopOf="@id/autoCompleteClienteAviso"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <TextView
+            android:id="@+id/textViewOperarioAviso"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Operario asignado"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/autoCompleteClienteAviso" />
+
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteOperarioAviso"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:completionThreshold="1"
+            android:hint="Buscar operario"
+            android:inputType="text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewOperarioAviso" />
+
+        <Button
+            android:id="@+id/buttonGuardarAviso"
+            android:layout_width="183dp"
+            android:layout_height="64dp"
+            android:layout_marginTop="24dp"
+            android:text="GUARDAR AVISO"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/autoCompleteOperarioAviso" />
+
+        <ProgressBar
+            android:id="@+id/progressBarGuardarAviso"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@id/buttonGuardarAviso"
+            app:layout_constraintStart_toStartOf="@id/buttonGuardarAviso"
+            app:layout_constraintTop_toBottomOf="@id/buttonGuardarAviso" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
+
