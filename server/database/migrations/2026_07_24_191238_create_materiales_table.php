@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('materiales', function (Blueprint $table) {
             $table->id('material_id');
-            $table->string('nombre', 50);
+            $table->string('nombre', 50)->unique();
             $table->string('detalle', 100)->nullable();
             $table->softDeletes('deleted_at', 0);
             $table->timestamps();
