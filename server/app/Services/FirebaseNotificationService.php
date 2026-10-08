@@ -3,22 +3,13 @@
 namespace App\Services;
 
 use Kreait\Firebase\Factory;
+use Kreait\Firebase\Messaging\AndroidConfig;
 use Kreait\Firebase\Messaging\CloudMessage;
-use Kreait\Firebase\Messaging\Notification;
+use RuntimeException;
 
 class FirebaseNotificationService
 {
     protected $messaging;
-
-    public function __construct()
-    {
-        $factory = (new Factory)
-            ->withServiceAccount(
-                config('services.firebase.credentials')
-            );
-
-        $this->messaging = $factory->createMessaging();
-    }
 
     public function sendToToken(
         string $token,
@@ -26,14 +17,25 @@ class FirebaseNotificationService
         string $body,
         array $data = []
     ) {
-        $notification = Notification::create(
-            $title,
-            $body
-        );
+        if (!$this->messaging) {
+            $credentials = config('services.firebase.credentials');
+            if (!$credentials) {
+                throw new RuntimeException('FIREBASE_CREDENTIALS no está configurado.');
+            }
+
+            $this->messaging = (new Factory)
+                ->withServiceAccount($credentials)
+                ->createMessaging();
+        }
 
         $message = CloudMessage::withTarget('token', $token)
-            ->withNotification($notification)
-            ->withData($data);
+            ->withAndroidConfig(AndroidConfig::fromArray([
+                'priority' => 'high',
+            ]))
+            ->withData(array_merge($data, [
+                'title' => $title,
+                'body' => $body,
+            ]));
 
         return $this->messaging->send($message);
     }

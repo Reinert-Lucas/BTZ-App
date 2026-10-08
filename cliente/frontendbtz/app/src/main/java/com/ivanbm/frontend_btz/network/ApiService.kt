@@ -8,6 +8,7 @@ import com.ivanbm.frontend_btz.model.LoginResponse
 import com.ivanbm.frontend_btz.model.UsuarioRequest
 import com.ivanbm.frontend_btz.model.UsuarioResponse
 import com.ivanbm.frontend_btz.model.UsuariosResponse
+import com.ivanbm.frontend_btz.model.FcmTokenRequest
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -24,6 +25,11 @@ interface ApiService {
     fun login(
         @Body request: LoginRequest
     ): Call<LoginResponse>
+
+    @POST("fcm-token")
+    fun guardarTokenFcm(
+        @Body request: FcmTokenRequest
+    ): Call<Void>
 
 
     // CLIENTES ------------------------------------------------------------------------------

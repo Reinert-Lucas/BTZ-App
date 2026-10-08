@@ -66,9 +66,9 @@ class UsuarioController extends Controller
         /** @var Usuario $usuario */
         $usuario = Auth::user();
 
-        $usuario->update([
-            'fcm_token' => $request->token,
-        ]);
+        $usuario->forceFill([
+            'fcm_token' => $request->string('token')->toString(),
+        ])->save();
 
         return response()->json([
             'status' => true,

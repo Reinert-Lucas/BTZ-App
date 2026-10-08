@@ -7,12 +7,14 @@ use App\Models\Aviso;
 use App\Models\Cliente;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
+use Throwable;
 
 class AvisoService
 {
     public function __construct(
         protected FirebaseNotificationService $firebaseNotificationService
-    ) {}
+    ) {
+    }
     public function getFields(bool $isUpdate)
     {
         $inputs = [
@@ -121,15 +123,18 @@ class AvisoService
         $usuario = $aviso->usuario;
 
         if ($usuario && $usuario->fcm_token) {
-
-            $this->firebaseNotificationService->sendToToken(
-                $usuario->fcm_token,
-                'Nuevo aviso',
-                'Se te ha asignado un nuevo aviso',
-                [
-                    'aviso_id' => (string) $aviso->aviso_id,
-                ]
-            );
+            try {
+                $this->firebaseNotificationService->sendToToken(
+                    $usuario->fcm_token,
+                    'Nuevo aviso',
+                    'Se te ha asignado un nuevo aviso',
+                    [
+                        'aviso_id' => (string) $aviso->aviso_id,
+                    ]
+                );
+            } catch (Throwable $exception) {
+                report($exception);
+            }
         }
 
         return $aviso;

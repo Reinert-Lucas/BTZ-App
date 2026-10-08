@@ -1,7 +1,10 @@
 package com.ivanbm.frontend_btz
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -9,16 +12,25 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.ivanbm.frontend_btz.model.LoginRequest
 import com.ivanbm.frontend_btz.model.LoginResponse
 import com.ivanbm.frontend_btz.network.RetrofitClient
 import com.ivanbm.frontend_btz.network.SessionManager
+import com.ivanbm.frontend_btz.notifications.FcmTokenRegistrar
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
+
+    private val notificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) {
+        FcmTokenRegistrar.registrar(applicationContext)
+    }
 
     private lateinit var etUsuario: EditText
     private lateinit var etPassword: EditText
@@ -97,6 +109,10 @@ class LoginActivity : AppCompatActivity() {
                             SessionManager.guardarToken(token)
                         }
 
+                        if (usuarioLogueado?.rol.equals("operario", ignoreCase = true)) {
+                            registrarNotificaciones()
+                        }
+
                         Toast.makeText(
                             this@LoginActivity,
                             "Bienvenido ${usuarioLogueado?.nombre}",
@@ -135,6 +151,19 @@ class LoginActivity : AppCompatActivity() {
                 println("ERROR DE CONEXIÓN: ${t.message}")
             }
         })
+    }
+
+    private fun registrarNotificaciones() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            FcmTokenRegistrar.registrar(applicationContext)
+        }
     }
 
     private fun mostrarError() {
