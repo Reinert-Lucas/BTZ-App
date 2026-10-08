@@ -30,8 +30,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/avisos', [AvisoController::class, 'store'])->name('aviso.store');
         Route::put('/avisos/{aviso}', [AvisoController::class, 'update'])->name('aviso.update');
         Route::delete('/avisos/{aviso}', [AvisoController::class, 'delete'])->name('aviso.delete');
-        // Ver trabajos finalizados c/materiales usados
-        Route::get('/trabajos/finalizados/{usuario_id?}', [TrabajoController::class, 'indexFinalizado'])->name('trabajo.indexFinalizado');
         // ABM Clientes
         Route::get('/clientes', [ClienteController::class, 'index'])->name('cliente.index');
         Route::get('/clientes/{cliente}', [ClienteController::class, 'show'])->name('cliente.show');
@@ -46,9 +44,11 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     // Publica para poder seleccionar materiales
     Route::get('/materiales', [MaterialController::class, 'index'])->name('material.index');
+    // Ver trabajos finalizados c/materiales usados
+    Route::get('/trabajos/finalizados/{usuario_id?}', [TrabajoController::class, 'indexFinalizado'])->name('trabajo.indexFinalizado');
     // Rutas de operarios
-    // Traer trabajos asignados a un operario
-    Route::get('/trabajos', [TrabajoController::class, 'index'])->name('trabajo.index');
-    // Cargar datos del trabajo 
-    Route::post('/trabajos', [TrabajoController::class, 'store'])->name('trabajo.store');
+        // Traer trabajos asignados a un operario
+        Route::get('/trabajos', [TrabajoController::class, 'index'])->name('trabajo.index');
+        // Cargar datos del trabajo 
+        Route::post('/trabajos', [TrabajoController::class, 'store'])->name('trabajo.store');
 });

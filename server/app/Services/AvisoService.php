@@ -66,6 +66,7 @@ class AvisoService
                 'options' => Usuario::where('rol', 'operario')->pluck('nombre', 'usuario_id')
             ]
         ];
+
         if ($isUpdate) {
             $inputs[] = [
                 'label' => 'Estado',
@@ -78,48 +79,69 @@ class AvisoService
                 ]
             ];
         }
+
         return $inputs;
     }
+
     public function index(Request $request)
     {
-        // Devolver datos filtrados, paginados y ordenados del mas reciente al mas antiguo
-        return Aviso::query()
-            ->when($request->aviso_id, function ($query, $aviso_id) {
-                $query->where('aviso_id', $aviso_id);
-            })
-            ->when($request->fecha, function ($query, $fecha) {
-                $query->where('fecha', $fecha);
-            })
-            ->when($request->hora, function ($query, $hora) {
-                $query->where('hora', $hora);
-            })
-            ->when($request->direccion, function ($query, $direccion) {
-                $query->where('direccion', 'like', "%{$direccion}%");
-            })
-            ->when($request->telefono, function ($query, $telefono) {
-                $query->where('telefono', $telefono);
-            })
-            ->when($request->estado, function ($query, $estado) {
-                $query->where('estado', $estado);
-            })
-            ->orderBy('created_at', 'desc')
-            ->paginate(10)
-            ->withQueryString();
+        return $this->ordenarAvisos(
+            Aviso::query()
+                ->when($request->aviso_id, function ($query, $aviso_id) {
+                    $query->where('aviso_id', $aviso_id);
+                })
+                ->when($request->fecha, function ($query, $fecha) {
+                    $query->where('fecha', $fecha);
+                })
+                ->when($request->hora, function ($query, $hora) {
+                    $query->where('hora', $hora);
+                })
+                ->when($request->direccion, function ($query, $direccion) {
+                    $query->where('direccion', 'like', "%{$direccion}%");
+                })
+                ->when($request->telefono, function ($query, $telefono) {
+                    $query->where('telefono', $telefono);
+                })
+                ->when($request->estado, function ($query, $estado) {
+                    $query->where('estado', $estado);
+                })
+        )
+        ->paginate(10)
+        ->withQueryString();
     }
+
+    private function ordenarAvisos($query)
+    {
+        return $query
+            ->orderBy('fecha')
+            ->orderBy('hora')
+            ->orderByRaw("
+                CASE urgencia
+                    WHEN 'urgente' THEN 1
+                    WHEN 'media' THEN 2
+                    WHEN 'baja' THEN 3
+                    ELSE 4
+                END
+            ");
+    }
+
     public function show(int $aviso)
     {
         return Aviso::findOrFail($aviso);
     }
+
     public function create(array $avisoValidado)
     {
         $avisoValidado['estado'] = 'pendiente';
         return Aviso::create($avisoValidado);
     }
+
     public function update(array $newAviso, Aviso $aviso)
     {
         $aviso->update($newAviso);
         return $aviso->fresh();
     }
+
     public function delete(int $aviso)
     {
         return Aviso::findOrFail($aviso)->delete();
