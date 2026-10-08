@@ -16,6 +16,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Rutas que solo pueden acceder los usuarios autenticados
     Route::get('/me', [AuthController::class, 'me'])->name('me');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::post('/fcm-token', [UsuarioController::class, 'saveFcmToken'])->name('usuario.saveFcmToken');
     // Rutas que solo pueden acceder los usuarios con rol admin
     Route::middleware('isAdmin')->group(function () {
         // ABM Usuarios (Operarios)

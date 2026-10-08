@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->string('dni', 8)->unique()->nullable(false);
             $table->string('telefono', 20);
             $table->enum('rol', ['admin', 'operario']);
+            $table->string('fcm_token')->nullable(true);
             $table->softDeletes('deleted_at', 0);
             $table->timestamps();
         });
