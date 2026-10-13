@@ -1,6 +1,6 @@
 <?php
 
-/* use App\Models\Usuario;
+use App\Models\Usuario;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 
@@ -19,4 +19,4 @@ test('an authenticated user can save their FCM token', function () {
         'usuario_id' => $usuario->usuario_id,
         'fcm_token' => 'test-fcm-token',
     ]);
-}); */
+});
