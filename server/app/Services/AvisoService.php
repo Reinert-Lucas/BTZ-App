@@ -111,8 +111,8 @@ class AvisoService
                     $query->where('estado', $estado);
                 })
         )
-        ->paginate(10)
-        ->withQueryString();
+            ->paginate(10)
+            ->withQueryString();
     }
 
     private function ordenarAvisos($query)
@@ -146,8 +146,8 @@ class AvisoService
             try {
                 $this->firebaseNotificationService->sendToToken(
                     $usuario->fcm_token,
-                    'Nuevo aviso',
-                    'Se te ha asignado un nuevo aviso',
+                    '✅ Nuevo Aviso Asignado',
+                    'Se te ha asignado un nuevo aviso. Toca para ver los detalles.',
                     [
                         'aviso_id' => (string) $aviso->aviso_id,
                     ]
@@ -166,7 +166,7 @@ class AvisoService
         return $aviso->fresh();
     }
 
-    public function delete(int $aviso)
+    public function destroy(int $aviso)
     {
         return Aviso::findOrFail($aviso)->delete();
     }

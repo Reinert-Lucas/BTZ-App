@@ -152,7 +152,7 @@ class WebClienteController extends Controller
     }
     public function destroy(int $cliente)
     {
-        $this->service->delete($cliente);
+        $this->service->destroy($cliente);
         return redirect()->route('admin.clientes.index')->with([
             'status' => true,
             'message' => 'Cliente eliminado con exito'

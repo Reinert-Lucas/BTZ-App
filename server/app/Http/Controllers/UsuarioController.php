@@ -49,9 +49,9 @@ class UsuarioController extends Controller
             'message' => 'Usuario actualizado con exito'
         ]);
     }
-    public function delete(int $usuario)
+    public function destroy(int $usuario)
     {
-        $this->service->delete($usuario);
+        $this->service->destroy($usuario);
         return response()->json([
             'status' => true,
             'message' => 'Usuario eliminado con exito'

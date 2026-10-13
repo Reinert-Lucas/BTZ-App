@@ -143,7 +143,7 @@ class WebAvisoController extends Controller
     }
     public function destroy(int $aviso)
     {
-        $this->service->delete($aviso);
+        $this->service->destroy($aviso);
         return redirect()->route('admin.avisos.index')->with([
             'status' => true,
             'message' => 'Aviso eliminado con exito'

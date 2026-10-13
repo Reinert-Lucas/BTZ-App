@@ -103,7 +103,7 @@ class WebMaterialController extends Controller
     }
     public function destroy(int $material)
     {
-        $this->service->delete($material);
+        $this->service->destroy($material);
         return redirect()->route('admin.materiales.index')->with([
             'status' => true,
             'message' => 'Material eliminado con exito'

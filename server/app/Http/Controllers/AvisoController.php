@@ -48,9 +48,9 @@ class AvisoController extends Controller
             'message' => 'Aviso actualizado con exito'
         ]);
     }
-    public function delete(int $aviso)
+    public function destroy(int $aviso)
     {
-        $this->service->delete($aviso);
+        $this->service->destroy($aviso);
         return response()->json([
             'status' => true,
             'message' => 'Aviso eliminado con exito'

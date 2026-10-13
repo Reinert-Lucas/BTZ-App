@@ -168,7 +168,7 @@ class WebUsuarioController extends Controller
     }
     public function destroy(int $usuario)
     {
-        $this->service->delete($usuario);
+        $this->service->destroy($usuario);
         return redirect()->route('admin.usuarios.index')->with([
             'status' => true,
             'message' => 'Usuario eliminado con exito'
