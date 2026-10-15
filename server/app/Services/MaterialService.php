@@ -15,6 +15,7 @@ class MaterialService
             ->when($request->nombre, function ($query, $nombre) {
                 $query->where('nombre', 'like', "%{$nombre}%");
             })
+            ->orderBy('material_id', 'desc')
             ->paginate(10)
             ->withQueryString();
     }
@@ -31,7 +32,7 @@ class MaterialService
         $material->update($newMaterial);
         return $material->fresh();
     }
-    public function delete(int $material)
+    public function destroy(int $material)
     {
         return Material::findOrFail($material)->delete();
     }

@@ -24,6 +24,7 @@ class ClienteService
             ->when($request->asegurado_detalle, function ($query, $asegurado_detalle) {
                 $query->where('asegurado', $asegurado_detalle);
             })
+            ->orderBy('cliente_id', 'desc')
             ->paginate(10)
             ->withQueryString();
     }
@@ -40,7 +41,7 @@ class ClienteService
         $cliente->update($newCliente);
         return $cliente->fresh();
     }
-    public function delete(int $cliente)
+    public function destroy(int $cliente)
     {
         return Cliente::findOrFail($cliente)->delete();
     }

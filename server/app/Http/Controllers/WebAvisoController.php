@@ -113,6 +113,14 @@ class WebAvisoController extends Controller
             'trabajo' => $trabajo,
         ]);
     }
+    public function pdf(int $aviso)
+    {
+        $trabajo = Trabajo::with('materiales', 'aviso.usuario', 'aviso.cliente')->where('aviso_id', $aviso)->firstOrFail();
+
+        return view('admin.trabajo-pdf', [
+            'trabajo' => $trabajo,
+        ]);
+    }
     public function create()
     {
         return view('admin.avisos.create', ['inputs' => $this->service->getFields(isUpdate: false)]);
@@ -143,7 +151,7 @@ class WebAvisoController extends Controller
     }
     public function destroy(int $aviso)
     {
-        $this->service->delete($aviso);
+        $this->service->destroy($aviso);
         return redirect()->route('admin.avisos.index')->with([
             'status' => true,
             'message' => 'Aviso eliminado con exito'

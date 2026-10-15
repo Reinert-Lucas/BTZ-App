@@ -7,7 +7,7 @@ Tecnologías utilizadas
 
   Backend            Frontend Web          App Móvil          Base de Datos
   ------------------ --------------------- ------------------ ---------------
-  Laravel 12 (PHP)   Blade + Bootstrap 5   Kotlin (Android)   MySQL
+  Laravel 12 (PHP)   Blade + Bootstrap 5   Kotlin (Android)   MySQL + Firebase FCM
 
 Otras tecnologías: Sanctum · Vite · MVC · Service Layer
 

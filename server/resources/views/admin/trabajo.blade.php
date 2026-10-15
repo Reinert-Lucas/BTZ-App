@@ -7,9 +7,15 @@
 
         <div class="page-header">
             <h2>Trabajo N°{{ $trabajo->trabajo_id }}</h2>
-            <a href="{{ url()->previous() }}" class="btn back-btn">
-                ← Volver
-            </a>
+            <div class="d-flex gap-2">
+                <a href="{{ route('admin.trabajos.pdf', $trabajo->aviso_id) }}" type="button" target="_blank" rel="noopener" class="pdf-button">
+                    <img src={{ asset('imgs/pdf.png') }} alt="PDF Icon" id="pdf-icon">
+                    Descargar PDF
+                </a>
+                <a href="{{ url()->previous() }}" class="btn back-btn">
+                    ← Volver
+                </a>
+            </div>
         </div>
 
         <div class="detail-card info-grid">
