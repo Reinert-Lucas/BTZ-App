@@ -8,7 +8,8 @@
         <div class="page-header">
             <h2>Trabajo N°{{ $trabajo->trabajo_id }}</h2>
             <div class="d-flex gap-2">
-                <a href="{{ route('admin.trabajos.pdf', $trabajo->aviso_id) }}" class="btn btn-primary" target="_blank" rel="noopener">
+                <a href="{{ route('admin.trabajos.pdf', $trabajo->aviso_id) }}" type="button" target="_blank" rel="noopener" class="pdf-button">
+                    <img src={{ asset('imgs/pdf.png') }} alt="PDF Icon" id="pdf-icon">
                     Descargar PDF
                 </a>
                 <a href="{{ url()->previous() }}" class="btn back-btn">

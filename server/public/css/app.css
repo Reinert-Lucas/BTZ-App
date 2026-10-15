@@ -257,3 +257,18 @@
     background-color: var(--primary-hover);
     color: #FFF;
 }
+
+#pdf-icon {
+    width: 1.2em;
+    height: 1.2em;
+}
+.pdf-button {
+    background-color: var(--bg-gray);
+    border-radius: 8px;
+    padding: 8px;
+    text-decoration: none;
+    color: var(--text-gray);
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
