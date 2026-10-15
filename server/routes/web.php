@@ -39,5 +39,6 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
         Route::put('/{material}', [WebMaterialController::class, 'update'])->name('materiales.update');
         Route::delete('/{material}', [WebMaterialController::class, 'destroy'])->name('materiales.destroy');
     });
+    Route::get('/trabajos/{aviso}/pdf', [WebAvisoController::class, 'pdf'])->name('trabajos.pdf');
     Route::get('/trabajos/{aviso}', [WebAvisoController::class, 'show'])->name('trabajos.show');
 });
