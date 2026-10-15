@@ -8,10 +8,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Barra superior -->
-
-
-    <!-- Título de avisos -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/barraSuperiorAdministrador"
         android:layout_width="0dp"
@@ -65,23 +61,18 @@
         app:layout_constraintTop_toBottomOf="@id/barraSuperiorAdministrador" />
 
 
-    <!-- Lista de avisos -->
-
-
-    <!-- ProgressBar -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewAvisosAdministrador"
-        android:layout_width="384dp"
-        android:layout_height="651dp"
+        android:layout_width="399dp"
+        android:layout_height="501dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toTopOf="@id/barraInferiorAdministrador"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewTituloAvisosRecientes"
+        app:layout_constraintTop_toBottomOf="@+id/textViewTituloAvisosRecientes"
         app:layout_constraintVertical_bias="0.418" />
 
     <ProgressBar

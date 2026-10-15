@@ -178,6 +178,14 @@ interface ApiService {
     fun obtenerTrabajosAsignados(
         @Query("page") pagina: Int
     ): Call<TrabajosResponse>
+
+    // Obtener trabajos finalizados de un operario
+    @GET("trabajos/finalizados/{usuario_id}")
+    fun obtenerTrabajosFinalizados(
+        @Path("usuario_id") usuarioId: Int,
+        @Query("page") pagina: Int
+    ): Call<TrabajosResponse>
+
     // Crear Trabajo
     @POST("trabajos")
     fun crearTrabajo(

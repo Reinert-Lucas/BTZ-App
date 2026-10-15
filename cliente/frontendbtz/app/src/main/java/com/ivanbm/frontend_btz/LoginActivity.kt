@@ -105,8 +105,16 @@ class LoginActivity : AppCompatActivity() {
                         // Login correcto
                         val usuarioLogueado = loginResponse.user
                         val token = loginResponse.token?.plainTextToken
+
                         if (!token.isNullOrEmpty()) {
                             SessionManager.guardarToken(token)
+                        }
+
+                        if (usuarioLogueado != null) {
+                            SessionManager.guardarUsuario(
+                                id = usuarioLogueado.id,
+                                rol = usuarioLogueado.rol
+                            )
                         }
 
                         if (usuarioLogueado?.rol.equals("operario", ignoreCase = true)) {
