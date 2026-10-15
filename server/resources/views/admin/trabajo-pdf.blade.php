@@ -18,6 +18,7 @@
             line-height: 1.5;
             margin: 0 auto;
             max-width: 800px;
+            background-color: #F0F0F0;
         }
 
         .toolbar {
@@ -27,7 +28,7 @@
         }
 
         .toolbar button {
-            background: #176b63;
+            background: #2F2483;
             border: 0;
             border-radius: 4px;
             color: #fff;
@@ -37,7 +38,7 @@
         }
 
         header {
-            border-bottom: 3px solid #176b63;
+            border-bottom: 3px solid #4839b8;
             margin-bottom: 24px;
             padding-bottom: 16px;
         }
@@ -49,7 +50,7 @@
 
         .subtitle,
         .muted {
-            color: #64727e;
+            color: #4839b8;
         }
 
         .info-grid {
@@ -77,7 +78,7 @@
 
         h2 {
             border-bottom: 1px solid #d7dfe3;
-            color: #176b63;
+            color: #4839b8;
             font-size: 15px;
             margin: 0 0 10px;
             padding-bottom: 6px;
@@ -132,8 +133,10 @@
 </head>
 
 <body>
+    {{-- Vista PDF de los resultados de un trabajo, abre dialogo de impresion para descargarlo --}}
+
     <div class="toolbar">
-        <button type="button" onclick="window.print()">Guardar como PDF</button>
+        <button type="button" onclick="window.print()">Volver a Descargar</button>
     </div>
 
     <header>
@@ -199,7 +202,9 @@
     <footer>Reporte generado el {{ now()->format('d/m/Y H:i') }}</footer>
 
     <script>
-        window.addEventListener('load', () => window.print());
+        window.addEventListener('load', () => {
+            window.print();
+        });
     </script>
 </body>
 
