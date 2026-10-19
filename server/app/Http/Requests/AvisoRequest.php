@@ -30,7 +30,8 @@ class AvisoRequest extends FormRequest
             'telefono' => ['required', 'max:20'],
             'mensaje' => ['max:255'],
             'observacion' => ['max:255'],
-            'estado' => ['required', Rule::in(['pendiente', 'finalizado', 'cancelado'])],
+            // Estado requerido solo si es una actualización (PUT o PATCH), y debe ser uno de los valores permitidos
+            'estado' => [Rule::requiredIf($this->isMethod('put') || $this->isMethod('patch')), Rule::in(['pendiente', 'finalizado', 'cancelado'])],
             'urgencia' => ['required', Rule::in(['urgente', 'media', 'baja'])],
             'usuario_id' => ['required', 'exists:usuarios,usuario_id'],
             'cliente_id' => ['required', 'exists:clientes,cliente_id'],

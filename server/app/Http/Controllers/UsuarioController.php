@@ -7,6 +7,7 @@ use App\Http\Resources\UsuarioResource;
 use App\Models\Usuario;
 use App\Services\UsuarioService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UsuarioController extends Controller
 {
@@ -48,12 +49,30 @@ class UsuarioController extends Controller
             'message' => 'Usuario actualizado con exito'
         ]);
     }
-    public function delete(int $usuario)
+    public function destroy(int $usuario)
     {
-        $this->service->delete($usuario);
+        $this->service->destroy($usuario);
         return response()->json([
             'status' => true,
             'message' => 'Usuario eliminado con exito'
         ], 200);
+    }
+    public function saveFcmToken(Request $request)
+    {
+        $request->validate([
+            'token' => ['required', 'string'],
+        ]);
+
+        /** @var Usuario $usuario */
+        $usuario = Auth::user();
+
+        $usuario->forceFill([
+            'fcm_token' => $request->string('token')->toString(),
+        ])->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Token FCM actualizado',
+        ]);
     }
 }
