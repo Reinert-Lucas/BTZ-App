@@ -21,6 +21,7 @@ import com.ivanbm.frontend_btz.network.SessionManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import com.google.gson.Gson
 
 class OperarioActivity : AppCompatActivity() {
 
@@ -102,7 +103,14 @@ class OperarioActivity : AppCompatActivity() {
                 intent.putExtra("AVISO_OBSERVACION", aviso.observacion)
                 intent.putExtra("AVISO_URGENCIA", aviso.urgencia)
                 intent.putExtra("AVISO_CLIENTE", aviso.cliente.nombre)
+                intent.putExtra("AVISO_FINALIZADO", mostrarFinalizados)
 
+                if (mostrarFinalizados && aviso.trabajo != null) {
+                    intent.putExtra(
+                        "AVISO_TRABAJO_JSON",
+                        Gson().toJson(aviso.trabajo)
+                    )
+                }
                 startActivity(intent)
             }
         )
@@ -161,12 +169,11 @@ class OperarioActivity : AppCompatActivity() {
         }
 
         buttonBuscarAvisosOperario.setOnClickListener {
-            Toast.makeText(
-                this,
-                "La búsqueda la implementaremos en el siguiente paso",
-                Toast.LENGTH_SHORT
-            ).show()
+            val intent = Intent(this, BuscarAvisosActivity::class.java)
+            intent.putExtra("MODO_BUSQUEDA", "OPERARIO")
+            startActivity(intent)
         }
+
     }
 
     private fun actualizarTitulo() {

@@ -19,6 +19,9 @@
             </intent-filter>
         </service>
         <activity
+            android:name=".BuscarAvisosActivity"
+            android:exported="false" />
+        <activity
             android:name=".TrabajoActivity"
             android:exported="false" />
         <activity

@@ -5,5 +5,6 @@ data class Trabajo(
     val trabajo_realizado: String,
     val desperfecto: String,
     val aviso_id: Int,
-    val materiales: List<MaterialTrabajo>
+    val materiales: List<MaterialTrabajoResponse> = emptyList(),
+    val created_at: String? = null
 )

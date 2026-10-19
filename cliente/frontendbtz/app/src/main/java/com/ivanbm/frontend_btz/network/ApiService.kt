@@ -115,7 +115,14 @@ interface ApiService {
     // Obtener avisos
     @GET("avisos")
     fun obtenerAvisos(
-        @Query("page") pagina: Int
+        @Query("page") pagina: Int,
+        @Query("estado") estado: String? = null,
+        @Query("direccion") direccion: String? = null,
+        @Query("telefono") telefono: String? = null,
+        @Query("aviso_id") avisoId: Int? = null,
+        @Query("fecha") fecha: String? = null,
+        @Query("hora") hora: String? = null,
+        @Query("buscar") buscar: String? = null
     ): Call<AvisosResponse>
 
     // Obtener un aviso
@@ -171,6 +178,7 @@ interface ApiService {
         @Path("id") id: Int
     ): Call<Void>
 
+
     // TRABAJOS --------------------------------------------------------------------------------
 
     // Obtener trabajos asignados al operario
@@ -186,7 +194,13 @@ interface ApiService {
         @Query("page") pagina: Int
     ): Call<TrabajosResponse>
 
-    // Crear Trabajo
+    // Obtener todos los trabajos finalizados para el administrador
+    @GET("trabajos/finalizados")
+    fun obtenerTodosLosTrabajosFinalizados(
+        @Query("page") pagina: Int
+    ): Call<AvisosResponse>
+
+    // Crear trabajo
     @POST("trabajos")
     fun crearTrabajo(
         @Body request: TrabajoRequest

@@ -13,6 +13,7 @@ import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import com.ivanbm.frontend_btz.adapter.MaterialTrabajoAdapter
 import com.ivanbm.frontend_btz.model.Material
 import com.ivanbm.frontend_btz.model.MaterialSeleccionado
@@ -25,6 +26,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import kotlin.collections.emptyList
+import com.ivanbm.frontend_btz.model.Trabajo
+import android.view.View
 
 class TrabajoActivity : AppCompatActivity() {
 
@@ -47,6 +50,7 @@ class TrabajoActivity : AppCompatActivity() {
     private var materialesDisponibles = mutableListOf<Material>()
     private var materialSeleccionado: Material? = null
     private var avisoId: Int = -1
+    private var avisoFinalizado = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,13 +69,22 @@ class TrabajoActivity : AppCompatActivity() {
         }
 
         inicializarVistas()
+
         avisoId = intent.getIntExtra("AVISO_ID", -1)
+        avisoFinalizado = intent.getBooleanExtra("AVISO_FINALIZADO", false)
+
         mostrarDatosAviso()
         configurarMateriales()
-        cargarMateriales()
-        configurarSeleccionMaterial()
-        configurarBotonAgregarMaterial()
-        configurarBotonFinalizarTrabajo()
+
+        if (avisoFinalizado) {
+            mostrarTrabajoFinalizado()
+            configurarModoSoloLectura()
+        } else {
+            cargarMateriales()
+            configurarSeleccionMaterial()
+            configurarBotonAgregarMaterial()
+            configurarBotonFinalizarTrabajo()
+        }
     }
 
     private fun inicializarVistas() {
@@ -167,15 +180,15 @@ class TrabajoActivity : AppCompatActivity() {
             "Observación: ${observacion ?: "Sin observación"}"
     }
     private fun configurarMateriales() {
-
         materialTrabajoAdapter = MaterialTrabajoAdapter(
-            mutableListOf()
-        ) { materialSeleccionado ->
-
-            materialTrabajoAdapter.eliminarMaterial(
-                materialSeleccionado
-            )
-        }
+            mutableListOf(),
+            onEliminarMaterial = { materialSeleccionado ->
+                materialTrabajoAdapter.eliminarMaterial(
+                    materialSeleccionado
+                )
+            },
+            soloLectura = avisoFinalizado
+        )
 
         recyclerViewMaterialesTrabajo.layoutManager =
             LinearLayoutManager(this)
@@ -487,5 +500,63 @@ class TrabajoActivity : AppCompatActivity() {
                     ).show()
                 }
             })
+    }
+    private fun mostrarTrabajoFinalizado() {
+        val trabajoJson = intent.getStringExtra("AVISO_TRABAJO_JSON")
+
+        if (trabajoJson.isNullOrBlank()) {
+            Toast.makeText(
+                this,
+                "No se recibieron los detalles del trabajo finalizado",
+                Toast.LENGTH_LONG
+            ).show()
+            return
+        }
+
+        try {
+            val trabajo = Gson().fromJson(
+                trabajoJson,
+                Trabajo::class.java
+            )
+
+            editTextTrabajoRealizado.setText(
+                trabajo.trabajo_realizado
+            )
+
+            editTextDesperfectoTrabajo.setText(
+                trabajo.desperfecto
+            )
+
+            val materialesUtilizados = trabajo.materiales.map { materialResponse ->
+                MaterialSeleccionado(
+                    material = Material(
+                        id = materialResponse.id,
+                        nombre = materialResponse.nombre,
+                        detalle = materialResponse.detalle ?: ""
+                    ),
+                    cantidad = materialResponse.cantidad
+                )
+            }
+
+            materialTrabajoAdapter.mostrarMateriales(
+                materialesUtilizados
+            )
+
+        } catch (e: Exception) {
+            Toast.makeText(
+                this,
+                "No se pudieron mostrar los detalles del trabajo",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+    private fun configurarModoSoloLectura() {
+        editTextTrabajoRealizado.isEnabled = false
+        editTextDesperfectoTrabajo.isEnabled = false
+
+        autoCompleteMaterialTrabajo.visibility = View.GONE
+        editTextCantidadMaterialTrabajo.visibility = View.GONE
+        buttonAgregarMaterialTrabajo.visibility = View.GONE
+        buttonFinalizarTrabajo.visibility = View.GONE
     }
 }

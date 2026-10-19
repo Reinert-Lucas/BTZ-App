@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <!-- Encabezado -->
+    <ImageButton
+        android:id="@+id/buttonVolverBuscarAvisos"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Volver"
+        android:src="@android:drawable/ic_media_previous"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewTituloBuscarAvisos"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Buscar avisos"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/buttonVolverBuscarAvisos"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/buttonVolverBuscarAvisos"
+        app:layout_constraintTop_toTopOf="@id/buttonVolverBuscarAvisos" />
+
+    <!-- Búsqueda rápida -->
+    <EditText
+        android:id="@+id/editTextBusquedaGeneralAvisos"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:hint="Dirección, teléfono o N.º de aviso"
+        android:inputType="text"
+        android:maxLines="1"
+        android:imeOptions="actionSearch"
+        android:padding="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonVolverBuscarAvisos" />
+
+    <Button
+        android:id="@+id/buttonEjecutarBusquedaAvisos"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Buscar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editTextBusquedaGeneralAvisos" />
+
+    <!-- Mostrar u ocultar filtros -->
+    <Button
+        android:id="@+id/buttonMostrarFiltrosAvisos"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Filtros avanzados ▼"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonEjecutarBusquedaAvisos" />
+
+    <!-- Filtros avanzados desplegables -->
+    <ScrollView
+        android:id="@+id/scrollViewFiltrosAvisos"
+        android:layout_width="0dp"
+        android:layout_height="180dp"
+        android:layout_marginTop="4dp"
+        android:visibility="gone"
+        android:fillViewport="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonMostrarFiltrosAvisos">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="4dp">
+
+            <EditText
+                android:id="@+id/editTextDireccionFiltroAvisos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Dirección"
+                android:inputType="textPostalAddress"
+                android:maxLines="1" />
+
+            <EditText
+                android:id="@+id/editTextTelefonoFiltroAvisos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Teléfono"
+                android:inputType="phone"
+                android:maxLines="1" />
+
+            <EditText
+                android:id="@+id/editTextNumeroAvisoFiltro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Número de aviso"
+                android:inputType="number"
+                android:maxLines="1" />
+
+            <EditText
+                android:id="@+id/editTextFechaFiltroAvisos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Seleccionar fecha"
+                android:focusable="false"
+                android:clickable="true"
+                android:cursorVisible="false"
+                android:inputType="none"
+                android:maxLines="1" />
+
+            <EditText
+                android:id="@+id/editTextHoraFiltroAvisos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Seleccionar hora"
+                android:focusable="false"
+                android:clickable="true"
+                android:cursorVisible="false"
+                android:inputType="none"
+                android:maxLines="1" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Estado del aviso"
+                android:textStyle="bold" />
+
+            <RadioGroup
+                android:id="@+id/radioGroupEstadoFiltroAvisos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:id="@+id/radioButtonTodosEstadosAvisos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="Todos" />
+
+                <RadioButton
+                    android:id="@+id/radioButtonPendientesFiltroAvisos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Pendientes" />
+
+                <RadioButton
+                    android:id="@+id/radioButtonFinalizadosFiltroAvisos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Finalizados" />
+
+                <RadioButton
+                    android:id="@+id/radioButtonCanceladosFiltroAvisos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Cancelados" />
+
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/buttonAplicarFiltrosAvisos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Aplicar filtros" />
+
+            <Button
+                android:id="@+id/buttonLimpiarFiltrosAvisos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Limpiar filtros" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Indicador de carga -->
+    <ProgressBar
+        android:id="@+id/progressBarBuscarAvisos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/scrollViewFiltrosAvisos" />
+
+    <!-- Resultados con paginación -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewResultadosBuscarAvisos"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:clipToPadding="false"
+            android:paddingBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/scrollViewFiltrosAvisos" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
