@@ -88,32 +88,59 @@ class AvisoService
         return $inputs;
     }
 
-    public function index(Request $request)
-    {
-        return $this->ordenarAvisos(
-            Aviso::query()
-                ->when($request->aviso_id, function ($query, $aviso_id) {
-                    $query->where('aviso_id', $aviso_id);
-                })
-                ->when($request->fecha, function ($query, $fecha) {
-                    $query->where('fecha', $fecha);
-                })
-                ->when($request->hora, function ($query, $hora) {
-                    $query->where('hora', $hora);
-                })
-                ->when($request->direccion, function ($query, $direccion) {
-                    $query->where('direccion', 'like', "%{$direccion}%");
-                })
-                ->when($request->telefono, function ($query, $telefono) {
-                    $query->where('telefono', $telefono);
-                })
-                ->when($request->estado, function ($query, $estado) {
-                    $query->where('estado', $estado);
-                })
-        )
-            ->paginate(10)
-            ->withQueryString();
+    
+
+    
+public function index(Request $request)
+{
+    $usuarioAutenticado = auth()->user();
+
+    $avisos = Aviso::query()
+        ->with(['usuario', 'cliente', 'trabajo.materiales']);
+
+    if ($usuarioAutenticado && $usuarioAutenticado->rol === 'operario') {
+        $avisos->where('usuario_id', $usuarioAutenticado->usuario_id);
     }
+
+    $avisos
+        ->when($request->filled('buscar'), function ($query) use ($request) {
+            $termino = trim($request->input('buscar'));
+
+            $query->where(function ($subquery) use ($termino) {
+                $subquery
+                    ->where('direccion', 'like', "%{$termino}%")
+                    ->orWhere('telefono', 'like', "%{$termino}%");
+
+                if (ctype_digit($termino)) {
+                    $subquery->orWhere('aviso_id', (int) $termino);
+                }
+            });
+        })
+        ->when($request->filled('aviso_id'), function ($query) use ($request) {
+            $query->where('aviso_id', $request->input('aviso_id'));
+        })
+        ->when($request->filled('fecha'), function ($query) use ($request) {
+            $query->where('fecha', $request->input('fecha'));
+        })
+        ->when($request->filled('hora'), function ($query) use ($request) {
+            $query->where('hora', $request->input('hora'));
+        })
+        ->when($request->filled('direccion'), function ($query) use ($request) {
+            $query->where('direccion', 'like', '%' . $request->input('direccion') . '%');
+        })
+        ->when($request->filled('telefono'), function ($query) use ($request) {
+            $query->where('telefono', 'like', '%' . $request->input('telefono') . '%');
+        })
+        ->when($request->filled('estado'), function ($query) use ($request) {
+            $query->where('estado', $request->input('estado'));
+        });
+
+    return $this->ordenarAvisos($avisos)
+        ->paginate(10)
+        ->withQueryString();
+}
+
+    
 
     private function ordenarAvisos($query)
     {

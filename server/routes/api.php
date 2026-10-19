@@ -25,6 +25,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me'])->name('me');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::post('/fcm-token', [UsuarioController::class, 'saveFcmToken'])->name('usuario.saveFcmToken'); // <-- Ruta para guardar el token FCM del usuario autenticado
+    Route::get('/avisos', [AvisoController::class, 'index'])
+    ->name('avisos.index');
     // Rutas que solo pueden acceder los usuarios con rol admin
     Route::middleware('isAdmin')->group(function () {
         /* 
@@ -39,7 +41,11 @@ Route::middleware('auth:sanctum')->group(function () {
                 DELETE /usuarios/{usuario} -> destroy
         */
         Route::resource('usuarios', UsuarioController::class);
-        Route::resource('avisos', AvisoController::class);
+
+        // El administrador puede gestionar avisos.
+        Route::resource('avisos', AvisoController::class)
+            ->except(['index']);
+
         Route::resource('clientes', ClienteController::class);
         Route::resource('materiales', MaterialController::class);
     });
