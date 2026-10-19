@@ -32,7 +32,7 @@ class MaterialFactory extends Factory
             'Disyuntor diferencial' => 'Disyuntor diferencial bipolar 25A - 30mA',
         ];
 
-        $nombre = fake()->randomElement(array_keys($materiales));
+        $nombre = fake()->unique()->randomElement(array_keys($materiales));
 
         return [
             'nombre' => $nombre,
