@@ -34,6 +34,7 @@
         android:layout_marginBottom="24dp"/>
 
     <!-- Input Usuario -->
+
     <EditText
         android:id="@+id/etUsuario"
         android:layout_width="match_parent"
@@ -41,9 +42,11 @@
         android:background="@drawable/box_input_normal"
         android:hint="DNI"
         android:paddingHorizontal="16dp"
+        android:textColor="#000000"
         android:textColorHint="#999999"
         android:inputType="number"
-        android:layout_marginBottom="16dp"/>
+        android:cursorVisible="true"
+        android:layout_marginBottom="16dp" />
 
     <!-- Input Contraseña -->
     <EditText
@@ -53,9 +56,12 @@
         android:background="@drawable/box_input_normal"
         android:hint="Contraseña"
         android:paddingHorizontal="16dp"
+        android:textColor="#000000"
         android:textColorHint="#999999"
         android:inputType="textPassword"
-        android:layout_marginBottom="24dp"/>
+        android:cursorVisible="true"
+        android:layout_marginBottom="24dp" />
+
 
     <!-- Botón -->
     <androidx.appcompat.widget.AppCompatButton

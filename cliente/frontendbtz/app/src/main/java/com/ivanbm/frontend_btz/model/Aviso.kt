@@ -11,5 +11,6 @@ data class Aviso(
     val estado: String,
     val urgencia: String,
     val operario: Operario,
-    val cliente: ClienteAviso
+    val cliente: ClienteAviso,
+    val trabajo: Trabajo? = null
 )

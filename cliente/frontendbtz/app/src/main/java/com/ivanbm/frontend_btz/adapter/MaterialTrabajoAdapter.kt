@@ -11,7 +11,8 @@ import com.ivanbm.frontend_btz.model.MaterialSeleccionado
 
 class MaterialTrabajoAdapter(
     private var materiales: MutableList<MaterialSeleccionado>,
-    private val onEliminarMaterial: (MaterialSeleccionado) -> Unit
+    private val onEliminarMaterial: (MaterialSeleccionado) -> Unit,
+    private val soloLectura: Boolean = false
 ) : RecyclerView.Adapter<MaterialTrabajoAdapter.MaterialTrabajoViewHolder>() {
 
     class MaterialTrabajoViewHolder(itemView: View) :
@@ -46,7 +47,6 @@ class MaterialTrabajoAdapter(
         holder: MaterialTrabajoViewHolder,
         position: Int
     ) {
-
         val materialSeleccionado = materiales[position]
 
         holder.textViewNombreMaterialTrabajo.text =
@@ -55,22 +55,26 @@ class MaterialTrabajoAdapter(
         holder.textViewCantidadMaterialTrabajo.text =
             "Cantidad: ${materialSeleccionado.cantidad}"
 
-        holder.buttonEliminarMaterialTrabajo.setOnClickListener {
-            onEliminarMaterial(materialSeleccionado)
+        if (soloLectura) {
+            holder.buttonEliminarMaterialTrabajo.visibility = View.GONE
+        } else {
+            holder.buttonEliminarMaterialTrabajo.visibility = View.VISIBLE
+
+            holder.buttonEliminarMaterialTrabajo.setOnClickListener {
+                onEliminarMaterial(materialSeleccionado)
+            }
         }
     }
 
-    override fun getItemCount(): Int =
-        materiales.size
+    override fun getItemCount(): Int = materiales.size
 
     fun agregarMaterial(material: MaterialSeleccionado) {
-
         materiales.add(material)
-
         notifyItemInserted(materiales.size - 1)
     }
 
     fun eliminarMaterial(material: MaterialSeleccionado) {
+        if (soloLectura) return
 
         val posicion = materiales.indexOf(material)
 
@@ -82,4 +86,10 @@ class MaterialTrabajoAdapter(
 
     fun obtenerMateriales(): List<MaterialSeleccionado> =
         materiales.toList()
+
+    fun mostrarMateriales(nuevosMateriales: List<MaterialSeleccionado>) {
+        materiales.clear()
+        materiales.addAll(nuevosMateriales)
+        notifyDataSetChanged()
+    }
 }

@@ -16,6 +16,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import kotlin.jvm.java
+import com.google.gson.Gson
+import com.ivanbm.frontend_btz.model.Aviso
 
 class AdminActivity : AppCompatActivity() {
 
@@ -28,6 +30,11 @@ class AdminActivity : AppCompatActivity() {
     private var cargandoAvisos = false
 
     private var hayMasAvisos = true
+
+    private lateinit var buttonAvisosPendientesAdministrador: android.widget.Button
+    private lateinit var buttonAvisosFinalizadosAdministrador: android.widget.Button
+    private lateinit var buttonBuscarAvisosAdministrador: android.widget.Button
+    private var estadoFiltroAvisos: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +49,33 @@ class AdminActivity : AppCompatActivity() {
         progressBarCargaAvisosAdministrador =
             findViewById(R.id.progressBarCargaAvisosAdministrador)
 
-        avisoAdapter = AvisoAdapter(emptyList())
+        buttonAvisosPendientesAdministrador =
+            findViewById(R.id.buttonAvisosPendientesAdministrador)
+
+        buttonAvisosFinalizadosAdministrador =
+            findViewById(R.id.buttonAvisosFinalizadosAdministrador)
+
+        buttonBuscarAvisosAdministrador =
+            findViewById(R.id.buttonBuscarAvisosAdministrador)
+
+        configurarBotonesFiltroAvisos()
+
+        avisoAdapter = AvisoAdapter(
+            emptyList(),
+            onAvisoClick = { aviso ->
+                if (aviso.estado == "finalizado") {
+                    abrirTrabajoFinalizado(aviso)
+                } else {
+                    val intent = Intent(
+                        this,
+                        EditarAvisoActivity::class.java
+                    )
+
+                    intent.putExtra("AVISO_ID", aviso.id)
+                    startActivity(intent)
+                }
+            }
+        )
 
         recyclerViewAvisosAdministrador.layoutManager =
             LinearLayoutManager(this)
@@ -108,9 +141,19 @@ class AdminActivity : AppCompatActivity() {
         progressBarCargaAvisosAdministrador.visibility =
             ProgressBar.VISIBLE
 
-        RetrofitClient.api.obtenerAvisos(paginaAvisosActual)
-            .enqueue(object : Callback<AvisosResponse> {
+        val llamadaAvisos: Call<AvisosResponse> =
+            if (estadoFiltroAvisos == "finalizado") {
+                RetrofitClient.api.obtenerTodosLosTrabajosFinalizados(
+                    paginaAvisosActual
+                )
+            } else {
+                RetrofitClient.api.obtenerAvisos(
+                    paginaAvisosActual,
+                    estadoFiltroAvisos
+                )
+            }
 
+        llamadaAvisos.enqueue(object : Callback<AvisosResponse> {
                 override fun onResponse(
                     call: Call<AvisosResponse>,
                     response: Response<AvisosResponse>
@@ -191,6 +234,8 @@ class AdminActivity : AppCompatActivity() {
         hayMasAvisos = true
         cargandoAvisos = false
 
+        avisoAdapter.actualizarAvisos(emptyList())
+
         cargarAvisos()
     }
     private fun mostrarMenuAdministrador(
@@ -265,5 +310,63 @@ class AdminActivity : AppCompatActivity() {
         }
 
         popupMenu.show()
+    }
+
+    private fun configurarBotonesFiltroAvisos() {
+
+        buttonAvisosPendientesAdministrador.setOnClickListener {
+            if (estadoFiltroAvisos != "pendiente") {
+                estadoFiltroAvisos = "pendiente"
+                recargarAvisos()
+            }
+        }
+
+        buttonAvisosFinalizadosAdministrador.setOnClickListener {
+            if (estadoFiltroAvisos != "finalizado") {
+                estadoFiltroAvisos = "finalizado"
+                recargarAvisos()
+            }
+        }
+
+        buttonBuscarAvisosAdministrador.setOnClickListener {
+            val intent = Intent(
+                this,
+                BuscarAvisosActivity::class.java
+            )
+
+            startActivity(intent)
+        }
+    }
+    private fun abrirTrabajoFinalizado(aviso: Aviso) {
+        if (aviso.trabajo == null) {
+            Toast.makeText(
+                this,
+                "No se encontraron los detalles del trabajo finalizado",
+                Toast.LENGTH_LONG
+            ).show()
+            return
+        }
+
+        val intent = Intent(
+            this,
+            TrabajoActivity::class.java
+        )
+
+        intent.putExtra("AVISO_ID", aviso.id)
+        intent.putExtra("AVISO_FECHA", aviso.fecha)
+        intent.putExtra("AVISO_HORA", aviso.hora)
+        intent.putExtra("AVISO_DIRECCION", aviso.direccion)
+        intent.putExtra("AVISO_TELEFONO", aviso.telefono)
+        intent.putExtra("AVISO_MENSAJE", aviso.mensaje)
+        intent.putExtra("AVISO_OBSERVACION", aviso.observacion)
+        intent.putExtra("AVISO_URGENCIA", aviso.urgencia)
+        intent.putExtra("AVISO_CLIENTE", aviso.cliente.nombre)
+        intent.putExtra("AVISO_FINALIZADO", true)
+        intent.putExtra(
+            "AVISO_TRABAJO_JSON",
+            Gson().toJson(aviso.trabajo)
+        )
+
+        startActivity(intent)
     }
 }
