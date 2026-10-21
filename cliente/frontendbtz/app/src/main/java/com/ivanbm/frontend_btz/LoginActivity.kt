@@ -27,8 +27,28 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
-        SessionManager.inicializar(applicationContext)
         super.onCreate(savedInstanceState)
+
+        SessionManager.inicializar(applicationContext)
+
+        // Si existe una sesión guardada, ir directamente al panel correspondiente
+        val tokenGuardado = SessionManager.obtenerToken()
+        val usuarioIdGuardado = SessionManager.obtenerUsuarioId()
+        val rolGuardado = SessionManager.obtenerRol()
+
+        if (!tokenGuardado.isNullOrBlank() && usuarioIdGuardado > 0) {
+            when (rolGuardado?.lowercase()) {
+                "admin", "administrador" -> {
+                    abrirPanel(AdminActivity::class.java)
+                    return
+                }
+
+                "operario" -> {
+                    abrirPanel(OperarioActivity::class.java)
+                    return
+                }
+            }
+        }
 
         setContentView(R.layout.activity_login)
 
@@ -184,5 +204,14 @@ class LoginActivity : AppCompatActivity() {
             mensaje,
             Toast.LENGTH_SHORT
         ).show()
+    }
+    private fun abrirPanel(destino: Class<*>) {
+        val intent = Intent(this, destino).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+
+        startActivity(intent)
+        finish()
     }
 }

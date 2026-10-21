@@ -35,6 +35,12 @@ interface ApiService {
     ): Call<LoginResponse>
 
 
+    // CERRAR SESIÓN --------------------------------------------------------------------------
+
+    @POST("logout")
+    fun cerrarSesion(): Call<Void>
+
+
     // CLIENTES ------------------------------------------------------------------------------
 
     // Obtener todos los clientes

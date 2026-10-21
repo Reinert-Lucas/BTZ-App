@@ -21,9 +21,12 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import com.google.gson.Gson
+import android.widget.ImageButton
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 class OperarioActivity : AppCompatActivity() {
 
+    private lateinit var swipeRefreshAvisosOperario: SwipeRefreshLayout
     private lateinit var recyclerViewAvisosOperario: RecyclerView
     private lateinit var progressBarCargaAvisosOperario: ProgressBar
     private lateinit var buttonAvisosPendientesOperario: Button
@@ -43,6 +46,14 @@ class OperarioActivity : AppCompatActivity() {
         enableEdgeToEdge()
         SessionManager.inicializar(applicationContext)
         setContentView(R.layout.activity_operario)
+
+        swipeRefreshAvisosOperario =
+            findViewById(R.id.swipeRefreshAvisosOperario)
+
+        swipeRefreshAvisosOperario.setOnRefreshListener {
+            reiniciarListaAvisos()
+            cargarAvisosOperario(1)
+        }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { vista, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -69,6 +80,14 @@ class OperarioActivity : AppCompatActivity() {
 
         buttonBuscarAvisosOperario =
             findViewById(R.id.buttonBuscarAvisosOperario)
+
+        val buttonMenuOperario = findViewById<ImageButton>(
+            R.id.buttonMenuOperario
+        )
+
+        buttonMenuOperario.setOnClickListener {
+            mostrarMenuOperario(buttonMenuOperario)
+        }
 
         configurarRecyclerView()
         configurarBotonesFiltro()
@@ -198,6 +217,7 @@ class OperarioActivity : AppCompatActivity() {
         val usuarioId = SessionManager.obtenerUsuarioId()
 
         if (mostrarFinalizados && usuarioId <= 0) {
+            swipeRefreshAvisosOperario.isRefreshing = false
             Toast.makeText(
                 this,
                 "No se pudo identificar al operario. Cerrá sesión e ingresá nuevamente.",
@@ -223,6 +243,7 @@ class OperarioActivity : AppCompatActivity() {
             ) {
                 cargandoAvisos = false
                 progressBarCargaAvisosOperario.visibility = View.GONE
+                swipeRefreshAvisosOperario.isRefreshing = false
 
                 if (response.isSuccessful && response.body() != null) {
                     val respuesta = response.body()!!
@@ -264,7 +285,7 @@ class OperarioActivity : AppCompatActivity() {
             ) {
                 cargandoAvisos = false
                 progressBarCargaAvisosOperario.visibility = View.GONE
-
+                swipeRefreshAvisosOperario.isRefreshing = false
                 Toast.makeText(
                     this@OperarioActivity,
                     "Error de conexión: ${t.message}",
@@ -272,5 +293,31 @@ class OperarioActivity : AppCompatActivity() {
                 ).show()
             }
         })
+    }
+    private fun mostrarMenuOperario(boton: ImageButton) {
+        val popupMenu = android.widget.PopupMenu(this, boton)
+
+        popupMenu.menu.add("Cerrar sesión")
+
+        popupMenu.setOnMenuItemClickListener { item ->
+            when (item.title.toString()) {
+                "Cerrar sesión" -> {
+                    android.app.AlertDialog.Builder(this)
+                        .setTitle("Cerrar sesión")
+                        .setMessage("¿Estás seguro de que querés cerrar sesión?")
+                        .setNegativeButton("Cancelar", null)
+                        .setPositiveButton("Cerrar sesión") { _, _ ->
+                            CerrarSesion.ejecutar(this)
+                        }
+                        .show()
+
+                    true
+                }
+
+                else -> false
+            }
+        }
+
+        popupMenu.show()
     }
 }

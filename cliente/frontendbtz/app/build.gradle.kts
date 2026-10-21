@@ -61,4 +61,7 @@ dependencies {
 
     //Icon
     implementation("androidx.core:core-splashscreen:1.0.1")
+
+    // Actualización de listas deslizando hacia abajo
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 }
