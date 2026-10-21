@@ -21,19 +21,8 @@ use Illuminate\Support\Facades\Auth;
 
 class WebAuthController extends Controller
 {
-    private AuthService $service;
-    public function __construct(AuthService $service)
+    public function __construct(private readonly AuthService $service)
     {
-        $this->service = $service;
-    }
-    public function create(CreateUserRequest $request)
-    {
-        $usuario = $this->service->create($request->validated());
-        return view('admin.dashboard', [
-            'status' => true,
-            'message' => 'usuario registrado con exito',
-            'token' => $usuario->createToken('API TOKEN')->plainTextToken
-        ]);
     }
     public function login(LoginUserRequest $request)
     {

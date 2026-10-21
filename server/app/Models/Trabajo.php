@@ -24,10 +24,10 @@ class Trabajo extends Model
             'materiales_trabajos',
             'trabajo_id',
             'material_id'
-        )->withPivot('cantidad');
+        )->withPivot('cantidad')->withTimestamps()->withTrashed();
     }
     public function aviso(): BelongsTo
     {
-        return $this->belongsTo(Aviso::class, 'aviso_id');
+        return $this->belongsTo(Aviso::class, 'aviso_id')->withTrashed();
     }
 }

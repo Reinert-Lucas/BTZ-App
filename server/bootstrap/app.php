@@ -1,12 +1,14 @@
 <?php
 
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -21,17 +23,18 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->render(function (AuthenticationException $e, $request) {
+        // Toda ruta api/* responde JSON, incluso ante errores no controlados.
+        $exceptions->shouldRenderJsonWhen(
+            fn(Request $request, Throwable $e) => $request->is('api/*') || $request->expectsJson()
+        );
+
+        $exceptions->render(function (AuthenticationException $e, Request $request) {
             if ($request->is('api/*')) {
                 return response()->json(['status' => false, 'message' => 'No autenticado'], 401);
             }
         });
-        $exceptions->render(function (ModelNotFoundException $e, Request $request) {
-            if ($request->is('api/*')) {
-                return response()->json(['status' => false, 'message' => 'Recurso no encontrado'], 404);
-            }
-        });
-        $exceptions->render(function (\Illuminate\Validation\ValidationException $e, Request $request) {
+
+        $exceptions->render(function (ValidationException $e, Request $request) {
             if ($request->is('api/*')) {
                 return response()->json([
                     'status' => false,
@@ -40,13 +43,32 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], 422);
             }
         });
-        $exceptions->render(function (\Illuminate\Database\QueryException $e, Request $request) {
+
+        $exceptions->render(function (HttpExceptionInterface $e, Request $request) {
             if ($request->is('api/*')) {
-                report($e);
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Error al procesar la solicitud',
-                ], 500);
+                $message = $e instanceof NotFoundHttpException
+                    ? 'Recurso no encontrado'
+                    : ($e->getMessage() ?: 'Error en la solicitud');
+
+                return response()->json(
+                    ['status' => false, 'message' => $message],
+                    $e->getStatusCode(),
+                    $e->getHeaders()
+                );
             }
+        });
+
+        $exceptions->render(function (QueryException $e, Request $request) {
+            if (!$request->is('api/*')) {
+                return;
+            }
+
+            [$status, $message] = match ($e->errorInfo[1] ?? null) {
+                1062 => [409, 'Ya existe un registro con esos datos'],
+                1451, 1452 => [409, 'La operación entra en conflicto con registros relacionados'],
+                default => [500, 'Error al procesar la solicitud'],
+            };
+
+            return response()->json(['status' => false, 'message' => $message], $status);
         });
     })->create();

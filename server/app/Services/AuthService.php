@@ -5,33 +5,37 @@ use App\Models\Usuario;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthService
 {
-    public function create(array $usuarioValidado)
-    {
-        return Usuario::create($usuarioValidado);
-    }
     public function login(array $credentials): array
     {
-        if (!Auth::attempt($credentials)) {
+        $usuario = Usuario::where('dni', $credentials['dni'])->first();
+
+        if (!$usuario || !Hash::check($credentials['password'], $usuario->password)) {
             throw new AuthenticationException('Credenciales incorrectas');
         }
-        /** @var Usuario $user */
-        $user = Auth::user();
-        $user->tokens()->delete(); // Borra tokens previos si es que hay (Evita acumular tokens)
-        $token = $user->createToken('API TOKEN', expiresAt: now()->addDays(7));
+
+        $usuario->tokens()->delete(); // un solo dispositivo activo por usuario
+        $token = $usuario->createToken('API TOKEN', expiresAt: now()->addDays(7));
+
         return [
-            'user' => $user,
-            'token' => $token,
+            'user' => $usuario,
+            'token' => $token->plainTextToken,
         ];
     }
+
     public function me(Request $request)
     {
         return $request->user();
     }
-    public function logout(Request $request)
+
+    public function logout(Request $request): void
     {
-        $request->user()->currentAccessToken()->delete();
+        $usuario = $request->user();
+        // Evita que el dispositivo siga recibiendo notificaciones del usuario anterior.
+        $usuario->forceFill(['fcm_token' => null])->save();
+        $usuario->currentAccessToken()->delete();
     }
 }

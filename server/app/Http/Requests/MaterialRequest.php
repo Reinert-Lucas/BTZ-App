@@ -2,29 +2,34 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Material;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class MaterialRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
+        /** @var Material|null $material */
+        $material = $this->route('material');
+
         return [
-            'nombre' => ['required', 'max:50'],
-            'detalle' => ['required', 'max:100']
+            'nombre' => [
+                'required',
+                'string',
+                'max:50',
+                Rule::unique('materiales', 'nombre')->ignore($material?->material_id, 'material_id'),
+            ],
+            'detalle' => ['nullable', 'string', 'max:100'], // la columna es nullable
         ];
     }
 }

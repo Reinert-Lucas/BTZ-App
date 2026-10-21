@@ -44,32 +44,35 @@
         crossorigin="anonymous"></script> --}}
     @yield('scripts')
     <script>
-        const modal = document.getElementById('userModal');
-        const body = document.getElementById('modal-body');
-        const userBtn = document.getElementById('user-btn')
-            .addEventListener('click', async () => {
-                try {
-                    const res = await fetch('http://127.0.0.1:8000/admin/me', {
-                        method: 'GET',
-                        credentials: "same-origin",
-                    });
-                    if (!res.ok) {
-                        throw new Error("Error al obtener datos");
-                    }
-                    const userData = await res.json();
-                    body.innerHTML = `
-                    <h5><b>Nombre:</b> ${userData.user.nombre}</h5>
-                    <h5><b>Rol:</b> ${userData.user.rol}</h5>
-                    <h5><b>Teléfono:</b> ${userData.user.telefono}</h5>
-                    `;
-                } catch (error) {
-                    body.innerHTML = `
-                        <div class="alert alert-danger">
-                            No se pudieron cargar los datos.
-                        </div>
-                    `;
+        const userBtn = document.getElementById('user-btn');
+        const modalBody = document.getElementById('modal-body');
+
+        userBtn.addEventListener('click', async () => {
+            modalBody.replaceChildren();
+            try {
+                const res = await fetch(@json(route('admin.me', [], false)), {
+                    headers: { 'Accept': 'application/json' },
+                    credentials: 'same-origin',
+                });
+                if (!res.ok) throw new Error('Error al obtener datos');
+
+                const { user } = await res.json();
+                const filas = [['Nombre', user.nombre], ['Rol', user.rol], ['Teléfono', user.telefono]];
+
+                for (const [etiqueta, valor] of filas) {
+                    const h5 = document.createElement('h5');
+                    const b = document.createElement('b');
+                    b.textContent = `${etiqueta}: `;
+                    h5.append(b, document.createTextNode(valor ?? ''));
+                    modalBody.appendChild(h5);
                 }
-            });
+            } catch (error) {
+                const alerta = document.createElement('div');
+                alerta.className = 'alert alert-danger';
+                alerta.textContent = 'No se pudieron cargar los datos.';
+                modalBody.appendChild(alerta);
+            }
+        });
     </script>
 </body>
 

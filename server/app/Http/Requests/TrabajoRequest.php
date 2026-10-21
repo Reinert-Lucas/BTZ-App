@@ -4,40 +4,37 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class TrabajoRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'trabajo_realizado' => ['required', 'max:255'],
-            'desperfecto' => ['required', 'max:255'],
-            'aviso_id' => ['required', 'exists:avisos,aviso_id', 'unique:trabajos,aviso_id'],
-            'materiales' => [
+            'trabajo_realizado' => ['required', 'string', 'max:255'],
+            'desperfecto' => ['required', 'string', 'max:255'],
+            'aviso_id' => [
                 'required',
-                'array',
-                function ($attribute, $value, $fail) {
-                    $ids = array_column($value, 'material_id');
-                    if (count($ids) !== count(array_unique($ids))) {
-                        $fail('No se puede repetir el mismo material.');
-                    }
-                }
+                'integer',
+                Rule::exists('avisos', 'aviso_id')->whereNull('deleted_at'),
+                Rule::unique('trabajos', 'aviso_id'),
             ],
-            'materiales.*.material_id' => ['required', 'exists:materiales,material_id'],
-            'materiales.*.cantidad' => ['required', 'integer', 'min:1'],
+            'materiales' => ['required', 'array', 'min:1'],
+            'materiales.*.material_id' => [
+                'required',
+                'integer',
+                'distinct',
+                Rule::exists('materiales', 'material_id')->whereNull('deleted_at'),
+            ],
+            'materiales.*.cantidad' => ['required', 'integer', 'min:1', 'max:9999'],
         ];
     }
 }

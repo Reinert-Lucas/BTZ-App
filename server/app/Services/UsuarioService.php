@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UsuarioService
 {
@@ -36,11 +37,15 @@ class UsuarioService
     }
     public function update(array $newUsuario, Usuario $usuario)
     {
+        if (empty($newUsuario['password'])) {
+            unset($newUsuario['password']);
+        }
         $usuario->update($newUsuario);
         return $usuario->fresh();
     }
     public function destroy(int $usuario)
     {
+        abort_if($usuario === (int) Auth::id(), 409, 'No puedes eliminar tu propio usuario.');
         return Usuario::findOrFail($usuario)->delete();
     }
 }

@@ -92,7 +92,7 @@ class WebUsuarioController extends Controller
             [
                 'label' => 'Contraseña',
                 'field' => 'password',
-                'type' => 'text'
+                'type' => 'password'
             ],
             [
                 'label' => 'Telefono',
@@ -135,7 +135,7 @@ class WebUsuarioController extends Controller
             [
                 'label' => 'Contraseña',
                 'field' => 'password',
-                'type' => 'text'
+                'type' => 'password'
             ],
             [
                 'label' => 'Telefono',

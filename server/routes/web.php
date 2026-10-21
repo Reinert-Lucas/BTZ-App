@@ -30,15 +30,7 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
     Route::resource('usuarios', WebUsuarioController::class);
     Route::resource('clientes', WebClienteController::class);
     Route::resource('avisos', WebAvisoController::class);
-    Route::prefix('materiales')->group(function () {
-        // No usamos resource aca porque convierte Materiales a Materiale y no a Material
-        Route::get('/', [WebMaterialController::class, 'index'])->name('materiales.index');
-        Route::get('/create', [WebMaterialController::class, 'create'])->name('materiales.create');
-        Route::post('/', [WebMaterialController::class, 'store'])->name('materiales.store');
-        Route::get('/{material}/edit', [WebMaterialController::class, 'edit'])->name('materiales.edit');
-        Route::put('/{material}', [WebMaterialController::class, 'update'])->name('materiales.update');
-        Route::delete('/{material}', [WebMaterialController::class, 'destroy'])->name('materiales.destroy');
-    });
+    Route::resource('materiales', WebMaterialController::class)->parameters(['materiales' => 'material']);
     Route::get('/trabajos/{aviso}/pdf', [WebAvisoController::class, 'pdf'])->name('trabajos.pdf');
     Route::get('/trabajos/{aviso}', [WebAvisoController::class, 'show'])->name('trabajos.show');
 });

@@ -7,82 +7,76 @@ use App\Http\Resources\AvisoResource;
 use App\Http\Resources\TrabajoResource;
 use App\Models\Aviso;
 use App\Models\Trabajo;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use App\Services\TrabajoService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TrabajoController extends Controller
 {
-    private TrabajoService $trabajoService;
-
-    public function __construct(TrabajoService $trabajoService)
+    public function __construct(private readonly TrabajoService $trabajoService)
     {
-        $this->trabajoService = $trabajoService;
     }
-    
-    public function index()
-{
-    $user = Auth::user();
 
-    $trabajos = $this->trabajoService->trabajosAsignados($user->usuario_id);
+    public function index(Request $request)
+    {
+        $trabajos = $this->trabajoService->trabajosAsignados($request->user()->usuario_id);
 
-    return AvisoResource::collection($trabajos)->additional([
-        'status' => true,
-        'message' => 'Trabajos asignados al operario'
-    ]);
-}
+        return AvisoResource::collection($trabajos)->additional([
+            'status' => true,
+            'message' => 'Trabajos asignados al operario',
+        ]);
+    }
+
     public function store(TrabajoRequest $request)
     {
-        $aviso = Aviso::findOrFail($request->aviso_id);
-        // Verificar que el operario sea el asignado al Aviso
-        if ($aviso->usuario_id !== Auth::id()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'No tiene permisos para cargar el trabajo de este aviso',
-            ], 403);
-        }
-        // Verificar que el aviso no esta cancelado o finalizado
-        if ($aviso->estado === 'cancelado' || $aviso->estado === 'finalizado') {
-            return response()->json([
-                'status' => false,
-                'message' => 'Este aviso ya fue resuelto o cancelado',
-            ], 403);
-        }
-        // Transaction evita datos "huerfanos" si falla alguna parte del create() o attach()
-        $trabajo = DB::transaction(function () use ($request) {
-            // Cargar datos del trabajo realizado
-            $trabajo = Trabajo::create([
-                'trabajo_realizado' => $request->trabajo_realizado,
-                'desperfecto' => $request->desperfecto,
-                'aviso_id' => $request->aviso_id,
-            ]);
-            // Cargar materiales utilizados
-            foreach ($request->materiales as $material) {
-                $trabajo->materiales()->attach(
-                    $material['material_id'],
-                    ['cantidad' => $material['cantidad']]
-                );
-            }
-            // Marcar aviso como ['finalizado']
-            $trabajo->aviso()->update([
-                'estado' => 'finalizado'
-            ]);
-            // Cargar la relación
-            $trabajo->load('materiales');
-            return $trabajo;
-        });
-        return (new TrabajoResource($trabajo))->additional([
-            'status' => true,
-            'message' => 'Trabajo cargado correctamente',
-        ]);
-    }
-    public function indexFinalizado(?int $usuario_id = null)
-    {
-        $avisos = $this->trabajoService->trabajosFinalizados($usuario_id);
+        $usuario = $request->user();
+        $datos = $request->validated();
 
-        return AvisoResource::collection($avisos)->additional([
-            'status' => true,
-            'message' => 'Avisos terminados cargados correctamente',
-        ]);
+        $trabajo = DB::transaction(function () use ($datos, $usuario) {
+            // lockForUpdate: dos peticiones simultáneas no pueden finalizar el mismo aviso.
+            $aviso = Aviso::whereKey($datos['aviso_id'])->lockForUpdate()->firstOrFail();
+
+            abort_if(
+                (int) $aviso->usuario_id !== (int) $usuario->usuario_id,
+                403,
+                'No tiene permisos para cargar el trabajo de este aviso'
+            );
+            abort_if($aviso->estado !== 'pendiente', 409, 'Este aviso ya fue resuelto o cancelado');
+
+            $trabajo = Trabajo::create([
+                'trabajo_realizado' => $datos['trabajo_realizado'],
+                'desperfecto' => $datos['desperfecto'],
+                'aviso_id' => $aviso->aviso_id,
+            ]);
+
+            $trabajo->materiales()->attach(
+                collect($datos['materiales'])
+                    ->mapWithKeys(fn($m) => [$m['material_id'] => ['cantidad' => $m['cantidad']]])
+                    ->all()
+            );
+
+            $aviso->update(['estado' => 'finalizado']);
+
+            return $trabajo->load('materiales');
+        });
+
+        return (new TrabajoResource($trabajo))
+            ->additional(['status' => true, 'message' => 'Trabajo cargado correctamente'])
+            ->response()
+            ->setStatusCode(201);
+    }
+
+    public function indexFinalizado(Request $request, ?int $usuario_id = null)
+    {
+        $usuario = $request->user();
+        if ($usuario->rol !== 'admin') {
+            $usuario_id = $usuario->usuario_id;
+        }
+
+        return AvisoResource::collection($this->trabajoService->trabajosFinalizados($usuario_id))
+            ->additional([
+                'status' => true,
+                'message' => 'Avisos terminados cargados correctamente',
+            ]);
     }
 }

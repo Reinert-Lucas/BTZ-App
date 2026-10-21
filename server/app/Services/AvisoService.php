@@ -13,7 +13,8 @@ class AvisoService
 {
     public function __construct(
         protected FirebaseNotificationService $firebaseNotificationService
-    ) {}
+    ) {
+    }
     public function getFields(bool $isUpdate)
     {
         $inputs = [
@@ -132,6 +133,9 @@ class AvisoService
             })
             ->when($request->filled('estado'), function ($query) use ($request) {
                 $query->where('estado', $request->input('estado'));
+            })
+            ->when($request->filled('urgencia'), function ($query) use ($request) {
+                $query->where('urgencia', $request->input('urgencia'));
             });
 
         return $this->ordenarAvisos($avisos)
