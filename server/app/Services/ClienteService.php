@@ -21,8 +21,8 @@ class ClienteService
             ->when($request->asegurado, function ($query, $asegurado) {
                 $query->where('asegurado', $asegurado);
             })
-            ->when($request->asegurado_detalle, function ($query, $asegurado_detalle) {
-                $query->where('asegurado', $asegurado_detalle);
+            ->when($request->asegurado_detalle, function ($query, $detalle) {
+                $query->where('asegurado_detalle', 'like', "%{$detalle}%");
             })
             ->orderBy('cliente_id', 'desc')
             ->paginate(10)

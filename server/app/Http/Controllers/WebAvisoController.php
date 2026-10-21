@@ -96,7 +96,7 @@ class WebAvisoController extends Controller
                 'options' => [
                     'urgente' => 'Urgente',
                     'media' => 'Media',
-                    'baja' => 'Alta'
+                    'baja' => 'Baja'
                 ]
             ]
         ];

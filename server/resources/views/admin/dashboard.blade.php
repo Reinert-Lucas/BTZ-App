@@ -27,7 +27,7 @@
                             @foreach ($metrica['content'] as $trabajo)
                                 <div class="work-item">
                                     <span class="badge-date">
-                                        {{ \Carbon\Carbon::parse($trabajo->aviso->fecha)->format('d/m/Y') }}</span>
+                                        {{ \Carbon\Carbon::parse($trabajo->aviso->fecha)->format('d/m/Y') }}</span><br>
                                     <strong>{{ $trabajo->trabajo_realizado }}</strong>
                                 </div>
                             @endforeach
