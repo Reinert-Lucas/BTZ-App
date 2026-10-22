@@ -9,18 +9,28 @@ use App\Models\Aviso;
 use App\Models\Trabajo;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Services\TrabajoService;
 
 class TrabajoController extends Controller
 {
-    public function index()
+    private TrabajoService $trabajoService;
+
+    public function __construct(TrabajoService $trabajoService)
     {
-        $user = Auth::user();
-        $trabajos = Aviso::with(['usuario', 'cliente'])->where('usuario_id', $user->usuario_id)->get();
-        return AvisoResource::collection($trabajos)->additional([
-            'status' => true,
-            'message' => 'Trabajos asignados al operario'
-        ]);
+        $this->trabajoService = $trabajoService;
     }
+    
+    public function index()
+{
+    $user = Auth::user();
+
+    $trabajos = $this->trabajoService->trabajosAsignados($user->usuario_id);
+
+    return AvisoResource::collection($trabajos)->additional([
+        'status' => true,
+        'message' => 'Trabajos asignados al operario'
+    ]);
+}
     public function store(TrabajoRequest $request)
     {
         $aviso = Aviso::findOrFail($request->aviso_id);
@@ -68,23 +78,8 @@ class TrabajoController extends Controller
     }
     public function indexFinalizado(?int $usuario_id = null)
     {
-        if ($usuario_id) {
-            $avisos = Aviso::with(['usuario', 'cliente'])->where([
-                'usuario_id' => $usuario_id,
-                'estado' => 'finalizado'
-            ])->get();
-            // Cargar el trabajo hecho + materiales usados
-            $avisos->load('trabajo.materiales');
-            return AvisoResource::collection($avisos)->additional([
-                'status' => true,
-                'message' => 'Avisos terminados cargados correctamente',
-            ]);
-        }
-        $avisos = Aviso::with(['usuario', 'cliente'])->where([
-            'estado' => 'finalizado'
-        ])->get();
-        // Cargar el trabajo hecho + materiales usados
-        $avisos->load('trabajo.materiales');
+        $avisos = $this->trabajoService->trabajosFinalizados($usuario_id);
+
         return AvisoResource::collection($avisos)->additional([
             'status' => true,
             'message' => 'Avisos terminados cargados correctamente',

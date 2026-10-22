@@ -1,7 +1,7 @@
 <?php
+
 namespace App\Services;
 
-use App\Http\Requests\CreateUserRequest;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 
@@ -22,6 +22,7 @@ class UsuarioService
             ->when($request->rol, function ($query, $rol) {
                 $query->where('rol', $rol);
             })
+            ->orderBy('usuario_id', 'desc')
             ->paginate(10)
             ->withQueryString();
     }
@@ -38,7 +39,7 @@ class UsuarioService
         $usuario->update($newUsuario);
         return $usuario->fresh();
     }
-    public function delete(int $usuario)
+    public function destroy(int $usuario)
     {
         return Usuario::findOrFail($usuario)->delete();
     }

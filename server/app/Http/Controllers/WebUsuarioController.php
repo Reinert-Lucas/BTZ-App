@@ -134,7 +134,7 @@ class WebUsuarioController extends Controller
             ],
             [
                 'label' => 'Contraseña',
-                'field' => '',
+                'field' => 'password',
                 'type' => 'text'
             ],
             [
@@ -154,10 +154,7 @@ class WebUsuarioController extends Controller
         ];
         $usuarioObtenido = $this->service->show($usuario);
         return view('admin.usuarios.edit', [
-            'usuario' => new UsuarioResource($usuarioObtenido)->additional([
-                'status' => true,
-                'message' => 'Usuarios obtenidos con exito'
-            ]),
+            'usuario' => new UsuarioResource($usuarioObtenido),
             'inputs' => $inputs
         ]);
     }
@@ -171,7 +168,7 @@ class WebUsuarioController extends Controller
     }
     public function destroy(int $usuario)
     {
-        $this->service->delete($usuario);
+        $this->service->destroy($usuario);
         return redirect()->route('admin.usuarios.index')->with([
             'status' => true,
             'message' => 'Usuario eliminado con exito'

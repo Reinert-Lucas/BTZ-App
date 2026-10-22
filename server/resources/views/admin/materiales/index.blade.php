@@ -1,11 +1,14 @@
 @extends('layouts.app')
 
+@section('texto')
+    <x-text title="Gestion de Materiales"></x-text>
+@endsection
 @section('content')
-    <section>
-        <h1>Gestion de Materiales</h1>
-        <a href={{ route('admin.dashboard') }}>Inicio</a>
-        <a class="btn btn-primary" href={{ route('admin.materiales.create') }}>+</a>
-        <x-adv :filtros="$filtros" ruta="materiales"></x-adv>
+    <section class="btns-section">
+        <x-adv :filtros="$filtros" ruta="materiales" model="material"></x-adv>
+        <a class="create-btn" href={{ route('admin.materiales.create') }}>
+            <img src="{{ asset('imgs/add.png') }}" alt="Crear Nuevo">
+        </a>
     </section>
     <x-table :columns="$columns" :rows="$materiales" parameter="material" resource="materiales" />
 @endsection
