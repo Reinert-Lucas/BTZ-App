@@ -1,56 +1,71 @@
 package com.ivanbm.frontend_btz
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.gson.Gson
 import com.ivanbm.frontend_btz.adapter.AvisoAdapter
+import com.ivanbm.frontend_btz.model.Aviso
 import com.ivanbm.frontend_btz.model.AvisosResponse
 import com.ivanbm.frontend_btz.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import kotlin.jvm.java
-import com.google.gson.Gson
-import com.ivanbm.frontend_btz.model.Aviso
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 class AdminActivity : AppCompatActivity() {
 
+    private lateinit var barraInferiorAdministrador: FrameLayout
     private lateinit var swipeRefreshAvisosAdministrador: SwipeRefreshLayout
     private lateinit var recyclerViewAvisosAdministrador: RecyclerView
     private lateinit var avisoAdapter: AvisoAdapter
     private lateinit var progressBarCargaAvisosAdministrador: ProgressBar
 
+    private lateinit var buttonAvisosPendientesAdministrador: LinearLayout
+    private lateinit var buttonAvisosFinalizadosAdministrador: LinearLayout
+    private lateinit var buttonBuscarAvisosAdministrador: LinearLayout
+
+    private lateinit var contenedorIconoPendientesAdministrador: FrameLayout
+    private lateinit var contenedorIconoFinalizadosAdministrador: FrameLayout
+    private lateinit var contenedorIconoBuscarAdministrador: FrameLayout
+
+    private lateinit var indicadorNavegacionAdministrador: View
+
     private var paginaAvisosActual = 1
-
     private var cargandoAvisos = false
-
     private var hayMasAvisos = true
 
-    private lateinit var buttonAvisosPendientesAdministrador: android.widget.Button
-    private lateinit var buttonAvisosFinalizadosAdministrador: android.widget.Button
-    private lateinit var buttonBuscarAvisosAdministrador: android.widget.Button
-    private var estadoFiltroAvisos: String? = null
+    // Este valor se usa para consultar el backend
+    private var estadoFiltroAvisos: String? = "pendiente"
+
+    // Este valor controla la opción resaltada en la barra inferior
+    private var opcionNavegacionSeleccionada = "pendiente"
+
+    private var opcionNavegacionAnteriorBuscar = "pendiente"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
-
         setContentView(R.layout.activity_admin)
+
+        barraInferiorAdministrador =
+            findViewById(R.id.barraInferiorAdministrador)
 
         swipeRefreshAvisosAdministrador =
             findViewById(R.id.swipeRefreshAvisosAdministrador)
-
-        swipeRefreshAvisosAdministrador.setOnRefreshListener {
-            recargarAvisos()
-        }
 
         recyclerViewAvisosAdministrador =
             findViewById(R.id.recyclerViewAvisosAdministrador)
@@ -67,8 +82,25 @@ class AdminActivity : AppCompatActivity() {
         buttonBuscarAvisosAdministrador =
             findViewById(R.id.buttonBuscarAvisosAdministrador)
 
+        contenedorIconoPendientesAdministrador =
+            findViewById(R.id.contenedorIconoPendientesAdministrador)
+
+        contenedorIconoFinalizadosAdministrador =
+            findViewById(R.id.contenedorIconoFinalizadosAdministrador)
+
+        contenedorIconoBuscarAdministrador =
+            findViewById(R.id.contenedorIconoBuscarAdministrador)
+
+        indicadorNavegacionAdministrador =
+            findViewById(R.id.indicadorNavegacionAdministrador)
+
         actualizarTituloAvisosAdministrador()
         configurarBotonesFiltroAvisos()
+        actualizarNavegacionInferiorAdministrador()
+
+        swipeRefreshAvisosAdministrador.setOnRefreshListener {
+            recargarAvisos()
+        }
 
         avisoAdapter = AvisoAdapter(
             emptyList(),
@@ -90,8 +122,7 @@ class AdminActivity : AppCompatActivity() {
         recyclerViewAvisosAdministrador.layoutManager =
             LinearLayoutManager(this)
 
-        recyclerViewAvisosAdministrador.adapter =
-            avisoAdapter
+        recyclerViewAvisosAdministrador.adapter = avisoAdapter
 
         recyclerViewAvisosAdministrador.addOnScrollListener(
             object : RecyclerView.OnScrollListener() {
@@ -110,8 +141,7 @@ class AdminActivity : AppCompatActivity() {
                     val layoutManager =
                         recyclerView.layoutManager as LinearLayoutManager
 
-                    val totalElementos =
-                        layoutManager.itemCount
+                    val totalElementos = layoutManager.itemCount
 
                     val ultimoElementoVisible =
                         layoutManager.findLastVisibleItemPosition()
@@ -126,6 +156,7 @@ class AdminActivity : AppCompatActivity() {
                 }
             }
         )
+
         val buttonMenuAdministrador =
             findViewById<ImageButton>(R.id.buttonMenuAdministrador)
 
@@ -135,11 +166,18 @@ class AdminActivity : AppCompatActivity() {
 
         cargarAvisos()
     }
+
     override fun onResume() {
         super.onResume()
 
+        if (opcionNavegacionSeleccionada == "buscar") {
+            opcionNavegacionSeleccionada = opcionNavegacionAnteriorBuscar
+            actualizarNavegacionInferiorAdministrador()
+        }
+
         recargarAvisos()
     }
+
     private fun cargarAvisos() {
 
         if (cargandoAvisos || !hayMasAvisos) {
@@ -164,83 +202,79 @@ class AdminActivity : AppCompatActivity() {
             }
 
         llamadaAvisos.enqueue(object : Callback<AvisosResponse> {
-                override fun onResponse(
-                    call: Call<AvisosResponse>,
-                    response: Response<AvisosResponse>
-                ) {
 
-                    progressBarCargaAvisosAdministrador.visibility =
-                        ProgressBar.GONE
+            override fun onResponse(
+                call: Call<AvisosResponse>,
+                response: Response<AvisosResponse>
+            ) {
 
-                    cargandoAvisos = false
+                progressBarCargaAvisosAdministrador.visibility =
+                    ProgressBar.GONE
 
-                    swipeRefreshAvisosAdministrador.isRefreshing = false
-                    if (!response.isSuccessful) {
+                cargandoAvisos = false
+                swipeRefreshAvisosAdministrador.isRefreshing = false
 
-                        Toast.makeText(
-                            this@AdminActivity,
-                            "Error HTTP ${response.code()}",
-                            Toast.LENGTH_LONG
-                        ).show()
-
-                        return
-                    }
-
-                    val respuesta = response.body()
-
-                    if (respuesta != null && respuesta.status) {
-
-                        if (paginaAvisosActual == 1) {
-
-                            avisoAdapter.actualizarAvisos(
-                                respuesta.data
-                            )
-
-                        } else {
-
-                            avisoAdapter.agregarAvisos(
-                                respuesta.data
-                            )
-                        }
-
-                        hayMasAvisos =
-                            respuesta.meta.current_page <
-                                    respuesta.meta.last_page
-
-                        if (hayMasAvisos) {
-                            paginaAvisosActual++
-                        }
-
-                    } else {
-
-                        Toast.makeText(
-                            this@AdminActivity,
-                            "No se pudieron obtener los avisos",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
-
-                override fun onFailure(
-                    call: Call<AvisosResponse>,
-                    t: Throwable
-                ) {
-
-                    progressBarCargaAvisosAdministrador.visibility =
-                        ProgressBar.GONE
-
-                    cargandoAvisos = false
-
-                    swipeRefreshAvisosAdministrador.isRefreshing = false
-
+                if (!response.isSuccessful) {
                     Toast.makeText(
                         this@AdminActivity,
-                        "Error de conexión: ${t.message}",
+                        "Error HTTP ${response.code()}",
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                    return
+                }
+
+                val respuesta = response.body()
+
+                if (respuesta != null && respuesta.status) {
+
+                    if (paginaAvisosActual == 1) {
+                        avisoAdapter.actualizarAvisos(
+                            respuesta.data
+                        )
+                    } else {
+                        avisoAdapter.agregarAvisos(
+                            respuesta.data
+                        )
+                    }
+
+                    hayMasAvisos =
+                        respuesta.meta.current_page <
+                                respuesta.meta.last_page
+
+                    if (hayMasAvisos) {
+                        paginaAvisosActual++
+                    }
+
+                } else {
+                    Toast.makeText(
+                        this@AdminActivity,
+                        "No se pudieron obtener los avisos",
                         Toast.LENGTH_LONG
                     ).show()
                 }
-            })
+            }
+
+            override fun onFailure(
+                call: Call<AvisosResponse>,
+                t: Throwable
+            ) {
+
+                progressBarCargaAvisosAdministrador.visibility =
+                    ProgressBar.GONE
+
+                cargandoAvisos = false
+                swipeRefreshAvisosAdministrador.isRefreshing = false
+
+                Toast.makeText(
+                    this@AdminActivity,
+                    "Error de conexión: ${t.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        })
     }
+
     private fun recargarAvisos() {
 
         paginaAvisosActual = 1
@@ -251,6 +285,7 @@ class AdminActivity : AppCompatActivity() {
 
         cargarAvisos()
     }
+
     private fun mostrarMenuAdministrador(
         boton: ImageButton
     ) {
@@ -271,38 +306,32 @@ class AdminActivity : AppCompatActivity() {
             when (item.title.toString()) {
 
                 "Crear avisos" -> {
-
                     startActivity(
                         Intent(
                             this,
                             CrearAvisoActivity::class.java
                         )
                     )
-
                     true
                 }
 
                 "Gestionar clientes" -> {
-
                     startActivity(
                         Intent(
                             this,
                             ClientesActivity::class.java
                         )
                     )
-
                     true
                 }
 
                 "Gestionar usuarios" -> {
-
                     startActivity(
                         Intent(
                             this,
                             PersonalActivity::class.java
                         )
                     )
-
                     true
                 }
 
@@ -319,7 +348,9 @@ class AdminActivity : AppCompatActivity() {
                 "Cerrar sesión" -> {
                     android.app.AlertDialog.Builder(this)
                         .setTitle("Cerrar sesión")
-                        .setMessage("¿Estás seguro de que querés cerrar sesión?")
+                        .setMessage(
+                            "¿Estás seguro de que querés cerrar sesión?"
+                        )
                         .setNegativeButton("Cancelar", null)
                         .setPositiveButton("Cerrar sesión") { _, _ ->
                             CerrarSesion.ejecutar(this)
@@ -329,9 +360,7 @@ class AdminActivity : AppCompatActivity() {
                     true
                 }
 
-                else -> {
-                    true
-                }
+                else -> true
             }
         }
 
@@ -339,50 +368,184 @@ class AdminActivity : AppCompatActivity() {
     }
 
     private fun actualizarTituloAvisosAdministrador() {
-        val textViewTitulo = findViewById<android.widget.TextView>(
+
+        val textViewTitulo = findViewById<TextView>(
             R.id.textViewTituloAvisosRecientes
         )
 
-        textViewTitulo.text = if (estadoFiltroAvisos == "finalizado") {
-            "Avisos finalizados"
-        } else {
-            "Avisos recientes"
-        }
+        textViewTitulo.text =
+            if (estadoFiltroAvisos == "finalizado") {
+                "Avisos finalizados"
+            } else {
+                "Avisos recientes"
+            }
     }
+
     private fun configurarBotonesFiltroAvisos() {
 
         buttonAvisosPendientesAdministrador.setOnClickListener {
+
+            opcionNavegacionSeleccionada = "pendiente"
+
             if (estadoFiltroAvisos != "pendiente") {
                 estadoFiltroAvisos = "pendiente"
                 actualizarTituloAvisosAdministrador()
                 recargarAvisos()
             }
+
+            actualizarNavegacionInferiorAdministrador()
         }
 
         buttonAvisosFinalizadosAdministrador.setOnClickListener {
+
+            opcionNavegacionSeleccionada = "finalizado"
+
             if (estadoFiltroAvisos != "finalizado") {
                 estadoFiltroAvisos = "finalizado"
                 actualizarTituloAvisosAdministrador()
                 recargarAvisos()
             }
+
+            actualizarNavegacionInferiorAdministrador()
         }
 
         buttonBuscarAvisosAdministrador.setOnClickListener {
-            val intent = Intent(
-                this,
-                BuscarAvisosActivity::class.java
+            opcionNavegacionAnteriorBuscar = opcionNavegacionSeleccionada
+
+            if (opcionNavegacionAnteriorBuscar == "buscar") {
+                opcionNavegacionAnteriorBuscar =
+                    if (estadoFiltroAvisos == "finalizado") "finalizado" else "pendiente"
+            }
+
+            opcionNavegacionSeleccionada = "buscar"
+
+            actualizarNavegacionInferiorAdministrador {
+                startActivity(
+                    Intent(this, BuscarAvisosActivity::class.java)
+                )
+            }
+        }
+    }
+
+
+    private fun actualizarNavegacionInferiorAdministrador(
+        alFinalizarAnimacion: (() -> Unit)? = null
+    ) {
+        val colorMorado = Color.parseColor("#2F2483")
+        val colorBlanco = Color.parseColor("#F0F0F0")
+
+        val iconoPendientes = findViewById<ImageView>(
+            R.id.iconoPendientesAdministrador
+        )
+        val iconoFinalizados = findViewById<ImageView>(
+            R.id.iconoFinalizadosAdministrador
+        )
+        val iconoBuscar = findViewById<ImageView>(
+            R.id.iconoBuscarAdministrador
+        )
+
+        val botones = mapOf(
+            "pendiente" to buttonAvisosPendientesAdministrador,
+            "finalizado" to buttonAvisosFinalizadosAdministrador,
+            "buscar" to buttonBuscarAvisosAdministrador
+        )
+
+        val iconos = mapOf(
+            "pendiente" to iconoPendientes,
+            "finalizado" to iconoFinalizados,
+            "buscar" to iconoBuscar
+        )
+
+        val textos = mapOf(
+            "pendiente" to findViewById<TextView>(
+                R.id.textoPendientesAdministrador
+            ),
+            "finalizado" to findViewById<TextView>(
+                R.id.textoFinalizadosAdministrador
+            ),
+            "buscar" to findViewById<TextView>(
+                R.id.textoBuscarAdministrador
+            )
+        )
+
+        // Actualizar iconos y textos según la opción seleccionada.
+        iconos.forEach { (opcion, icono) ->
+            val seleccionado = opcion == opcionNavegacionSeleccionada
+
+            icono.animate().cancel()
+            icono.setColorFilter(
+                if (seleccionado) colorBlanco else colorMorado
             )
 
-            startActivity(intent)
+            icono.animate()
+                .scaleX(if (seleccionado) 1.15f else 1f)
+                .scaleY(if (seleccionado) 1.15f else 1f)
+                .setDuration(120)
+                .start()
+        }
+
+        textos.forEach { (opcion, texto) ->
+            texto.setTextColor(
+                if (opcion == opcionNavegacionSeleccionada) {
+                    colorBlanco
+                } else {
+                    colorMorado
+                }
+            )
+        }
+
+        // Centrar el círculo sobre la opción seleccionada.
+        indicadorNavegacionAdministrador.post {
+            val botonSeleccionado =
+                botones[opcionNavegacionSeleccionada]
+
+            if (botonSeleccionado == null) {
+                alFinalizarAnimacion?.invoke()
+                return@post
+            }
+
+            val centroBoton =
+                botonSeleccionado.left + botonSeleccionado.width / 2f
+
+            val posicionX =
+                centroBoton - indicadorNavegacionAdministrador.width / 2f
+
+            // Centrar verticalmente el círculo en la barra.
+            val posicionY = (barraInferiorAdministrador.height -
+                    indicadorNavegacionAdministrador.height) / 2f + 6f
+
+            indicadorNavegacionAdministrador.animate().cancel()
+
+            if (
+                indicadorNavegacionAdministrador.visibility != View.VISIBLE
+            ) {
+                indicadorNavegacionAdministrador.translationX = posicionX
+                indicadorNavegacionAdministrador.translationY = posicionY
+                indicadorNavegacionAdministrador.visibility = View.VISIBLE
+
+                alFinalizarAnimacion?.invoke()
+                return@post
+            }
+
+            indicadorNavegacionAdministrador.animate()
+                .translationX(posicionX)
+                .translationY(posicionY)
+                .setDuration(180)
+                .withEndAction {
+                    alFinalizarAnimacion?.invoke()
+                }
+                .start()
         }
     }
     private fun abrirTrabajoFinalizado(aviso: Aviso) {
+
         if (aviso.trabajo == null) {
             Toast.makeText(
                 this,
                 "No se encontraron los detalles del trabajo finalizado",
                 Toast.LENGTH_LONG
             ).show()
+
             return
         }
 
@@ -401,6 +564,7 @@ class AdminActivity : AppCompatActivity() {
         intent.putExtra("AVISO_URGENCIA", aviso.urgencia)
         intent.putExtra("AVISO_CLIENTE", aviso.cliente.nombre)
         intent.putExtra("AVISO_FINALIZADO", true)
+
         intent.putExtra(
             "AVISO_TRABAJO_JSON",
             Gson().toJson(aviso.trabajo)
