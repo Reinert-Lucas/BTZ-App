@@ -18,9 +18,11 @@ import retrofit2.Response
 import kotlin.jvm.java
 import com.google.gson.Gson
 import com.ivanbm.frontend_btz.model.Aviso
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 class AdminActivity : AppCompatActivity() {
 
+    private lateinit var swipeRefreshAvisosAdministrador: SwipeRefreshLayout
     private lateinit var recyclerViewAvisosAdministrador: RecyclerView
     private lateinit var avisoAdapter: AvisoAdapter
     private lateinit var progressBarCargaAvisosAdministrador: ProgressBar
@@ -43,6 +45,13 @@ class AdminActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_admin)
 
+        swipeRefreshAvisosAdministrador =
+            findViewById(R.id.swipeRefreshAvisosAdministrador)
+
+        swipeRefreshAvisosAdministrador.setOnRefreshListener {
+            recargarAvisos()
+        }
+
         recyclerViewAvisosAdministrador =
             findViewById(R.id.recyclerViewAvisosAdministrador)
 
@@ -58,6 +67,7 @@ class AdminActivity : AppCompatActivity() {
         buttonBuscarAvisosAdministrador =
             findViewById(R.id.buttonBuscarAvisosAdministrador)
 
+        actualizarTituloAvisosAdministrador()
         configurarBotonesFiltroAvisos()
 
         avisoAdapter = AvisoAdapter(
@@ -164,6 +174,7 @@ class AdminActivity : AppCompatActivity() {
 
                     cargandoAvisos = false
 
+                    swipeRefreshAvisosAdministrador.isRefreshing = false
                     if (!response.isSuccessful) {
 
                         Toast.makeText(
@@ -219,6 +230,8 @@ class AdminActivity : AppCompatActivity() {
                         ProgressBar.GONE
 
                     cargandoAvisos = false
+
+                    swipeRefreshAvisosAdministrador.isRefreshing = false
 
                     Toast.makeText(
                         this@AdminActivity,
@@ -303,6 +316,19 @@ class AdminActivity : AppCompatActivity() {
                     true
                 }
 
+                "Cerrar sesión" -> {
+                    android.app.AlertDialog.Builder(this)
+                        .setTitle("Cerrar sesión")
+                        .setMessage("¿Estás seguro de que querés cerrar sesión?")
+                        .setNegativeButton("Cancelar", null)
+                        .setPositiveButton("Cerrar sesión") { _, _ ->
+                            CerrarSesion.ejecutar(this)
+                        }
+                        .show()
+
+                    true
+                }
+
                 else -> {
                     true
                 }
@@ -312,11 +338,23 @@ class AdminActivity : AppCompatActivity() {
         popupMenu.show()
     }
 
+    private fun actualizarTituloAvisosAdministrador() {
+        val textViewTitulo = findViewById<android.widget.TextView>(
+            R.id.textViewTituloAvisosRecientes
+        )
+
+        textViewTitulo.text = if (estadoFiltroAvisos == "finalizado") {
+            "Avisos finalizados"
+        } else {
+            "Avisos recientes"
+        }
+    }
     private fun configurarBotonesFiltroAvisos() {
 
         buttonAvisosPendientesAdministrador.setOnClickListener {
             if (estadoFiltroAvisos != "pendiente") {
                 estadoFiltroAvisos = "pendiente"
+                actualizarTituloAvisosAdministrador()
                 recargarAvisos()
             }
         }
@@ -324,6 +362,7 @@ class AdminActivity : AppCompatActivity() {
         buttonAvisosFinalizadosAdministrador.setOnClickListener {
             if (estadoFiltroAvisos != "finalizado") {
                 estadoFiltroAvisos = "finalizado"
+                actualizarTituloAvisosAdministrador()
                 recargarAvisos()
             }
         }

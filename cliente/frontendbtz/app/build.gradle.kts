@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.google.services)
 }
 
 android {
@@ -63,7 +62,6 @@ dependencies {
     //Icon
     implementation("androidx.core:core-splashscreen:1.0.1")
 
-    // Firebase
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.messaging)
+    // Actualización de listas deslizando hacia abajo
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 }

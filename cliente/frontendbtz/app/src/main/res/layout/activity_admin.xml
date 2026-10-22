@@ -6,7 +6,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".AdminActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/barraSuperiorAdministrador"
@@ -17,7 +18,6 @@
         android:layout_marginEnd="16dp"
         android:background="@drawable/fondo_barra_administrador"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -39,7 +39,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="@android:color/transparent"
-            android:contentDescription="Menú"
+            android:contentDescription="Abrir menú del administrador"
             android:src="@android:drawable/ic_menu_more"
             android:tint="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -50,51 +50,61 @@
 
     <TextView
         android:id="@+id/textViewTituloAvisosRecientes"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
+        android:layout_marginEnd="16dp"
         android:text="Avisos recientes"
         android:textSize="20sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/barraSuperiorAdministrador" />
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewAvisosAdministrador"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshAvisosAdministrador"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toTopOf="@id/barraInferiorAdministrador"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewTituloAvisosRecientes" />
+        app:layout_constraintTop_toBottomOf="@id/textViewTituloAvisosRecientes">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewAvisosAdministrador"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="8dp" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <ProgressBar
         android:id="@+id/progressBarCargaAvisosAdministrador"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/recyclerViewAvisosAdministrador"
-        app:layout_constraintEnd_toEndOf="@id/recyclerViewAvisosAdministrador"
-        app:layout_constraintStart_toStartOf="@id/recyclerViewAvisosAdministrador"
-        app:layout_constraintTop_toTopOf="@id/recyclerViewAvisosAdministrador" />
+        app:layout_constraintBottom_toBottomOf="@id/swipeRefreshAvisosAdministrador"
+        app:layout_constraintEnd_toEndOf="@id/swipeRefreshAvisosAdministrador"
+        app:layout_constraintStart_toStartOf="@id/swipeRefreshAvisosAdministrador"
+        app:layout_constraintTop_toTopOf="@id/swipeRefreshAvisosAdministrador" />
 
-
-    <!-- Barra inferior -->
     <LinearLayout
         android:id="@+id/barraInferiorAdministrador"
         android:layout_width="0dp"
         android:layout_height="70dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
@@ -102,27 +112,27 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:minWidth="0dp"
             android:text="Pendientes"
-            tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="829dp" />
+            android:textAllCaps="false" />
 
         <Button
             android:id="@+id/buttonAvisosFinalizadosAdministrador"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:minWidth="0dp"
             android:text="Finalizados"
-            tools:layout_editor_absoluteX="137dp"
-            tools:layout_editor_absoluteY="829dp" />
+            android:textAllCaps="false" />
 
         <Button
             android:id="@+id/buttonBuscarAvisosAdministrador"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:minWidth="0dp"
             android:text="Buscar"
-            tools:layout_editor_absoluteX="274dp"
-            tools:layout_editor_absoluteY="829dp" />
+            android:textAllCaps="false" />
 
     </LinearLayout>
 
