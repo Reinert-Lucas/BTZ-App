@@ -7,69 +7,94 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F0F0F0"
     tools:context=".AdminActivity">
 
+    <!-- Barra superior del administrador -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/barraSuperiorAdministrador"
         android:layout_width="0dp"
-        android:layout_height="56dp"
+        android:layout_height="64dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/fondo_barra_administrador"
+        android:elevation="4dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageViewLogoAdministrador"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:contentDescription="Logo BTZ"
+            android:scaleType="fitCenter"
+            android:src="@drawable/btz_app_icon_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/textViewTituloAdministrador"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="4dp"
             android:text="Administrador"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
+            android:textColor="#F0F0F0"
+            android:textSize="20sp"
             android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="end"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toStartOf="@id/buttonMenuAdministrador"
+            app:layout_constraintStart_toEndOf="@id/imageViewLogoAdministrador"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5" />
 
         <ImageButton
             android:id="@+id/buttonMenuAdministrador"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Abrir menú del administrador"
-            android:src="@android:drawable/ic_menu_more"
-            android:tint="@android:color/white"
+            android:padding="10dp"
+            android:src="@android:drawable/arrow_down_float"
+            android:tint="#F0F0F0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- Título de la lista -->
     <TextView
         android:id="@+id/textViewTituloAvisosRecientes"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
         android:text="Avisos recientes"
-        android:textSize="20sp"
+        android:textColor="#2F2483"
+        android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/barraSuperiorAdministrador" />
 
+    <!-- Lista de avisos con actualización por deslizamiento -->
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshAvisosAdministrador"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="12dp"
         app:layout_constraintBottom_toTopOf="@id/barraInferiorAdministrador"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -94,46 +119,164 @@
         app:layout_constraintStart_toStartOf="@id/swipeRefreshAvisosAdministrador"
         app:layout_constraintTop_toTopOf="@id/swipeRefreshAvisosAdministrador" />
 
-    <LinearLayout
+    <!-- Barra inferior de navegación compacta -->
+    <FrameLayout
         android:id="@+id/barraInferiorAdministrador"
         android:layout_width="0dp"
-        android:layout_height="70dp"
+        android:layout_height="96dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp"
-        android:gravity="center"
-        android:orientation="horizontal"
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="0dp"
+        android:background="@android:color/transparent"
+        android:elevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <Button
-            android:id="@+id/buttonAvisosPendientesAdministrador"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:minWidth="0dp"
-            android:text="Pendientes"
-            android:textAllCaps="false" />
+        <!-- Círculo morado que se desplaza entre las opciones -->
+        <View
+            android:id="@+id/indicadorNavegacionAdministrador"
+            android:layout_width="84dp"
+            android:layout_height="84dp"
+            android:layout_gravity="top|start"
+            android:background="@drawable/fondo_icono_navegacion"
+            android:visibility="invisible" />
 
-        <Button
-            android:id="@+id/buttonAvisosFinalizadosAdministrador"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:minWidth="0dp"
-            android:text="Finalizados"
-            android:textAllCaps="false" />
+        <!-- Opciones de navegación -->
+        <LinearLayout
+            android:id="@+id/contenedorOpcionesNavegacionAdministrador"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:baselineAligned="false">
 
-        <Button
-            android:id="@+id/buttonBuscarAvisosAdministrador"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:minWidth="0dp"
-            android:text="Buscar"
-            android:textAllCaps="false" />
+            <!-- Pendientes -->
+            <LinearLayout
+                android:id="@+id/buttonAvisosPendientesAdministrador"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground">
 
-    </LinearLayout>
+                <FrameLayout
+                    android:id="@+id/contenedorIconoPendientesAdministrador"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp">
+
+                    <ImageView
+                        android:id="@+id/iconoPendientesAdministrador"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_nav_pendientes"
+                        android:contentDescription="@null"
+                        app:tint="#2F2483" />
+
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/textoPendientesAdministrador"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pendientes"
+                    android:textSize="13sp"
+                    android:textColor="#2F2483"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:includeFontPadding="false" />
+
+            </LinearLayout>
+
+            <!-- Finalizados -->
+            <LinearLayout
+                android:id="@+id/buttonAvisosFinalizadosAdministrador"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground">
+
+                <FrameLayout
+                    android:id="@+id/contenedorIconoFinalizadosAdministrador"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp">
+
+                    <ImageView
+                        android:id="@+id/iconoFinalizadosAdministrador"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_nav_finalizados"
+                        android:contentDescription="@null"
+                        app:tint="#2F2483" />
+
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/textoFinalizadosAdministrador"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Finalizados"
+                    android:textSize="13sp"
+                    android:textColor="#2F2483"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:includeFontPadding="false" />
+
+            </LinearLayout>
+
+            <!-- Buscar -->
+            <LinearLayout
+                android:id="@+id/buttonBuscarAvisosAdministrador"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground">
+
+                <FrameLayout
+                    android:id="@+id/contenedorIconoBuscarAdministrador"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp">
+
+                    <ImageView
+                        android:id="@+id/iconoBuscarAdministrador"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_nav_buscar"
+                        android:contentDescription="@null"
+                        app:tint="#2F2483" />
+
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/textoBuscarAdministrador"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Buscar"
+                    android:textSize="13sp"
+                    android:textColor="#2F2483"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:includeFontPadding="false" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

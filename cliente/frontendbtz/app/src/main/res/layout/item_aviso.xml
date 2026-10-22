@@ -5,43 +5,112 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp"
-    app:cardCornerRadius="4dp"
-    app:cardElevation="3dp">
+    android:layout_marginStart="4dp"
+    android:layout_marginEnd="4dp"
+    android:layout_marginBottom="12dp"
+    app:cardBackgroundColor="#FFFFFF"
+    app:cardCornerRadius="14dp"
+    app:cardElevation="2dp"
+    app:cardUseCompatPadding="false">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="12dp">
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="14dp">
 
-        <TextView
-            android:id="@+id/textViewDireccionAviso"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Dirección: "
-            android:textSize="16sp" />
+        <!-- Icono del aviso -->
+        <FrameLayout
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_gravity="top"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/bg_icono_aviso">
 
-        <TextView
-            android:id="@+id/textViewFechaAviso"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Fecha de visita: "
-            android:textSize="14sp" />
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_aviso"
+                android:contentDescription="@null"
+                app:tint="#2F2483" />
 
-        <TextView
-            android:id="@+id/textViewClienteAviso"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Cliente: "
-            android:textSize="12sp" />
+        </FrameLayout>
 
-        <TextView
-            android:id="@+id/textViewUrgenciaAviso"
-            android:layout_width="match_parent"
+        <!-- Información del aviso -->
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Prioridad: "
-            android:textSize="12sp" />
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textViewDireccionAviso"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Dirección del aviso"
+                android:textColor="#242238"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:maxLines="2"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/textViewClienteAviso"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Cliente"
+                android:textColor="#686779"
+                android:textSize="13sp"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@drawable/ic_calendario_aviso"
+                    android:contentDescription="@null"
+                    app:tint="#77758A" />
+
+                <TextView
+                    android:id="@+id/textViewFechaAviso"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="5dp"
+                    android:text="Fecha y hora"
+                    android:textColor="#77758A"
+                    android:textSize="12sp"
+                    android:maxLines="2"
+                    android:ellipsize="end" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textViewUrgenciaAviso"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:background="@drawable/bg_urgencia_media"
+                android:text="Media"
+                android:textColor="#8A5A00"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

@@ -40,46 +40,74 @@ class AvisoAdapter(
 
         return AvisoViewHolder(vistaAviso)
     }
-
     override fun onBindViewHolder(
         holder: AvisoViewHolder,
         position: Int
     ) {
-
         val aviso = avisos[position]
 
-        holder.textViewDireccionAviso.text =
-            "Dirección: ${aviso.direccion}"
+        holder.textViewDireccionAviso.text = aviso.direccion
+        holder.textViewFechaAviso.text = "${aviso.fecha} · ${aviso.hora}"
+        holder.textViewClienteAviso.text = aviso.cliente.nombre
 
-        holder.textViewFechaAviso.text =
-            "Fecha de visita: ${aviso.fecha} ${aviso.hora}"
+        val urgencia = aviso.urgencia.trim().lowercase()
 
-        holder.textViewClienteAviso.text =
-            "Cliente: ${aviso.cliente.nombre}"
+        when (urgencia) {
+            "urgente" -> {
+                holder.textViewUrgenciaAviso.text = "Urgente"
+                holder.textViewUrgenciaAviso.setBackgroundResource(
+                    R.drawable.bg_urgencia_urgente
+                )
+                holder.textViewUrgenciaAviso.setTextColor(
+                    android.graphics.Color.parseColor("#B3261E")
+                )
+            }
 
-        holder.textViewUrgenciaAviso.text =
-            "Prioridad: ${aviso.urgencia}"
+            "media" -> {
+                holder.textViewUrgenciaAviso.text = "Media"
+                holder.textViewUrgenciaAviso.setBackgroundResource(
+                    R.drawable.bg_urgencia_media
+                )
+                holder.textViewUrgenciaAviso.setTextColor(
+                    android.graphics.Color.parseColor("#8A5A00")
+                )
+            }
+
+            "baja" -> {
+                holder.textViewUrgenciaAviso.text = "Baja"
+                holder.textViewUrgenciaAviso.setBackgroundResource(
+                    R.drawable.bg_urgencia_baja
+                )
+                holder.textViewUrgenciaAviso.setTextColor(
+                    android.graphics.Color.parseColor("#247342")
+                )
+            }
+
+            else -> {
+                holder.textViewUrgenciaAviso.text = aviso.urgencia
+                holder.textViewUrgenciaAviso.setBackgroundResource(
+                    R.drawable.bg_urgencia_media
+                )
+                holder.textViewUrgenciaAviso.setTextColor(
+                    android.graphics.Color.parseColor("#8A5A00")
+                )
+            }
+        }
 
         holder.itemView.setOnClickListener {
-
             if (onAvisoClick != null) {
-
                 onAvisoClick.invoke(aviso)
-
             } else {
-
                 val intent = Intent(
                     holder.itemView.context,
                     EditarAvisoActivity::class.java
                 )
 
                 intent.putExtra("AVISO_ID", aviso.id)
-
                 holder.itemView.context.startActivity(intent)
             }
         }
     }
-
     override fun getItemCount(): Int {
         return avisos.size
     }
