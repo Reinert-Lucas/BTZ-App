@@ -64,4 +64,7 @@ dependencies {
 
     // Actualización de listas deslizando hacia abajo
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
+    // Firebase Cloud Messaging para notificaciones push
+    implementation("com.google.firebase:firebase-messaging:24.1.2")
 }
