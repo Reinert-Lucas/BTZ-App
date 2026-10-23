@@ -10,10 +10,8 @@ use Illuminate\Http\Request;
 
 class WebUsuarioController extends Controller
 {
-    private UsuarioService $service;
-    public function __construct(UsuarioService $service)
+    public function __construct(private readonly UsuarioService $service)
     {
-        $this->service = $service;
     }
     public function index(Request $request)
     {

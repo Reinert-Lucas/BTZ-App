@@ -12,10 +12,8 @@ use Illuminate\Http\Request;
 
 class WebAvisoController extends Controller
 {
-    private AvisoService $service;
-    public function __construct(AvisoService $service)
+    public function __construct(private readonly AvisoService $service)
     {
-        $this->service = $service;
     }
     public function index(Request $request)
     {

@@ -10,10 +10,8 @@ use Illuminate\Http\Request;
 
 class WebClienteController extends Controller
 {
-    private ClienteService $service;
-    public function __construct(ClienteService $service)
+    public function __construct(private readonly ClienteService $service)
     {
-        $this->service = $service;
     }
     public function index(Request $request)
     {

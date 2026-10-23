@@ -11,10 +11,8 @@ use Illuminate\Support\Facades\Auth;
 
 class UsuarioController extends Controller
 {
-    private UsuarioService $service;
-    public function __construct(UsuarioService $service)
+    public function __construct(private readonly UsuarioService $service)
     {
-        $this->service = $service;
     }
     public function index(Request $request)
     {

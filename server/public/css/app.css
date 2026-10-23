@@ -39,6 +39,17 @@
     font-weight: 600;
 }
 
+.login-form p {
+    width: 100%;
+    justify-self: center;
+    text-align: center;
+}
+@media (max-width: 768px) {
+    .login-form {
+        width: 100%;
+    }
+}
+
 .cards-section {
     width: 100%;
     display: flex;

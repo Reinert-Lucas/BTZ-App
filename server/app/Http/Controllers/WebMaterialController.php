@@ -10,10 +10,8 @@ use Illuminate\Http\Request;
 
 class WebMaterialController extends Controller
 {
-    private MaterialService $service;
-    public function __construct(MaterialService $service)
+    public function __construct(private readonly MaterialService $service)
     {
-        $this->service = $service;
     }
     public function index(Request $request)
     {
