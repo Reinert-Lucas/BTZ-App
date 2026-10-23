@@ -19,7 +19,7 @@ WEB ROUTES
 
 // Rutas Publicas de auth
 Route::get('/', fn() => view('index'))->name("login");
-Route::post('/login', [WebAuthController::class, 'login'])->middleware('throttle:5,1')->name('admin.login');
+Route::post('/login', [WebAuthController::class, 'login'])->middleware('throttle:login')->name('admin.login');
 // Pagina de "Sin Acceso" para usuarios que intentan acceder a rutas de admin sin ser admin
 Route::get('/noaccess', fn() => view('noaccess'))->name('admin.noaccess');
 // Rutas protegidas por auth e isAdmin, para el panel de administracion

@@ -4,8 +4,10 @@ namespace App\Services;
 use App\Models\Usuario;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthService
 {
@@ -13,17 +15,23 @@ class AuthService
     {
         $usuario = Usuario::where('dni', $credentials['dni'])->first();
 
-        if (!$usuario || !Hash::check($credentials['password'], $usuario->password)) {
+        // Se verifica SIEMPRE un hash: el tiempo de respuesta no revela si el DNI existe.
+        $hash = $usuario?->password ?? Hash::make(Str::random(32));
+        $passwordValida = Hash::check($credentials['password'], $hash);
+
+        if (!$usuario || !$passwordValida) {
             throw new AuthenticationException('Credenciales incorrectas');
         }
 
-        $usuario->tokens()->delete(); // un solo dispositivo activo por usuario
-        $token = $usuario->createToken('API TOKEN', expiresAt: now()->addDays(7));
+        return DB::transaction(function () use ($usuario) {
+            $usuario->tokens()->delete(); // un solo dispositivo activo por usuario
+            $token = $usuario->createToken('API TOKEN', expiresAt: now()->addDays(7));
 
-        return [
-            'user' => $usuario,
-            'token' => $token->plainTextToken,
-        ];
+            return [
+                'user' => $usuario,
+                'token' => $token->plainTextToken,
+            ];
+        });
     }
 
     public function me(Request $request)
@@ -36,6 +44,10 @@ class AuthService
         $usuario = $request->user();
         // Evita que el dispositivo siga recibiendo notificaciones del usuario anterior.
         $usuario->forceFill(['fcm_token' => null])->save();
-        $usuario->currentAccessToken()->delete();
+
+        $token = $usuario->currentAccessToken();
+        if ($token instanceof PersonalAccessToken) {
+            $token->delete();
+        }
     }
 }

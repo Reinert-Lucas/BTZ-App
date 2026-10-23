@@ -7,6 +7,7 @@ use App\Models\Cliente;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Kreait\Firebase\Exception\Messaging\NotFound;
 use Throwable;
 
 class AvisoService
@@ -170,34 +171,64 @@ class AvisoService
         $avisoValidado['estado'] = 'pendiente';
         $aviso = Aviso::create($avisoValidado);
 
-        $usuario = $aviso->usuario;
-
-        if ($usuario && $usuario->fcm_token) {
-            try {
-                $this->firebaseNotificationService->sendToToken(
-                    $usuario->fcm_token,
-                    '✅ Nuevo Aviso Asignado',
-                    'Se te ha asignado un nuevo aviso. Toca para ver los detalles.',
-                    [
-                        'aviso_id' => (string) $aviso->aviso_id,
-                    ]
-                );
-            } catch (Throwable $exception) {
-                report($exception);
-            }
-        }
+        $this->notificarAsignacion($aviso);
 
         return $aviso;
     }
 
     public function update(array $newAviso, Aviso $aviso)
     {
+        $nuevoEstado = $newAviso['estado'] ?? $aviso->estado;
+        $tieneTrabajo = $aviso->trabajo()->exists();
+
+        abort_if(
+            $nuevoEstado === 'finalizado' && !$tieneTrabajo,
+            409,
+            'Un aviso solo pasa a finalizado cuando el operario carga el trabajo.'
+        );
+        abort_if(
+            $tieneTrabajo && $nuevoEstado !== 'finalizado',
+            409,
+            'No se puede reabrir un aviso que ya tiene un trabajo cargado.'
+        );
+
         $aviso->update($newAviso);
+
+        if ($aviso->wasChanged('usuario_id')) {
+            $this->notificarAsignacion($aviso);
+        }
+
         return $aviso->fresh();
     }
 
     public function destroy(int $aviso)
     {
         return Aviso::findOrFail($aviso)->delete();
+    }
+
+    /** Se envía DESPUÉS de responder: Firebase no demora (ni rompe) el request. */
+    private function notificarAsignacion(Aviso $aviso): void
+    {
+        $usuario = $aviso->usuario;
+
+        if (!$usuario?->fcm_token) {
+            return;
+        }
+
+        defer(function () use ($aviso, $usuario) {
+            try {
+                $this->firebaseNotificationService->sendToToken(
+                    $usuario->fcm_token,
+                    '✅ Nuevo Aviso Asignado',
+                    'Se te ha asignado un nuevo aviso. Toca para ver los detalles.',
+                    ['aviso_id' => (string) $aviso->aviso_id]
+                );
+            } catch (NotFound) {
+                // Token dado de baja en FCM: se limpia para no reintentar siempre.
+                $usuario->forceFill(['fcm_token' => null])->save();
+            } catch (Throwable $exception) {
+                report($exception);
+            }
+        });
     }
 }

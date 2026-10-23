@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class UsuarioService
 {
@@ -37,15 +38,42 @@ class UsuarioService
     }
     public function update(array $newUsuario, Usuario $usuario)
     {
+        $esUnoMismo = (int) $usuario->usuario_id === (int) Auth::id();
+        $nuevoRol = $newUsuario['rol'] ?? $usuario->rol;
+
+        // El admin que opera siempre sigue siendo admin: nunca quedan 0 administradores.
+        abort_if($esUnoMismo && $nuevoRol !== 'admin', 409, 'No puedes quitarte el rol de administrador.');
+
         if (empty($newUsuario['password'])) {
             unset($newUsuario['password']);
         }
-        $usuario->update($newUsuario);
-        return $usuario->fresh();
+
+        return DB::transaction(function () use ($usuario, $newUsuario) {
+            $usuario->update($newUsuario);
+
+            // Contraseña nueva => se invalidan los tokens de API existentes.
+            if ($usuario->wasChanged('password')) {
+                $usuario->tokens()->delete();
+            }
+
+            return $usuario->fresh();
+        });
     }
     public function destroy(int $usuario)
     {
         abort_if($usuario === (int) Auth::id(), 409, 'No puedes eliminar tu propio usuario.');
         return Usuario::findOrFail($usuario)->delete();
+    }
+    /** Un token FCM pertenece a un único usuario: se lo quita a cualquier otro. */
+    public function saveFcmToken(Usuario $usuario, string $token): void
+    {
+        DB::transaction(function () use ($usuario, $token) {
+            Usuario::withTrashed()
+                ->where('fcm_token', $token)
+                ->where('usuario_id', '!=', $usuario->usuario_id)
+                ->update(['fcm_token' => null]);
+
+            $usuario->forceFill(['fcm_token' => $token])->save();
+        });
     }
 }

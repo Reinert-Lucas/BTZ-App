@@ -27,6 +27,12 @@
     </header>
     <x-modal></x-modal>
     <main class=" flex-grow-1 py-4">
+        @if (session('message'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('message') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
         @yield('content')
     </main>
     <footer class="py-3 bg-white border-top mt-auto">
