@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -18,4 +19,19 @@ class Cliente extends Model
     {
         return $this->hasMany(Aviso::class, 'cliente_id');
     }
+    protected function casts(): array
+    {
+        return ['asegurado' => 'boolean'];
+    }
+
+    protected function aseguradoTexto(): Attribute
+    {
+        return Attribute::get(fn() => $this->asegurado ? 'SI' : 'NO');
+    }
+
+    protected function aseguradoDetalleTexto(): Attribute
+    {
+        return Attribute::get(fn() => $this->asegurado_detalle ?? '-');
+    }
+
 }

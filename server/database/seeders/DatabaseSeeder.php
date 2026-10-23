@@ -9,11 +9,14 @@ class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
+        // Los seeders son datos de DEMO (faker, admin/123): nunca en producción.
+        if (app()->isProduction()) {
+            $this->command?->warn('Seeders de demo deshabilitados en producción. Crea el admin real con un comando Artisan.');
+            return;
+        }
+
         $this->call([
             UsuarioSeeder::class,
             ClienteSeeder::class,

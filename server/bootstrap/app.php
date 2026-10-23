@@ -8,6 +8,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -46,15 +47,24 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->render(function (HttpExceptionInterface $e, Request $request) {
             if ($request->is('api/*')) {
-                $message = $e instanceof NotFoundHttpException
-                    ? 'Recurso no encontrado'
-                    : ($e->getMessage() ?: 'Error en la solicitud');
+                // No se filtran mensajes internos del framework (405, etc.).
+                $message = match (true) {
+                    $e instanceof NotFoundHttpException => 'Recurso no encontrado',
+                    $e instanceof MethodNotAllowedHttpException => 'Método no permitido',
+                    default => $e->getMessage() ?: 'Error en la solicitud',
+                };
 
                 return response()->json(
                     ['status' => false, 'message' => $message],
                     $e->getStatusCode(),
                     $e->getHeaders()
                 );
+            }
+
+            // Web: sesión/CSRF vencido (419) => vuelve al login con un mensaje.
+            if ($e->getStatusCode() === 419) {
+                return redirect()->route('login')
+                    ->withErrors(['dni' => 'Tu sesión expiró. Vuelve a iniciar sesión.']);
             }
         });
 

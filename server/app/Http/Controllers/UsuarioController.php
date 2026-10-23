@@ -57,16 +57,11 @@ class UsuarioController extends Controller
     }
     public function saveFcmToken(Request $request)
     {
-        $request->validate([
-            'token' => ['required', 'string'],
+        $datos = $request->validate([
+            'token' => ['required', 'string', 'max:255'],
         ]);
 
-        /** @var Usuario $usuario */
-        $usuario = Auth::user();
-
-        $usuario->forceFill([
-            'fcm_token' => $request->string('token')->toString(),
-        ])->save();
+        $this->service->saveFcmToken($request->user(), $datos['token']);
 
         return response()->json([
             'status' => true,

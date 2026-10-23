@@ -18,7 +18,7 @@ API ROUTES
 */
 
 // Rutas publicas de auth
-Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1')->name('api.login');
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login')->name('api.login');
 // auth:sanctum es el middleware que protege las rutas 
 Route::middleware('auth:sanctum')->group(function () {
     // Rutas a las que pueden acceder usuarios autenticados

@@ -75,12 +75,20 @@
 }
 
 .form-select,
-.text-input,
-.form-check {
+.text-input {
     background-color: #FFF;
     border: 2px solid var(--bg-gray);
 }
-
+.form-check {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 1rem;
+    border-radius: 10px;
+    border: 1px solid #D1D5DB;
+    transition: .2s;
+    padding: .7rem .9rem;
+}
 .select-adpt {
     width: fit-content;
 }
@@ -93,7 +101,7 @@
 .form-check input {
     height: 100%;
     width: 35px;
-    margin: 0;
+    margin: 0 !important;
 }
 
 .remove-filter {

@@ -16,12 +16,6 @@ class WebClienteController extends Controller
     public function index(Request $request)
     {
         $clientes = $this->service->index($request);
-        // Convertir "asegurado(bool) a SI/NO"
-        $clientes->transform(function ($cliente) {
-            $cliente->asegurado = $cliente->asegurado ? 'SI' : 'NO';
-            $cliente->asegurado_detalle = $cliente->asegurado_detalle ?? '-';
-            return $cliente;
-        });
         $columns = [
             [
                 'label' => 'Nro',
@@ -37,11 +31,11 @@ class WebClienteController extends Controller
             ],
             [
                 'label' => 'Asegurado',
-                'field' => 'asegurado',
+                'field' => 'asegurado_texto',
             ],
             [
                 'label' => 'Asegurado Detalle',
-                'field' => 'asegurado_detalle',
+                'field' => 'asegurado_detalle_texto',
             ]
         ];
         $filters = [
