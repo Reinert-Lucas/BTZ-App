@@ -25,6 +25,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import androidx.core.view.ViewCompat
+import android.util.Log
 import androidx.core.view.WindowInsetsCompat
 class AdminActivity : AppCompatActivity() {
 
@@ -229,15 +230,33 @@ class AdminActivity : AppCompatActivity() {
                 cargandoAvisos = false
                 swipeRefreshAvisosAdministrador.isRefreshing = false
 
+
                 if (!response.isSuccessful) {
+                    val codigo = response.code()
+                    val mensaje = response.message()
+                    val cuerpoError = response.errorBody()?.string()
+
+                    Log.e(
+                        "AdminActivity",
+                        """
+        ERROR HTTP
+        Código: $codigo
+        Mensaje: $mensaje
+        URL: ${call.request().url}
+        Método: ${call.request().method}
+        Cuerpo: $cuerpoError
+        """.trimIndent()
+                    )
+
                     Toast.makeText(
                         this@AdminActivity,
-                        "Error HTTP ${response.code()}",
+                        "Error HTTP $codigo: $mensaje",
                         Toast.LENGTH_LONG
                     ).show()
 
                     return
                 }
+
 
                 val respuesta = response.body()
 
@@ -270,23 +289,25 @@ class AdminActivity : AppCompatActivity() {
                 }
             }
 
+
             override fun onFailure(
                 call: Call<AvisosResponse>,
                 t: Throwable
             ) {
-
-                progressBarCargaAvisosAdministrador.visibility =
-                    ProgressBar.GONE
-
+                progressBarCargaAvisosAdministrador.visibility = ProgressBar.GONE
                 cargandoAvisos = false
                 swipeRefreshAvisosAdministrador.isRefreshing = false
 
+                // Muestra el error completo, incluida la ubicación del fallo
+                Log.e("AdminActivity", "Error al cargar avisos", t)
+
                 Toast.makeText(
                     this@AdminActivity,
-                    "Error de conexión: ${t.message}",
+                    "Error: ${t.localizedMessage}",
                     Toast.LENGTH_LONG
                 ).show()
             }
+
         })
     }
 
