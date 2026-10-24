@@ -14,17 +14,25 @@ class AuthService
     }
     public function login(array $credentials): array
     {
-        if (!Auth::attempt($credentials)) {
+        $usuario = Usuario::where('dni', $credentials['dni'])->first();
+
+        // Se verifica SIEMPRE un hash: el tiempo de respuesta no revela si el DNI existe.
+        $hash = $usuario?->password ?? Hash::make(Str::random(32));
+        $passwordValida = Hash::check($credentials['password'], $hash);
+
+        if (!$usuario || !$passwordValida) {
             throw new AuthenticationException('Credenciales incorrectas');
         }
-        /** @var Usuario $user */
-        $user = Auth::user();
-        $user->tokens()->delete(); // Borra tokens previos si es que hay (Evita acumular tokens)
-        $token = $user->createToken('API TOKEN', expiresAt: now()->addDays(7));
-        return [
-            'user' => $user,
-            'token' => $token,
-        ];
+
+        return DB::transaction(function () use ($usuario) {
+            $usuario->tokens()->delete(); // un solo dispositivo activo por usuario
+            $token = $usuario->createToken('API TOKEN', expiresAt: now()->addDays(7));
+
+            return [
+                'user' => $usuario,
+                'token' => $token->plainTextToken,
+            ];
+        });
     }
     public function me(Request $request)
     {

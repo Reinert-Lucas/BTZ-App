@@ -5,17 +5,39 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="4dp"
     android:layout_marginTop="8dp"
-    app:cardCornerRadius="6dp"
-    app:cardElevation="2dp">
+    android:layout_marginEnd="4dp"
+    app:cardBackgroundColor="#FFFFFF"
+    app:cardCornerRadius="14dp"
+    app:cardElevation="2dp"
+    app:cardUseCompatPadding="false">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="12dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:padding="12dp">
 
+        <!-- Icono del material -->
+        <FrameLayout
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/bg_icono_material">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_material"
+                android:contentDescription="@null"
+                app:tint="#2F2483" />
+
+        </FrameLayout>
+
+        <!-- Nombre y cantidad -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -27,24 +49,49 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Material"
-                android:textSize="17sp"
-                android:textStyle="bold" />
+                android:textColor="#242238"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:maxLines="2"
+                android:ellipsize="end" />
 
             <TextView
                 android:id="@+id/textViewCantidadMaterialTrabajo"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="5dp"
+                android:paddingStart="9dp"
+                android:paddingEnd="9dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:background="@drawable/bg_cantidad_material_trabajo"
                 android:text="Cantidad: 1"
-                android:textSize="15sp" />
+                android:textColor="#5145A5"
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
-        <Button
+        <!-- Botón para eliminar -->
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonEliminarMaterialTrabajo"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Eliminar" />
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:text="Eliminar"
+            android:textColor="#B3261E"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            app:backgroundTint="#FCE8E6"
+            app:cornerRadius="10dp"
+            app:strokeWidth="0dp"
+            app:rippleColor="#E8C7C5" />
 
     </LinearLayout>
 

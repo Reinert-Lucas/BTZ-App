@@ -13,6 +13,9 @@ import com.ivanbm.frontend_btz.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.widget.ImageButton
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 
 class CrearMaterialActivity : AppCompatActivity() {
 
@@ -25,7 +28,27 @@ class CrearMaterialActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_crear_material)
+        findViewById<ImageButton>(R.id.buttonVolverCrearMaterial).setOnClickListener {
+            finish()
+        }
 
+        val scrollView = findViewById<android.view.View>(R.id.scrollViewCrearMaterial)
+
+        ViewCompat.setOnApplyWindowInsetsListener(scrollView) { vista, insets ->
+            val barrasSistema = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or
+                        WindowInsetsCompat.Type.displayCutout()
+            )
+
+            vista.setPadding(
+                barrasSistema.left,
+                barrasSistema.top,
+                barrasSistema.right,
+                barrasSistema.bottom
+            )
+
+            insets
+        }
         editTextNombreMaterial =
             findViewById(R.id.editTextNombreMaterial)
 

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5FA"
+    android:paddingStart="18dp"
+    android:paddingEnd="18dp"
+    android:paddingBottom="12dp">
+
+    <!-- Encabezado -->
+    <LinearLayout
+        android:id="@+id/contenedorEncabezadoPersonal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/buttonVolverPersonal"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_boton_volver"
+            android:contentDescription="Volver"
+            android:padding="12dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_volver"
+            android:tint="#2F2483" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textViewTituloPersonal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Gestión de personal"
+                android:textColor="#2F2483"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textViewSubtituloPersonal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="Administrá los usuarios del sistema"
+                android:textColor="#77738B"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Botón para crear usuarios -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonNuevoUsuario"
+        android:layout_width="0dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="24dp"
+        android:text="Nuevo usuario"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:backgroundTint="#2F2483"
+        app:cornerRadius="12dp"
+        app:icon="@drawable/ic_mas"
+        app:iconGravity="textStart"
+        app:iconPadding="8dp"
+        app:iconTint="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/contenedorEncabezadoPersonal" />
+
+    <!-- Listado paginado -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewListaPersonal"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingTop="2dp"
+        android:paddingBottom="12dp"
+        android:scrollbars="none"
+        android:layout_marginTop="18dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonNuevoUsuario" />
+
+    <!-- Indicador de carga -->
+    <ProgressBar
+        android:id="@+id/progressBarCargaPersonal"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:indeterminateTint="#2F2483"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/recyclerViewListaPersonal"
+        app:layout_constraintEnd_toEndOf="@id/recyclerViewListaPersonal"
+        app:layout_constraintStart_toStartOf="@id/recyclerViewListaPersonal"
+        app:layout_constraintTop_toTopOf="@id/recyclerViewListaPersonal" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

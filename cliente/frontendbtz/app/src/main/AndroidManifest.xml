@@ -38,7 +38,7 @@
             android:name=".CrearUsuarioActivity"
             android:exported="false" />
         <activity
-            android:name=".PersonalActivity"
+            android:name=".UsuarioActivity"
             android:exported="false" />
         <activity
             android:name=".EditarClienteActivity"

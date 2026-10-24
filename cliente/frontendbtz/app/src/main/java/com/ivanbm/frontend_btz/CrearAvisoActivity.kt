@@ -24,7 +24,9 @@ import android.widget.AutoCompleteTextView
 import android.app.DatePickerDialog
 import java.util.Calendar
 import android.app.TimePickerDialog
-
+import android.widget.ImageButton
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 class CrearAvisoActivity : AppCompatActivity() {
 
     private lateinit var editTextFechaAviso: EditText
@@ -66,6 +68,28 @@ class CrearAvisoActivity : AppCompatActivity() {
 
         enableEdgeToEdge()
         setContentView(R.layout.activity_crear_aviso)
+        val vistaPrincipal = findViewById<android.view.View>(
+            R.id.scrollViewCrearAviso
+        )
+
+        ViewCompat.setOnApplyWindowInsetsListener(vistaPrincipal) { vista, insets ->
+            val barrasSistema = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or
+                        WindowInsetsCompat.Type.displayCutout()
+            )
+
+            vista.setPadding(
+                barrasSistema.left,
+                barrasSistema.top,
+                barrasSistema.right,
+                barrasSistema.bottom
+            )
+
+            insets
+        }
+        findViewById<ImageButton>(R.id.buttonVolverCrearAviso).setOnClickListener {
+            finish()
+        }
 
         editTextFechaAviso =
             findViewById(R.id.editTextFechaAviso)

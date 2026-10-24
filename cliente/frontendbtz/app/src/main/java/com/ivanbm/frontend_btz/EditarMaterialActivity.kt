@@ -15,7 +15,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import androidx.appcompat.app.AlertDialog
-
+import android.widget.ImageButton
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 class EditarMaterialActivity : AppCompatActivity() {
 
     private lateinit var editTextNombreMaterial: EditText
@@ -31,6 +33,27 @@ class EditarMaterialActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_editar_material)
 
+        findViewById<ImageButton>(R.id.buttonVolverEditarMaterial).setOnClickListener {
+            finish()
+        }
+
+        val scrollView = findViewById<android.view.View>(R.id.scrollViewEditarMaterial)
+
+        ViewCompat.setOnApplyWindowInsetsListener(scrollView) { vista, insets ->
+            val barrasSistema = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or
+                        WindowInsetsCompat.Type.displayCutout()
+            )
+
+            vista.setPadding(
+                barrasSistema.left,
+                barrasSistema.top,
+                barrasSistema.right,
+                barrasSistema.bottom
+            )
+
+            insets
+        }
         editTextNombreMaterial =
             findViewById(R.id.editTextNombreMaterial)
 

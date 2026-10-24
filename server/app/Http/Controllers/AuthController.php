@@ -39,22 +39,20 @@ class AuthController extends Controller
     public function login(LoginUserRequest $request)
     {
         try {
-            $data = $this->service->login([
-                'dni' => $request->dni,
-                'password' => $request->password,
-            ]);
-            return response()->json([
-                'status' => true,
-                'message' => 'Sesión iniciada con éxito',
-                'user' => new UsuarioResource($data['user']),
-                'token' => $data['token'],
-            ]);
-        } catch (AuthenticationException $e) {
+            $data = $this->service->login($request->validated());
+        } catch (AuthenticationException) {
             return response()->json([
                 'status' => false,
                 'message' => 'Credenciales incorrectas',
             ], 401);
         }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Sesión iniciada con éxito',
+            'user' => new UsuarioResource($data['user']),
+            'token' => $data['token'], // El token pasa de ser NewAccessToken a string [REVISAR SI ANDA]
+        ]);
     }
     public function me(Request $request)
     {
