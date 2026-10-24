@@ -38,24 +38,60 @@ class ClienteAdapter(
 
         return ClienteViewHolder(vistaCliente)
     }
-
     override fun onBindViewHolder(
         holder: ClienteViewHolder,
         position: Int
     ) {
-
         val cliente = clientes[position]
+
         holder.textViewNombreCliente.text = cliente.nombre
         holder.textViewEmailCliente.text = cliente.email
 
-        holder.textViewAseguradoCliente.text = if (cliente.asegurado) {
-            "Asegurado: Sí"
+        if (cliente.asegurado) {
+            holder.textViewAseguradoCliente.text = "Asegurado"
+            holder.textViewAseguradoCliente.setBackgroundResource(
+                R.drawable.bg_cliente_asegurado
+            )
+            holder.textViewAseguradoCliente.setTextColor(
+                android.graphics.Color.parseColor("#247342")
+            )
+
+            val detalle = cliente.asegurado_detalle
+                ?.trim()
+                .orEmpty()
+
+            if (detalle.isNotEmpty()) {
+                holder.textViewDetalleAseguradoCliente.text =
+                    "Detalle del seguro: $detalle"
+
+                holder.textViewDetalleAseguradoCliente.visibility =
+                    View.VISIBLE
+
+                holder.textViewDetalleAseguradoCliente.setBackgroundResource(
+                    R.drawable.bg_detalle_asegurado_cliente
+                )
+
+                holder.textViewDetalleAseguradoCliente.setPadding(
+                    10, 8, 10, 8
+                )
+            } else {
+                holder.textViewDetalleAseguradoCliente.visibility =
+                    View.GONE
+            }
+
         } else {
-            "Asegurado: No"
+            holder.textViewAseguradoCliente.text = "No asegurado"
+            holder.textViewAseguradoCliente.setBackgroundResource(
+                R.drawable.bg_cliente_no_asegurado
+            )
+            holder.textViewAseguradoCliente.setTextColor(
+                android.graphics.Color.parseColor("#686779")
+            )
+
+            holder.textViewDetalleAseguradoCliente.visibility =
+                View.GONE
         }
 
-        holder.textViewDetalleAseguradoCliente.text =
-            "Detalle: ${cliente.asegurado_detalle ?: "-"}"
         holder.itemView.setOnClickListener {
             onClienteClick(cliente)
         }

@@ -3,52 +3,129 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F5F5FA"
+    android:paddingStart="18dp"
+    android:paddingEnd="18dp"
+    android:paddingBottom="12dp">
 
-    <TextView
-        android:id="@+id/textViewTituloMateriales"
+    <!-- Encabezado: volver, título y subtítulo -->
+    <LinearLayout
+        android:id="@+id/contenedorTituloMateriales"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:text="Materiales y Herramientas"
-        android:textSize="24sp"
-        android:textStyle="bold"
+        android:layout_marginTop="24dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <Button
+        <ImageButton
+            android:id="@+id/buttonVolverMateriales"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="14dp"
+            android:background="@drawable/bg_boton_volver"
+            android:clickable="true"
+            android:contentDescription="Volver atrás"
+            android:focusable="true"
+            android:padding="12dp"
+            android:scaleType="center"
+            android:src="@drawable/ic_volver"
+            android:layout_marginStart="12dp"
+            />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textViewTituloMateriales"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Materiales y herramientas"
+                android:textColor="#2F2483"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textViewSubtituloMateriales"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Administrá los materiales y herramientas disponibles"
+                android:textColor="#77738B"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Botón para añadir materiales -->
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonCrearMaterial"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_width="0dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="20dp"
         android:text="Añadir material"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:backgroundTint="#2F2483"
+        app:cornerRadius="12dp"
+        app:icon="@drawable/ic_mas"
+        app:iconGravity="textStart"
+        app:iconPadding="8dp"
+        app:iconTint="#FFFFFF"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewTituloMateriales" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/contenedorTituloMateriales" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewMateriales"
+    <!-- Lista de materiales: se conserva el RecyclerView para la paginación -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardListaMateriales"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@id/progressBarCargaMateriales"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buttonCrearMaterial" />
-
-    <ProgressBar
-        android:id="@+id/progressBarCargaMateriales"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="12dp"
+        app:cardBackgroundColor="#FFFFFF"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonCrearMaterial">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewMateriales"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingStart="8dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp" />
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- Indicador de carga -->
+    <ProgressBar
+        android:id="@+id/progressBarCargaMateriales"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:indeterminateTint="#2F2483"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/cardListaMateriales"
+        app:layout_constraintEnd_toEndOf="@id/cardListaMateriales"
+        app:layout_constraintStart_toStartOf="@id/cardListaMateriales"
+        app:layout_constraintTop_toTopOf="@id/cardListaMateriales" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

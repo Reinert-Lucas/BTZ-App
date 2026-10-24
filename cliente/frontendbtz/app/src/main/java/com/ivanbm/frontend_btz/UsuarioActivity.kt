@@ -17,8 +17,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import kotlin.jvm.java
-
-class PersonalActivity : AppCompatActivity() {
+import android.widget.ImageButton
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+class UsuarioActivity : AppCompatActivity() {
 
     private lateinit var recyclerViewListaPersonal: RecyclerView
     private lateinit var usuarioAdapter: UsuarioAdapter
@@ -32,8 +34,33 @@ class PersonalActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_personal)
+        setContentView(R.layout.activity_usuario)
 
+        findViewById<ImageButton>(R.id.buttonVolverPersonal)
+            .setOnClickListener {
+                finish()
+            }
+
+        val vistaPrincipal = findViewById<View>(R.id.main)
+
+        val paddingSuperiorInicial = vistaPrincipal.paddingTop
+        val paddingInferiorInicial = vistaPrincipal.paddingBottom
+
+        ViewCompat.setOnApplyWindowInsetsListener(vistaPrincipal) { vista, insets ->
+            val barrasSistema = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or
+                        WindowInsetsCompat.Type.displayCutout()
+            )
+
+            vista.setPadding(
+                vista.paddingLeft,
+                paddingSuperiorInicial + barrasSistema.top,
+                vista.paddingRight,
+                paddingInferiorInicial + barrasSistema.bottom
+            )
+
+            insets
+        }
         recyclerViewListaPersonal =
             findViewById(R.id.recyclerViewListaPersonal)
 
@@ -75,8 +102,6 @@ class PersonalActivity : AppCompatActivity() {
         }
 
         configurarPaginacion()
-
-        cargarUsuarios(1)
     }
 
     private fun cargarUsuarios(pagina: Int) {
@@ -107,7 +132,7 @@ class PersonalActivity : AppCompatActivity() {
                 if (!response.isSuccessful) {
 
                     Toast.makeText(
-                        this@PersonalActivity,
+                        this@UsuarioActivity,
                         "Error HTTP ${response.code()}",
                         Toast.LENGTH_LONG
                     ).show()
@@ -148,11 +173,13 @@ class PersonalActivity : AppCompatActivity() {
                     if (pagina >= paginaUltima) {
                         ultimaPagina = true
                     }
-
+                    android.util.Log.d(
+                        "USUARIOS_API",
+                        "Respuesta: ${response.body()}"
+                    )
                 } else {
-
                     Toast.makeText(
-                        this@PersonalActivity,
+                        this@UsuarioActivity,
                         "No se pudieron obtener los usuarios",
                         Toast.LENGTH_LONG
                     ).show()
@@ -176,7 +203,7 @@ class PersonalActivity : AppCompatActivity() {
                 )
 
                 Toast.makeText(
-                    this@PersonalActivity,
+                    this@UsuarioActivity,
                     "Error de conexión: ${t.message}",
                     Toast.LENGTH_LONG
                 ).show()

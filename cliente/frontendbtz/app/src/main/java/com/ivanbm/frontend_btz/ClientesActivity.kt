@@ -16,7 +16,9 @@ import com.ivanbm.frontend_btz.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
+import android.widget.ImageButton
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 class ClientesActivity : AppCompatActivity() {
 
     private lateinit var recyclerViewListaClientes: RecyclerView
@@ -36,7 +38,32 @@ class ClientesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_clientes)
+        findViewById<ImageButton>(R.id.buttonVolverClientes).setOnClickListener {
+            finish()
+        }
 
+        val vistaPrincipal = findViewById<android.view.View>(R.id.main)
+
+        val paddingInicialIzquierdo = vistaPrincipal.paddingLeft
+        val paddingInicialSuperior = vistaPrincipal.paddingTop
+        val paddingInicialDerecho = vistaPrincipal.paddingRight
+        val paddingInicialInferior = vistaPrincipal.paddingBottom
+
+        ViewCompat.setOnApplyWindowInsetsListener(vistaPrincipal) { vista, insets ->
+            val barrasSistema = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or
+                        WindowInsetsCompat.Type.displayCutout()
+            )
+
+            vista.setPadding(
+                paddingInicialIzquierdo + barrasSistema.left,
+                paddingInicialSuperior + barrasSistema.top,
+                paddingInicialDerecho + barrasSistema.right,
+                paddingInicialInferior + barrasSistema.bottom
+            )
+
+            insets
+        }
         buttonNuevoCliente =
             findViewById(R.id.buttonNuevoCliente)
 

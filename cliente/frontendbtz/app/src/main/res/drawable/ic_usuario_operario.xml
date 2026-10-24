@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+
+    <!-- Rostro -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:strokeColor="#2F2483"
+        android:strokeWidth="2"
+        android:pathData="M16,20 C16,14 19,11 24,11 C29,11 32,14 32,20 L31,25 C30,30 27,33 24,33 C21,33 18,30 17,25 Z" />
+
+    <!-- Casco -->
+    <path
+        android:fillColor="#2F2483"
+        android:pathData="M13,18 C13,10 18,5 24,5 C30,5 35,10 35,18 Z" />
+
+    <!-- Visera -->
+    <path
+        android:fillColor="#2F2483"
+        android:pathData="M11,17 L37,17 L37,20 L11,20 Z" />
+
+    <!-- Detalles blancos del casco -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M20,9 L22,9 L22,15 L20,15 Z M26,9 L28,9 L28,15 L26,15 Z" />
+
+    <!-- Cuerpo y chaleco -->
+    <path
+        android:fillColor="#2F2483"
+        android:pathData="M17,31 L21,33 L24,36 L27,33 L31,31 C37,33 40,36 40,41 L40,44 L8,44 L8,41 C8,36 11,33 17,31 Z" />
+
+    <!-- Bandas blancas reflectantes -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M15,33 L18,32 L20,44 L16,44 Z M30,32 L33,33 L32,44 L28,44 Z" />
+
+</vector>

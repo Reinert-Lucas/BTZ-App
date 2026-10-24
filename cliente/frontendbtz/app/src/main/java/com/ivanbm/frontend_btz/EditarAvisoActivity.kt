@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.Spinner
 import android.widget.TextView
@@ -29,6 +30,8 @@ import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 
 class EditarAvisoActivity : AppCompatActivity() {
 
@@ -75,9 +78,24 @@ class EditarAvisoActivity : AppCompatActivity() {
 
         enableEdgeToEdge()
         setContentView(R.layout.activity_editar_aviso)
+        val vistaPrincipal = findViewById<android.view.View>(R.id.scrollViewEditarAviso)
 
+        ViewCompat.setOnApplyWindowInsetsListener(vistaPrincipal) { vista, insets ->
+            val barrasSistema = insets.getInsets(
+                WindowInsetsCompat.Type.statusBars() or
+                        WindowInsetsCompat.Type.displayCutout()
+            )
+
+            vista.setPadding(
+                vista.paddingLeft,
+                barrasSistema.top,
+                vista.paddingRight,
+                vista.paddingBottom
+            )
+
+            insets
+        }
         inicializarVistas()
-
         avisoId = intent.getIntExtra("AVISO_ID", -1)
 
         if (avisoId == -1) {
@@ -91,11 +109,9 @@ class EditarAvisoActivity : AppCompatActivity() {
             return
         }
 
-        configurarSelectorFecha()
-        configurarSelectorHora()
-        configurarSpinnerUrgencia()
-        configurarBotonAnadirCliente()
-
+        findViewById<ImageButton>(R.id.buttonVolverEditarAviso).setOnClickListener {
+            finish()
+        }
         buttonGuardarCambiosAviso.setOnClickListener {
             actualizarAviso()
         }
@@ -104,6 +120,10 @@ class EditarAvisoActivity : AppCompatActivity() {
             mostrarConfirmacionEliminar()
         }
 
+        configurarSelectorFecha()
+        configurarSelectorHora()
+        configurarSpinnerUrgencia()
+        configurarBotonAnadirCliente()
         cargarAviso()
         cargarClientes()
         cargarOperarios()

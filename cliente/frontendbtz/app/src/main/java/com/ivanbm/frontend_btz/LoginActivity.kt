@@ -124,7 +124,7 @@ class LoginActivity : AppCompatActivity() {
 
                         // Login correcto
                         val usuarioLogueado = loginResponse.user
-                        val token = loginResponse.token?.plainTextToken
+                        val token = loginResponse.token
 
                         if (!token.isNullOrEmpty()) {
                             SessionManager.guardarToken(token)

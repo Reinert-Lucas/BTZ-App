@@ -24,7 +24,8 @@ import com.ivanbm.frontend_btz.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 class AdminActivity : AppCompatActivity() {
 
     private lateinit var barraInferiorAdministrador: FrameLayout
@@ -60,7 +61,21 @@ class AdminActivity : AppCompatActivity() {
 
         enableEdgeToEdge()
         setContentView(R.layout.activity_admin)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { vista, insets ->
+            val barrasSistema = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or
+                        WindowInsetsCompat.Type.displayCutout()
+            )
 
+            vista.setPadding(
+                barrasSistema.left,
+                barrasSistema.top,
+                barrasSistema.right,
+                barrasSistema.bottom
+            )
+
+            insets
+        }
         barraInferiorAdministrador =
             findViewById(R.id.barraInferiorAdministrador)
 
@@ -286,85 +301,84 @@ class AdminActivity : AppCompatActivity() {
         cargarAvisos()
     }
 
-    private fun mostrarMenuAdministrador(
-        boton: ImageButton
-    ) {
+    private fun mostrarMenuAdministrador(boton: ImageButton) {
 
-        val popupMenu = android.widget.PopupMenu(
-            this,
-            boton
+        val vistaMenu = layoutInflater.inflate(
+            R.layout.menu_opciones_administrador,
+            null
         )
 
-        popupMenu.menu.add("Crear avisos")
-        popupMenu.menu.add("Gestionar herramientas y materiales")
-        popupMenu.menu.add("Gestionar clientes")
-        popupMenu.menu.add("Gestionar usuarios")
-        popupMenu.menu.add("Cerrar sesión")
+        val anchoMenu = (260 * resources.displayMetrics.density).toInt()
 
-        popupMenu.setOnMenuItemClickListener { item ->
+        val popupMenu = android.widget.PopupWindow(
+            vistaMenu,
+            anchoMenu,
+            android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+            true
+        )
 
-            when (item.title.toString()) {
+        popupMenu.setBackgroundDrawable(
+            android.graphics.drawable.ColorDrawable(
+                android.graphics.Color.TRANSPARENT
+            )
+        )
 
-                "Crear avisos" -> {
-                    startActivity(
-                        Intent(
-                            this,
-                            CrearAvisoActivity::class.java
-                        )
-                    )
-                    true
-                }
+        popupMenu.elevation = 12 * resources.displayMetrics.density
+        popupMenu.isOutsideTouchable = true
 
-                "Gestionar clientes" -> {
-                    startActivity(
-                        Intent(
-                            this,
-                            ClientesActivity::class.java
-                        )
-                    )
-                    true
-                }
-
-                "Gestionar usuarios" -> {
-                    startActivity(
-                        Intent(
-                            this,
-                            PersonalActivity::class.java
-                        )
-                    )
-                    true
-                }
-
-                "Gestionar herramientas y materiales" -> {
-                    startActivity(
-                        Intent(
-                            this,
-                            MaterialActivity::class.java
-                        )
-                    )
-                    true
-                }
-
-                "Cerrar sesión" -> {
-                    android.app.AlertDialog.Builder(this)
-                        .setTitle("Cerrar sesión")
-                        .setMessage(
-                            "¿Estás seguro de que querés cerrar sesión?"
-                        )
-                        .setNegativeButton("Cancelar", null)
-                        .setPositiveButton("Cerrar sesión") { _, _ ->
-                            CerrarSesion.ejecutar(this)
-                        }
-                        .show()
-
-                    true
-                }
-
-                else -> true
+        vistaMenu.findViewById<View>(R.id.opcionCrearAvisos)
+            .setOnClickListener {
+                popupMenu.dismiss()
+                startActivity(
+                    Intent(this, CrearAvisoActivity::class.java)
+                )
             }
-        }
 
-        popupMenu.show()
+        vistaMenu.findViewById<View>(R.id.opcionGestionarMateriales)
+            .setOnClickListener {
+                popupMenu.dismiss()
+                startActivity(
+                    Intent(this, MaterialActivity::class.java)
+                )
+            }
+
+        vistaMenu.findViewById<View>(R.id.opcionGestionarClientes)
+            .setOnClickListener {
+                popupMenu.dismiss()
+                startActivity(
+                    Intent(this, ClientesActivity::class.java)
+                )
+            }
+
+        vistaMenu.findViewById<View>(R.id.opcionGestionarUsuarios)
+            .setOnClickListener {
+                popupMenu.dismiss()
+                startActivity(
+                    Intent(this, UsuarioActivity::class.java)
+                )
+            }
+
+        vistaMenu.findViewById<View>(R.id.opcionCerrarSesion)
+            .setOnClickListener {
+                popupMenu.dismiss()
+
+                android.app.AlertDialog.Builder(this)
+                    .setTitle("Cerrar sesión")
+                    .setMessage(
+                        "¿Estás seguro de que querés cerrar sesión?"
+                    )
+                    .setNegativeButton("Cancelar", null)
+                    .setPositiveButton("Cerrar sesión") { _, _ ->
+                        CerrarSesion.ejecutar(this)
+                    }
+                    .show()
+            }
+
+        popupMenu.showAsDropDown(
+            boton,
+            boton.width - anchoMenu,
+            8
+        )
     }
 
     private fun actualizarTituloAvisosAdministrador() {

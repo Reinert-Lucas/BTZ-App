@@ -5,205 +5,383 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:background="#F5F5FA"
+    android:fillViewport="true"
+    android:clipToPadding="false"
+    android:id="@+id/scrollViewEditarAviso">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:paddingBottom="24dp">
 
-        <TextView
-            android:id="@+id/textViewTituloEditarAviso"
-            android:layout_width="wrap_content"
+        <!-- Encabezado -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="EDITAR AVISO"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginBottom="24dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
-        <EditText
-            android:id="@+id/editTextFechaEditarAviso"
-            android:layout_width="0dp"
+            <ImageButton
+                android:id="@+id/buttonVolverEditarAviso"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="14dp"
+                android:background="@drawable/bg_boton_volver"
+                android:src="@drawable/ic_volver"
+                android:scaleType="center"
+                android:padding="12dp"
+                android:contentDescription="Volver atrás"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textViewTituloEditarAviso"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Editar aviso"
+                    android:textColor="#2F2483"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Modificá los datos del trabajo"
+                    android:textColor="#77738B"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Tarjeta del formulario -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:clickable="true"
-            android:focusable="false"
-            android:hint="Fecha"
-            android:inputType="date"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewTituloEditarAviso" />
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:contentPadding="16dp">
 
-        <EditText
-            android:id="@+id/editTextHoraEditarAviso"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:clickable="true"
-            android:focusable="false"
-            android:hint="Hora"
-            android:inputType="time"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/editTextFechaEditarAviso" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/editTextDireccionEditarAviso"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="Dirección"
-            android:inputType="textPostalAddress"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/editTextHoraEditarAviso" />
+                <!-- Fecha -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Fecha"
+                    android:textColor="#37334D"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/editTextTelefonoEditarAviso"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="Teléfono"
-            android:inputType="phone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/editTextDireccionEditarAviso" />
+                <EditText
+                    android:id="@+id/editTextFechaEditarAviso"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_campo_formulario"
+                    android:clickable="true"
+                    android:drawableStart="@drawable/ic_calendario_aviso"
+                    android:drawablePadding="10dp"
+                    android:focusable="false"
+                    android:hint="Seleccionar fecha"
+                    android:inputType="date"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:textColor="#29263D"
+                    android:textColorHint="#89859C"
+                    android:textSize="15sp" />
 
-        <EditText
-            android:id="@+id/editTextMensajeEditarAviso"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="Mensaje"
-            android:inputType="textMultiLine"
-            android:minLines="3"
-            android:gravity="top"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/editTextTelefonoEditarAviso" />
+                <!-- Hora -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Hora"
+                    android:textColor="#37334D"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/editTextObservacionEditarAviso"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="Observación"
-            android:inputType="textMultiLine"
-            android:minLines="3"
-            android:gravity="top"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/editTextMensajeEditarAviso" />
+                <EditText
+                    android:id="@+id/editTextHoraEditarAviso"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_campo_formulario"
+                    android:clickable="true"
+                    android:drawableStart="@drawable/ic_nav_pendientes"
+                    android:drawablePadding="10dp"
+                    android:focusable="false"
+                    android:hint="Seleccionar hora"
+                    android:inputType="time"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:textColor="#29263D"
+                    android:textColorHint="#89859C"
+                    android:textSize="15sp" />
 
-        <TextView
-            android:id="@+id/textViewUrgenciaEditarAviso"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Prioridad"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/editTextObservacionEditarAviso" />
+                <!-- Dirección -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Dirección"
+                    android:textColor="#37334D"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
-        <Spinner
-            android:id="@+id/spinnerUrgenciaEditarAviso"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewUrgenciaEditarAviso" />
+                <EditText
+                    android:id="@+id/editTextDireccionEditarAviso"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_campo_formulario"
+                    android:hint="Ingresar dirección"
+                    android:inputType="textPostalAddress"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:textColor="#29263D"
+                    android:textColorHint="#89859C"
+                    android:textSize="15sp" />
 
-        <TextView
-            android:id="@+id/textViewClienteEditarAviso"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Cliente"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/spinnerUrgenciaEditarAviso" />
+                <!-- Teléfono -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Teléfono"
+                    android:textColor="#37334D"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
-        <AutoCompleteTextView
-            android:id="@+id/autoCompleteClienteEditarAviso"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:completionThreshold="0"
-            android:hint="Seleccionar cliente"
-            android:inputType="text"
-            app:layout_constraintEnd_toStartOf="@id/buttonAnadirClienteEditarAviso"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewClienteEditarAviso" />
+                <EditText
+                    android:id="@+id/editTextTelefonoEditarAviso"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_campo_formulario"
+                    android:hint="Ingresar teléfono"
+                    android:inputType="phone"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:textColor="#29263D"
+                    android:textColorHint="#89859C"
+                    android:textSize="15sp" />
 
-        <Button
-            android:id="@+id/buttonAnadirClienteEditarAviso"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="Crear"
-            app:layout_constraintBottom_toBottomOf="@id/autoCompleteClienteEditarAviso"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/autoCompleteClienteEditarAviso"
-            app:layout_constraintTop_toTopOf="@id/autoCompleteClienteEditarAviso" />
+                <!-- Mensaje -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Mensaje"
+                    android:textColor="#37334D"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/textViewOperarioEditarAviso"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Operario asignado"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/autoCompleteClienteEditarAviso" />
+                <EditText
+                    android:id="@+id/editTextMensajeEditarAviso"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_campo_formulario"
+                    android:gravity="top|start"
+                    android:hint="Descripción del trabajo"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:minHeight="90dp"
+                    android:minLines="3"
+                    android:padding="12dp"
+                    android:textColor="#29263D"
+                    android:textColorHint="#89859C"
+                    android:textSize="15sp" />
 
-        <AutoCompleteTextView
-            android:id="@+id/autoCompleteOperarioEditarAviso"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:hint="Seleccionar operario"
-            android:inputType="text"
-            android:completionThreshold="0"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewOperarioEditarAviso" />
+                <!-- Observación -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Observaciones"
+                    android:textColor="#37334D"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/buttonGuardarCambiosAviso"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="GUARDAR CAMBIOS"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/autoCompleteOperarioEditarAviso" />
+                <EditText
+                    android:id="@+id/editTextObservacionEditarAviso"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_campo_formulario"
+                    android:gravity="top|start"
+                    android:hint="Agregar observaciones (opcional)"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:minHeight="90dp"
+                    android:minLines="3"
+                    android:padding="12dp"
+                    android:textColor="#29263D"
+                    android:textColorHint="#89859C"
+                    android:textSize="15sp" />
 
-        <ProgressBar
-            android:id="@+id/progressBarEditarAviso"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/buttonGuardarCambiosAviso"
-            app:layout_constraintEnd_toEndOf="@id/buttonGuardarCambiosAviso"
-            app:layout_constraintStart_toStartOf="@id/buttonGuardarCambiosAviso"
-            app:layout_constraintTop_toTopOf="@id/buttonGuardarCambiosAviso" />
+                <!-- Prioridad -->
+                <TextView
+                    android:id="@+id/textViewUrgenciaEditarAviso"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Prioridad"
+                    android:textColor="#37334D"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/buttonEliminarAviso"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="ELIMINAR AVISO"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/buttonGuardarCambiosAviso" />
+                <Spinner
+                    android:id="@+id/spinnerUrgenciaEditarAviso"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_campo_formulario"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <!-- Cliente -->
+                <TextView
+                    android:id="@+id/textViewClienteEditarAviso"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Cliente"
+                    android:textColor="#37334D"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/autoCompleteClienteEditarAviso"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_campo_formulario"
+                        android:completionThreshold="1"
+                        android:hint="Seleccionar cliente"
+                        android:inputType="textCapWords"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="8dp"
+                        android:singleLine="true"
+                        android:textColor="#29263D"
+                        android:textColorHint="#89859C"
+                        android:textSize="15sp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonAnadirClienteEditarAviso"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:layout_marginStart="8dp"
+                        android:minWidth="0dp"
+                        android:text="Crear"
+                        android:textAllCaps="false"
+                        android:textColor="#2F2483"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        app:backgroundTint="#F0EEFF"
+                        app:cornerRadius="12dp"
+                        app:strokeWidth="0dp" />
+
+                </LinearLayout>
+
+                <!-- Operario -->
+                <TextView
+                    android:id="@+id/textViewOperarioEditarAviso"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Operario asignado"
+                    android:textColor="#37334D"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/autoCompleteOperarioEditarAviso"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_campo_formulario"
+                    android:completionThreshold="1"
+                    android:hint="Seleccionar operario"
+                    android:inputType="textCapWords"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:singleLine="true"
+                    android:textColor="#29263D"
+                    android:textColorHint="#89859C"
+                    android:textSize="15sp" />
+
+                <!-- Guardar cambios -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonGuardarCambiosAviso"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:layout_marginTop="24dp"
+                    android:text="Guardar cambios"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="#2F2483"
+                    app:cornerRadius="14dp"
+                    app:strokeWidth="0dp" />
+
+                <ProgressBar
+                    android:id="@+id/progressBarEditarAviso"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="12dp"
+                    android:visibility="gone" />
+
+                <!-- Separador -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="24dp"
+                    android:background="#EAE7F2" />
+
+                <!-- Eliminar aviso -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonEliminarAviso"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="16dp"
+                    android:text="Eliminar aviso"
+                    android:textAllCaps="false"
+                    android:textColor="#C62828"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="#FFF0F0"
+                    app:cornerRadius="14dp"
+                    app:strokeColor="#F1CACA"
+                    app:strokeWidth="1dp" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
 
 </ScrollView>

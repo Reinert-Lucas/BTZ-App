@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="260dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:background="@drawable/bg_menu_opciones">
+
+    <LinearLayout
+        android:id="@+id/opcionCrearAvisos"
+        style="@style/ItemMenuOpciones"
+        android:contentDescription="Crear avisos">
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/ic_aviso"
+            android:contentDescription="@null"
+            app:tint="#2F2483" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="14dp"
+            android:text="Crear avisos"
+            android:textColor="#29263D"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/opcionGestionarMateriales"
+        style="@style/ItemMenuOpciones"
+        android:contentDescription="Gestionar herramientas y materiales">
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/ic_material"
+            android:contentDescription="@null"
+            app:tint="#2F2483" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="14dp"
+            android:text="Herramientas y materiales"
+            android:textColor="#29263D"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/opcionGestionarClientes"
+        style="@style/ItemMenuOpciones"
+        android:contentDescription="Gestionar clientes">
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/ic_cliente"
+            android:contentDescription="@null"
+            app:tint="#2F2483" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="14dp"
+            android:text="Gestionar clientes"
+            android:textColor="#29263D"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/opcionGestionarUsuarios"
+        style="@style/ItemMenuOpciones"
+        android:contentDescription="Gestionar usuarios">
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/ic_usuario_administrador"
+            android:contentDescription="@null" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="14dp"
+            android:text="Gestionar usuarios"
+            android:textColor="#29263D"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        android:background="#EAE8F2" />
+
+    <LinearLayout
+        android:id="@+id/opcionCerrarSesion"
+        style="@style/ItemMenuOpciones"
+        android:contentDescription="Cerrar sesión">
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/ic_cerrar_sesion"
+            android:contentDescription="@null"
+            app:tint="#B3261E" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="14dp"
+            android:text="Cerrar sesión"
+            android:textColor="#B3261E"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</LinearLayout>

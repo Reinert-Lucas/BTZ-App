@@ -15,7 +15,10 @@ import com.ivanbm.frontend_btz.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
+import android.view.View
+import android.widget.ImageButton
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 class EditarClienteActivity : AppCompatActivity() {
 
     private var clienteId: Int = -1
@@ -31,7 +34,33 @@ class EditarClienteActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_editar_cliente)
+        findViewById<ImageButton>(R.id.buttonVolverEditarCliente)
+            .setOnClickListener {
+                finish()
+            }
 
+        val scrollViewEditarCliente =
+            findViewById<View>(R.id.scrollViewEditarCliente)
+
+        val paddingSuperiorInicial = scrollViewEditarCliente.paddingTop
+        val paddingInferiorInicial = scrollViewEditarCliente.paddingBottom
+
+        ViewCompat.setOnApplyWindowInsetsListener(scrollViewEditarCliente) { vista, insets ->
+
+            val barrasSistema = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or
+                        WindowInsetsCompat.Type.displayCutout()
+            )
+
+            vista.setPadding(
+                vista.paddingLeft,
+                paddingSuperiorInicial + barrasSistema.top,
+                vista.paddingRight,
+                paddingInferiorInicial + barrasSistema.bottom
+            )
+
+            insets
+        }
         editTextNombreCliente =
             findViewById(R.id.editTextNombreCliente)
 
@@ -121,7 +150,7 @@ class EditarClienteActivity : AppCompatActivity() {
                 response: Response<ClienteResponse>
             ) {
                 if (!response.isSuccessful) {
-
+                    mostrarCargando(false)
                     Toast.makeText(
                         this@EditarClienteActivity,
                         "Error HTTP ${response.code()}",
@@ -205,7 +234,7 @@ class EditarClienteActivity : AppCompatActivity() {
                 ) {
 
                     if (!response.isSuccessful) {
-
+                        mostrarCargando(false)
                         Toast.makeText(
                             this@EditarClienteActivity,
                             "Error HTTP ${response.code()}",

@@ -3,7 +3,8 @@ package com.ivanbm.frontend_btz.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+//import android.widget.Button
+import com.google.android.material.button.MaterialButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ivanbm.frontend_btz.R
@@ -24,7 +25,10 @@ class MaterialTrabajoAdapter(
         val textViewCantidadMaterialTrabajo: TextView =
             itemView.findViewById(R.id.textViewCantidadMaterialTrabajo)
 
-        val buttonEliminarMaterialTrabajo: Button =
+        //val buttonEliminarMaterialTrabajo: Button =
+        //    itemView.findViewById(R.id.buttonEliminarMaterialTrabajo)
+
+        val buttonEliminarMaterialTrabajo: MaterialButton =
             itemView.findViewById(R.id.buttonEliminarMaterialTrabajo)
     }
 

@@ -27,6 +27,8 @@ class UsuarioAdapter(
         val textViewTelefonoUsuario: TextView =
             itemView.findViewById(R.id.textViewTelefonoUsuario)
 
+        val imageViewIconoUsuario: android.widget.ImageView =
+            itemView.findViewById(R.id.imageViewIconoUsuario)
     }
 
     override fun onCreateViewHolder(
@@ -35,7 +37,7 @@ class UsuarioAdapter(
     ): UsuarioViewHolder {
 
         val vistaUsuario = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_personal, parent, false)
+            .inflate(R.layout.item_usuario, parent, false)
 
         return UsuarioViewHolder(vistaUsuario)
     }
@@ -44,14 +46,32 @@ class UsuarioAdapter(
         holder: UsuarioViewHolder,
         position: Int
     ) {
-
         val usuario = usuarios[position]
 
+        when (usuario.rol.trim().lowercase()) {
+            "admin", "administrador" -> {
+                holder.imageViewIconoUsuario.setImageResource(
+                    R.drawable.ic_usuario_administrador
+                )
+            }
+
+            "operario" -> {
+                holder.imageViewIconoUsuario.setImageResource(
+                    R.drawable.ic_usuario_operario
+                )
+            }
+
+            else -> {
+                holder.imageViewIconoUsuario.setImageResource(
+                    R.drawable.ic_usuario_administrador
+                )
+            }
+        }
         holder.textViewNombreUsuario.text =
             usuario.nombre
 
         holder.textViewRolUsuario.text =
-            "Rol: ${usuario.rol}"
+            usuario.rol.replaceFirstChar { it.uppercase() }
 
         holder.textViewDniUsuario.text =
             "DNI: ${usuario.dni}"

@@ -15,7 +15,9 @@ import com.ivanbm.frontend_btz.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
+import android.widget.ImageButton
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 class CrearClienteActivity : AppCompatActivity() {
 
     private lateinit var editTextNombreCliente: EditText
@@ -29,7 +31,32 @@ class CrearClienteActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_crear_cliente)
+        findViewById<ImageButton>(R.id.buttonVolverCrearCliente)
+            .setOnClickListener {
+                finish()
+            }
+        val scrollViewCrearCliente =
+            findViewById<View>(R.id.scrollViewCrearCliente)
 
+        val paddingSuperiorInicial = scrollViewCrearCliente.paddingTop
+        val paddingInferiorInicial = scrollViewCrearCliente.paddingBottom
+
+        ViewCompat.setOnApplyWindowInsetsListener(scrollViewCrearCliente) { vista, insets ->
+
+            val barrasSistema = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or
+                        WindowInsetsCompat.Type.displayCutout()
+            )
+
+            vista.setPadding(
+                vista.paddingLeft,
+                paddingSuperiorInicial + barrasSistema.top,
+                vista.paddingRight,
+                paddingInferiorInicial + barrasSistema.bottom
+            )
+
+            insets
+        }
         editTextNombreCliente =
             findViewById(R.id.editTextNombreCliente)
 

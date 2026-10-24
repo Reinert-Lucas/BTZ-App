@@ -18,20 +18,17 @@ import com.ivanbm.frontend_btz.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
+import org.json.JSONObject
 class EditarUsuarioActivity : AppCompatActivity() {
 
     private var usuarioId: Int = -1
-
     private lateinit var editTextNombreUsuario: EditText
     private lateinit var editTextDniUsuario: EditText
     private lateinit var editTextTelefonoUsuario: EditText
     private lateinit var editTextPasswordUsuario: EditText
     private lateinit var spinnerRolUsuario: Spinner
-
     private lateinit var buttonGuardarCambiosUsuario: Button
     private lateinit var buttonEliminarUsuario: Button
-
     private lateinit var progressBarEditarUsuario: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -365,13 +362,24 @@ class EditarUsuarioActivity : AppCompatActivity() {
 
                     mostrarCargando(false)
 
-                    if (!response.isSuccessful) {
 
-                        Toast.makeText(
-                            this@EditarUsuarioActivity,
-                            "Error HTTP ${response.code()}",
-                            Toast.LENGTH_LONG
-                        ).show()
+                    if (!response.isSuccessful) {
+                        val error = response.errorBody()?.string()
+
+                        android.util.Log.e(
+                            "EDITAR_USUARIO",
+                            "HTTP ${response.code()}: $error"
+                        )
+
+                        if (response.code() == 422) {
+                            mostrarErrorValidacion(error)
+                        } else {
+                            Toast.makeText(
+                                this@EditarUsuarioActivity,
+                                "No se pudo actualizar el usuario (HTTP ${response.code()})",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
 
                         return
                     }
@@ -424,6 +432,100 @@ class EditarUsuarioActivity : AppCompatActivity() {
 
             buttonGuardarCambiosUsuario.isEnabled = true
             buttonEliminarUsuario.isEnabled = true
+        }
+    }
+
+    private fun mostrarErrorValidacion(errorJson: String?) {
+        if (errorJson.isNullOrBlank()) {
+            Toast.makeText(
+                this,
+                "No se pudieron validar los datos ingresados.",
+                Toast.LENGTH_LONG
+            ).show()
+            return
+        }
+
+        try {
+            val json = JSONObject(errorJson)
+            val errores = json.optJSONObject("errors")
+
+            if (errores == null || errores.length() == 0) {
+                Toast.makeText(
+                    this,
+                    json.optString("message", "No se pudo actualizar el usuario"),
+                    Toast.LENGTH_LONG
+                ).show()
+                return
+            }
+
+            val campos = mapOf(
+                "nombre" to editTextNombreUsuario,
+                "dni" to editTextDniUsuario,
+                "telefono" to editTextTelefonoUsuario,
+                "password" to editTextPasswordUsuario
+            )
+
+            val nombresCampos = mapOf(
+                "nombre" to "Nombre",
+                "dni" to "DNI",
+                "telefono" to "Teléfono",
+                "password" to "Contraseña",
+                "rol" to "Rol"
+            )
+
+            var primerMensaje: String? = null
+            val claves = errores.keys()
+
+            while (claves.hasNext()) {
+                val campo = claves.next()
+                val mensajeServidor = errores.optJSONArray(campo)
+                    ?.optString(0)
+                    .orEmpty()
+
+                val mensaje = when {
+                    campo == "dni" &&
+                            mensajeServidor.contains("taken", true) ->
+                        "El DNI ingresado ya existe"
+
+                    campo == "password" &&
+                            mensajeServidor.contains("at least", true) ->
+                        "La contraseña debe tener al menos 8 caracteres"
+
+                    campo == "password" &&
+                            mensajeServidor.contains("required", true) ->
+                        "La contraseña es obligatoria"
+
+                    else -> {
+                        val nombreCampo = nombresCampos[campo] ?: campo
+                        "$nombreCampo: ${mensajeServidor.ifBlank { "Dato inválido" }}"
+                    }
+                }
+
+                campos[campo]?.error = mensaje
+
+                if (primerMensaje == null) {
+                    primerMensaje = mensaje
+                }
+            }
+
+            Toast.makeText(
+                this,
+                primerMensaje ?: "Revisá los datos ingresados",
+                Toast.LENGTH_LONG
+            ).show()
+
+        } catch (e: Exception) {
+            android.util.Log.e(
+                "EDITAR_USUARIO",
+                "Error al interpretar validaciones",
+                e
+            )
+
+            Toast.makeText(
+                this,
+                "No se pudieron validar los datos ingresados.",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 }

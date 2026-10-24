@@ -16,7 +16,12 @@ import com.ivanbm.frontend_btz.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import org.json.JSONObject
 class CrearUsuarioActivity : AppCompatActivity() {
 
     private lateinit var editTextNombreUsuario: EditText
@@ -31,7 +36,32 @@ class CrearUsuarioActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_crear_usuario)
+        findViewById<ImageButton>(R.id.buttonVolverCrearUsuario)
+            .setOnClickListener {
+                finish()
+            }
+        val scrollViewCrearUsuario =
+            findViewById<View>(R.id.scrollViewCrearUsuario)
 
+        val paddingSuperiorInicial = scrollViewCrearUsuario.paddingTop
+        val paddingInferiorInicial = scrollViewCrearUsuario.paddingBottom
+
+        ViewCompat.setOnApplyWindowInsetsListener(scrollViewCrearUsuario) { vista, insets ->
+
+            val barrasSistema = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or
+                        WindowInsetsCompat.Type.displayCutout()
+            )
+
+            vista.setPadding(
+                vista.paddingLeft,
+                paddingSuperiorInicial + barrasSistema.top,
+                vista.paddingRight,
+                paddingInferiorInicial + barrasSistema.bottom
+            )
+
+            insets
+        }
         editTextNombreUsuario =
             findViewById(R.id.editTextNombreUsuario)
 
@@ -53,32 +83,94 @@ class CrearUsuarioActivity : AppCompatActivity() {
         progressBarGuardarUsuario =
             findViewById(R.id.progressBarGuardarUsuario)
 
-        configurarSpinnerRol()
-
         buttonGuardarUsuario.setOnClickListener {
             crearUsuario()
         }
+        configurarSpinnerRol()
     }
+
+
 
     private fun configurarSpinnerRol() {
+        val roles = listOf("admin", "operario")
 
-        val roles = listOf(
-            "admin",
-            "operario"
-        )
+        fun obtenerIconoRol(rol: String): Int {
+            return when (rol) {
+                "admin" -> R.drawable.ic_usuario_administrador
+                "operario" -> R.drawable.ic_usuario_operario
+                else -> R.drawable.ic_usuario
+            }
+        }
 
-        val adapter = ArrayAdapter(
+        val adaptadorRoles = object : ArrayAdapter<String>(
             this,
-            android.R.layout.simple_spinner_item,
+            R.layout.item_rol_seleccionado,
+            R.id.textViewRolSeleccionado,
             roles
-        )
+        ) {
+            private fun configurarVista(
+                vista: View,
+                rol: String,
+                esOpcion: Boolean
+            ): View {
+                val imageView = vista.findViewById<ImageView>(
+                    if (esOpcion) {
+                        R.id.imageViewIconoOpcionRol
+                    } else {
+                        R.id.imageViewIconoRolSeleccionado
+                    }
+                )
 
-        adapter.setDropDownViewResource(
-            android.R.layout.simple_spinner_dropdown_item
-        )
+                val textView = vista.findViewById<TextView>(
+                    if (esOpcion) {
+                        R.id.textViewOpcionRol
+                    } else {
+                        R.id.textViewRolSeleccionado
+                    }
+                )
 
-        spinnerRolUsuario.adapter = adapter
+                imageView.setImageResource(obtenerIconoRol(rol))
+                textView.text = when (rol) {
+                    "admin" -> "Administrador"
+                    "operario" -> "Operario"
+                    else -> rol
+                }
+
+                return vista
+            }
+
+            override fun getView(
+                position: Int,
+                convertView: View?,
+                parent: android.view.ViewGroup
+            ): View {
+                val vista = convertView ?: layoutInflater.inflate(
+                    R.layout.item_rol_seleccionado,
+                    parent,
+                    false
+                )
+
+                return configurarVista(vista, getItem(position) ?: "", false)
+            }
+
+            override fun getDropDownView(
+                position: Int,
+                convertView: View?,
+                parent: android.view.ViewGroup
+            ): View {
+                val vista = convertView ?: layoutInflater.inflate(
+                    R.layout.item_rol_opcion,
+                    parent,
+                    false
+                )
+
+                return configurarVista(vista, getItem(position) ?: "", true)
+            }
+        }
+
+        spinnerRolUsuario.adapter = adaptadorRoles
     }
+
 
     private fun crearUsuario() {
 
@@ -148,26 +240,24 @@ class CrearUsuarioActivity : AppCompatActivity() {
 
                 mostrarCargando(false)
 
+
                 if (!response.isSuccessful) {
-
-                    val error =
-                        response.errorBody()?.string()
+                    val error = response.errorBody()?.string()
 
                     android.util.Log.e(
                         "CREAR_USUARIO",
-                        "Código HTTP: ${response.code()}"
+                        "Código HTTP: ${response.code()} - $error"
                     )
 
-                    android.util.Log.e(
-                        "CREAR_USUARIO",
-                        error ?: "Sin información del error"
-                    )
-
-                    Toast.makeText(
-                        this@CrearUsuarioActivity,
-                        "Error HTTP ${response.code()}",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    if (response.code() == 422) {
+                        mostrarErrorValidacion(error)
+                    } else {
+                        Toast.makeText(
+                            this@CrearUsuarioActivity,
+                            "No se pudo crear el usuario (HTTP ${response.code()})",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
 
                     return
                 }
@@ -241,6 +331,112 @@ class CrearUsuarioActivity : AppCompatActivity() {
                 ProgressBar.GONE
 
             buttonGuardarUsuario.isEnabled = true
+        }
+    }
+
+    private fun mostrarErrorValidacion(errorJson: String?) {
+        if (errorJson.isNullOrBlank()) {
+            Toast.makeText(
+                this,
+                "No se pudo crear el usuario. Revisá los datos ingresados.",
+                Toast.LENGTH_LONG
+            ).show()
+            return
+        }
+
+        try {
+            val json = JSONObject(errorJson)
+            val errores = json.optJSONObject("errors")
+
+            if (errores != null && errores.length() > 0) {
+                val campos = mapOf(
+                    "nombre" to editTextNombreUsuario,
+                    "dni" to editTextDniUsuario,
+                    "telefono" to editTextTelefonoUsuario,
+                    "password" to editTextPasswordUsuario
+                )
+
+                var primerMensaje: String? = null
+
+                val nombresCampos = mapOf(
+                    "nombre" to "Nombre",
+                    "dni" to "DNI",
+                    "telefono" to "Teléfono",
+                    "password" to "Contraseña",
+                    "rol" to "Rol"
+                )
+
+                val claves = errores.keys()
+
+                while (claves.hasNext()) {
+                    val campo = claves.next()
+                    val mensajes = errores.optJSONArray(campo)
+                    val mensajeServidor = mensajes?.optString(0).orEmpty()
+
+                    val mensaje = when {
+                        campo == "dni" &&
+                                mensajeServidor.contains("taken", ignoreCase = true) ->
+                            "El DNI ingresado ya existe"
+
+                        campo == "password" &&
+                                mensajeServidor.contains("at least", ignoreCase = true) ->
+                            "La contraseña debe tener al menos 8 caracteres"
+
+                        campo == "password" &&
+                                mensajeServidor.contains("required", ignoreCase = true) ->
+                            "La contraseña es obligatoria"
+
+                        campo == "nombre" &&
+                                mensajeServidor.contains("required", ignoreCase = true) ->
+                            "El nombre es obligatorio"
+
+                        campo == "dni" &&
+                                mensajeServidor.contains("required", ignoreCase = true) ->
+                            "El DNI es obligatorio"
+
+                        campo == "telefono" &&
+                                mensajeServidor.contains("required", ignoreCase = true) ->
+                            "El teléfono es obligatorio"
+
+                        else -> {
+                            val nombreCampo = nombresCampos[campo] ?: campo
+                            "$nombreCampo: ${mensajeServidor.ifBlank { "Dato inválido" }}"
+                        }
+                    }
+
+                    campos[campo]?.error = mensaje
+
+                    if (primerMensaje == null) {
+                        primerMensaje = mensaje
+                    }
+                }
+
+                Toast.makeText(
+                    this,
+                    primerMensaje ?: "Revisá los datos ingresados",
+                    Toast.LENGTH_LONG
+                ).show()
+
+            } else {
+                val mensaje = json.optString(
+                    "message",
+                    "No se pudo crear el usuario"
+                )
+
+                Toast.makeText(
+                    this,
+                    mensaje,
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(
+                this,
+                "No se pudieron validar los datos. Revisá la información ingresada.",
+                Toast.LENGTH_LONG
+            ).show()
+
+            android.util.Log.e("CREAR_USUARIO", "Error al interpretar validaciones", e)
         }
     }
 }

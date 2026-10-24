@@ -16,7 +16,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import kotlin.jvm.java
-
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import android.widget.ImageButton
 class MaterialActivity : AppCompatActivity() {
 
     private lateinit var recyclerViewMateriales: RecyclerView
@@ -32,7 +34,24 @@ class MaterialActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_material)
+        findViewById<ImageButton>(R.id.buttonVolverMateriales).setOnClickListener {
+            finish()
+        }
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { vista, insets ->
+            val barrasSistema = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or
+                        WindowInsetsCompat.Type.displayCutout()
+            )
 
+            vista.setPadding(
+                barrasSistema.left,
+                barrasSistema.top,
+                barrasSistema.right,
+                barrasSistema.bottom
+            )
+
+            insets
+        }
         recyclerViewMateriales =
             findViewById(R.id.recyclerViewMateriales)
 
