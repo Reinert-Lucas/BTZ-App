@@ -10,10 +10,8 @@ use Illuminate\Http\Request;
 
 class MaterialController extends Controller
 {
-    private MaterialService $service;
-    public function __construct(MaterialService $service)
+    public function __construct(private readonly MaterialService $service)
     {
-        $this->service = $service;
     }
     public function index(Request $request)
     {
@@ -48,9 +46,9 @@ class MaterialController extends Controller
             'message' => 'Material actualizado con exito'
         ]);
     }
-    public function delete(int $material)
+    public function destroy(int $material)
     {
-        $this->service->delete($material);
+        $this->service->destroy($material);
         return response()->json([
             'status' => true,
             'message' => 'Material eliminado con exito'

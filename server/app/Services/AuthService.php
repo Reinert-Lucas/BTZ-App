@@ -4,14 +4,13 @@ namespace App\Services;
 use App\Models\Usuario;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthService
 {
-    public function create(array $usuarioValidado)
-    {
-        return Usuario::create($usuarioValidado);
-    }
     public function login(array $credentials): array
     {
         $usuario = Usuario::where('dni', $credentials['dni'])->first();
@@ -34,12 +33,21 @@ class AuthService
             ];
         });
     }
+
     public function me(Request $request)
     {
         return $request->user();
     }
-    public function logout(Request $request)
+
+    public function logout(Request $request): void
     {
-        $request->user()->currentAccessToken()->delete();
+        $usuario = $request->user();
+        // Evita que el dispositivo siga recibiendo notificaciones del usuario anterior.
+        $usuario->forceFill(['fcm_token' => null])->save();
+
+        $token = $usuario->currentAccessToken();
+        if ($token instanceof PersonalAccessToken) {
+            $token->delete();
+        }
     }
 }

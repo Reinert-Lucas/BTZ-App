@@ -1,17 +1,24 @@
 <?php
+
 namespace App\Services;
 
-use App\Http\Resources\AvisoResource;
 use App\Models\Aviso;
 use App\Models\Cliente;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Kreait\Firebase\Exception\Messaging\NotFound;
+use Throwable;
 
 class AvisoService
 {
-    public function getFields()
+    public function __construct(
+        protected FirebaseNotificationService $firebaseNotificationService
+    ) {
+    }
+    public function getFields(bool $isUpdate)
     {
-        return $inputs = [
+        $inputs = [
             [
                 'label' => 'Fecha',
                 'field' => 'fecha',
@@ -47,9 +54,9 @@ class AvisoService
                 'field' => 'urgencia',
                 'type' => 'select',
                 'options' => [
-                    'urgente' => 'urgente',
-                    'media' => 'media',
-                    'baja' => 'baja'
+                    'urgente' => 'Urgente',
+                    'media' => 'Media',
+                    'baja' => 'Baja'
                 ]
             ],
             [
@@ -60,51 +67,168 @@ class AvisoService
             ],
             [
                 'label' => 'Operario',
-                'field' => 'operario_id',
+                'field' => 'usuario_id',
                 'type' => 'select',
                 'options' => Usuario::where('rol', 'operario')->pluck('nombre', 'usuario_id')
             ]
         ];
+
+        if ($isUpdate) {
+            $inputs[] = [
+                'label' => 'Estado',
+                'field' => 'estado',
+                'type' => 'select',
+                'options' => [
+                    'pendiente' => 'Pendiente',
+                    'finalizado' => 'Finalizado',
+                    'cancelado' => 'Cancelado',
+                ]
+            ];
+        }
+
+        return $inputs;
     }
+
+
+
+
     public function index(Request $request)
     {
-        return Aviso::query()
-            ->when($request->aviso_id, function ($query, $aviso_id) {
-                $query->where('aviso_id', $aviso_id);
+        $usuarioAutenticado = Auth::user();
+
+        $avisos = Aviso::query()
+            ->with(['usuario', 'cliente', 'trabajo.materiales']);
+
+        if ($usuarioAutenticado && $usuarioAutenticado->rol === 'operario') {
+            $avisos->where('usuario_id', $usuarioAutenticado->usuario_id);
+        }
+
+        $avisos
+            ->when($request->filled('buscar'), function ($query) use ($request) {
+                $termino = trim($request->input('buscar'));
+
+                $query->where(function ($subquery) use ($termino) {
+                    $subquery
+                        ->where('direccion', 'like', "%{$termino}%")
+                        ->orWhere('telefono', 'like', "%{$termino}%");
+
+                    if (ctype_digit($termino)) {
+                        $subquery->orWhere('aviso_id', (int) $termino);
+                    }
+                });
             })
-            ->when($request->fecha, function ($query, $fecha) {
-                $query->where('fecha', $fecha);
+            ->when($request->filled('aviso_id'), function ($query) use ($request) {
+                $query->where('aviso_id', $request->input('aviso_id'));
             })
-            ->when($request->hora, function ($query, $hora) {
-                $query->where('hora', $hora);
+            ->when($request->filled('fecha'), function ($query) use ($request) {
+                $query->where('fecha', $request->input('fecha'));
             })
-            ->when($request->direccion, function ($query, $direccion) {
-                $query->where('direccion', 'like', "%{$direccion}%");
+            ->when($request->filled('hora'), function ($query) use ($request) {
+                $query->where('hora', $request->input('hora'));
             })
-            ->when($request->telefono, function ($query, $telefono) {
-                $query->where('telefono', $telefono);
+            ->when($request->filled('direccion'), function ($query) use ($request) {
+                $query->where('direccion', 'like', '%' . $request->input('direccion') . '%');
             })
-            ->when($request->estado, function ($query, $estado) {
-                $query->where('estado', $estado);
+            ->when($request->filled('telefono'), function ($query) use ($request) {
+                $query->where('telefono', 'like', '%' . $request->input('telefono') . '%');
             })
+            ->when($request->filled('estado'), function ($query) use ($request) {
+                $query->where('estado', $request->input('estado'));
+            })
+            ->when($request->filled('urgencia'), function ($query) use ($request) {
+                $query->where('urgencia', $request->input('urgencia'));
+            });
+
+        return $this->ordenarAvisos($avisos)
             ->paginate(10)
             ->withQueryString();
     }
+
+
+
+    private function ordenarAvisos($query)
+    {
+        return $query
+            ->orderBy('fecha')
+            ->orderBy('hora')
+            ->orderByRaw("
+                CASE urgencia
+                    WHEN 'urgente' THEN 1
+                    WHEN 'media' THEN 2
+                    WHEN 'baja' THEN 3
+                    ELSE 4
+                END
+            ");
+    }
+
     public function show(int $aviso)
     {
         return Aviso::findOrFail($aviso);
     }
+
     public function create(array $avisoValidado)
     {
-        return Aviso::create($avisoValidado);
+        $avisoValidado['estado'] = 'pendiente';
+        $aviso = Aviso::create($avisoValidado);
+
+        $this->notificarAsignacion($aviso);
+
+        return $aviso;
     }
+
     public function update(array $newAviso, Aviso $aviso)
     {
+        $nuevoEstado = $newAviso['estado'] ?? $aviso->estado;
+        $tieneTrabajo = $aviso->trabajo()->exists();
+
+        abort_if(
+            $nuevoEstado === 'finalizado' && !$tieneTrabajo,
+            409,
+            'Un aviso solo pasa a finalizado cuando el operario carga el trabajo.'
+        );
+        abort_if(
+            $tieneTrabajo && $nuevoEstado !== 'finalizado',
+            409,
+            'No se puede reabrir un aviso que ya tiene un trabajo cargado.'
+        );
+
         $aviso->update($newAviso);
+
+        if ($aviso->wasChanged('usuario_id')) {
+            $this->notificarAsignacion($aviso);
+        }
+
         return $aviso->fresh();
     }
-    public function delete(int $aviso)
+
+    public function destroy(int $aviso)
     {
         return Aviso::findOrFail($aviso)->delete();
+    }
+
+    /** Se envía DESPUÉS de responder: Firebase no demora (ni rompe) el request. */
+    private function notificarAsignacion(Aviso $aviso): void
+    {
+        $usuario = $aviso->usuario;
+
+        if (!$usuario?->fcm_token) {
+            return;
+        }
+
+        defer(function () use ($aviso, $usuario) {
+            try {
+                $this->firebaseNotificationService->sendToToken(
+                    $usuario->fcm_token,
+                    '✅ Nuevo Aviso Asignado',
+                    'Se te ha asignado un nuevo aviso. Toca para ver los detalles.',
+                    ['aviso_id' => (string) $aviso->aviso_id]
+                );
+            } catch (NotFound) {
+                // Token dado de baja en FCM: se limpia para no reintentar siempre.
+                $usuario->forceFill(['fcm_token' => null])->save();
+            } catch (Throwable $exception) {
+                report($exception);
+            }
+        });
     }
 }

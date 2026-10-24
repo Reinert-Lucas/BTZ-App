@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "692210139005",
+    "project_id": "btz-app-b9b48",
+    "storage_bucket": "btz-app-b9b48.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:692210139005:android:0996f13620e53445975614",
+        "android_client_info": {
+          "package_name": "com.ivanbm.frontend_btz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZCBfPJHTwu5IRI91hP7t4l7HV9YQYj9c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

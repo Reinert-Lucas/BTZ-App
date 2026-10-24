@@ -10,10 +10,8 @@ use Illuminate\Http\Request;
 
 class AvisoController extends Controller
 {
-    private AvisoService $service;
-    public function __construct(AvisoService $service)
+    public function __construct(private readonly AvisoService $service)
     {
-        $this->service = $service;
     }
     public function index(Request $request)
     {
@@ -48,9 +46,9 @@ class AvisoController extends Controller
             'message' => 'Aviso actualizado con exito'
         ]);
     }
-    public function delete(int $aviso)
+    public function destroy(int $aviso)
     {
-        $this->service->delete($aviso);
+        $this->service->destroy($aviso);
         return response()->json([
             'status' => true,
             'message' => 'Aviso eliminado con exito'

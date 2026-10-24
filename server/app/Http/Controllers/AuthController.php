@@ -22,20 +22,10 @@ use Illuminate\Auth\AuthenticationException;
 
 class AuthController extends Controller
 {
-    private AuthService $service;
-    public function __construct(AuthService $service)
+    public function __construct(private readonly AuthService $service)
     {
-        $this->service = $service;
     }
-    public function create(CreateUserRequest $request)
-    {
-        $usuario = $this->service->create($request->validated());
-        return response()->json([
-            'status' => true,
-            'message' => 'usuario registrado con exito',
-            'token' => $usuario->createToken('API TOKEN')->plainTextToken
-        ], 200);
-    }
+
     public function login(LoginUserRequest $request)
     {
         try {
@@ -54,21 +44,23 @@ class AuthController extends Controller
             'token' => $data['token'], // El token pasa de ser NewAccessToken a string [REVISAR SI ANDA]
         ]);
     }
+
     public function me(Request $request)
     {
-        $usuario = $this->service->me($request);
         return response()->json([
             'status' => true,
             'message' => 'datos del usuario autenticado',
-            'user' => new UsuarioResource($usuario),
-        ], 200);
+            'user' => new UsuarioResource($this->service->me($request)),
+        ]);
     }
+
     public function logout(Request $request)
     {
         $this->service->logout($request);
+
         return response()->json([
             'status' => true,
-            'message' => 'sesion cerrada con exito'
-        ], 200);
+            'message' => 'sesion cerrada con exito',
+        ]);
     }
 }

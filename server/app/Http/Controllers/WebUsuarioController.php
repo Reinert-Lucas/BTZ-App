@@ -10,10 +10,8 @@ use Illuminate\Http\Request;
 
 class WebUsuarioController extends Controller
 {
-    private UsuarioService $service;
-    public function __construct(UsuarioService $service)
+    public function __construct(private readonly UsuarioService $service)
     {
-        $this->service = $service;
     }
     public function index(Request $request)
     {
@@ -92,7 +90,7 @@ class WebUsuarioController extends Controller
             [
                 'label' => 'Contraseña',
                 'field' => 'password',
-                'type' => 'text'
+                'type' => 'password'
             ],
             [
                 'label' => 'Telefono',
@@ -134,8 +132,8 @@ class WebUsuarioController extends Controller
             ],
             [
                 'label' => 'Contraseña',
-                'field' => '',
-                'type' => 'text'
+                'field' => 'password',
+                'type' => 'password'
             ],
             [
                 'label' => 'Telefono',
@@ -154,10 +152,7 @@ class WebUsuarioController extends Controller
         ];
         $usuarioObtenido = $this->service->show($usuario);
         return view('admin.usuarios.edit', [
-            'usuario' => new UsuarioResource($usuarioObtenido)->additional([
-                'status' => true,
-                'message' => 'Usuarios obtenidos con exito'
-            ]),
+            'usuario' => new UsuarioResource($usuarioObtenido),
             'inputs' => $inputs
         ]);
     }
@@ -171,7 +166,7 @@ class WebUsuarioController extends Controller
     }
     public function destroy(int $usuario)
     {
-        $this->service->delete($usuario);
+        $this->service->destroy($usuario);
         return redirect()->route('admin.usuarios.index')->with([
             'status' => true,
             'message' => 'Usuario eliminado con exito'

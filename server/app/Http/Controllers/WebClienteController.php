@@ -10,20 +10,12 @@ use Illuminate\Http\Request;
 
 class WebClienteController extends Controller
 {
-    private ClienteService $service;
-    public function __construct(ClienteService $service)
+    public function __construct(private readonly ClienteService $service)
     {
-        $this->service = $service;
     }
     public function index(Request $request)
     {
         $clientes = $this->service->index($request);
-        // Convertir "asegurado(bool) a SI/NO"
-        $clientes->transform(function ($cliente) {
-            $cliente->asegurado = $cliente->asegurado ? 'SI' : 'NO';
-            $cliente->asegurado_detalle = $cliente->asegurado_detalle ?? '-';
-            return $cliente;
-        });
         $columns = [
             [
                 'label' => 'Nro',
@@ -39,11 +31,11 @@ class WebClienteController extends Controller
             ],
             [
                 'label' => 'Asegurado',
-                'field' => 'asegurado',
+                'field' => 'asegurado_texto',
             ],
             [
                 'label' => 'Asegurado Detalle',
-                'field' => 'asegurado_detalle',
+                'field' => 'asegurado_detalle_texto',
             ]
         ];
         $filters = [
@@ -138,10 +130,7 @@ class WebClienteController extends Controller
         ];
         $clienteObtenido = $this->service->show($cliente);
         return view('admin.clientes.edit', [
-            'cliente' => new ClienteResource($clienteObtenido)->additional([
-                'status' => true,
-                'message' => 'Clientes obtenidos con exito'
-            ]),
+            'cliente' => new ClienteResource($clienteObtenido),
             'inputs' => $inputs
         ]);
     }
@@ -155,7 +144,7 @@ class WebClienteController extends Controller
     }
     public function destroy(int $cliente)
     {
-        $this->service->delete($cliente);
+        $this->service->destroy($cliente);
         return redirect()->route('admin.clientes.index')->with([
             'status' => true,
             'message' => 'Cliente eliminado con exito'

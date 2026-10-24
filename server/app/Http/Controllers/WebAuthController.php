@@ -9,21 +9,20 @@ use App\Services\AuthService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+/* 
+    Controlador de autenticacion, maneja el registro, login, logout y obtener los datos del usuario autenticado.
+    No agregar logica de negocio relacionada a los usuarios aqui, solo lo relacionado a la autenticacion.
+*/
+/* 
+    Auth guarda la informacion del usuario autenticado en el contexto de la aplicacion
+    Se puede acceder a ella usando Auth::user() o $request->user() 
+    SOLO en rutas protegidas por el middleware auth:sanctum.
+*/
+
 class WebAuthController extends Controller
 {
-    private AuthService $service;
-    public function __construct(AuthService $service)
+    public function __construct(private readonly AuthService $service)
     {
-        $this->service = $service;
-    }
-    public function create(CreateUserRequest $request)
-    {
-        $usuario = $this->service->create($request->validated());
-        return view('admin.dashboard', [
-            'status' => true,
-            'message' => 'usuario registrado con exito',
-            'token' => $usuario->createToken('API TOKEN')->plainTextToken
-        ]);
     }
     public function login(LoginUserRequest $request)
     {

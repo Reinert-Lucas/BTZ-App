@@ -12,10 +12,8 @@ use Illuminate\Http\Request;
 
 class WebAvisoController extends Controller
 {
-    private AvisoService $service;
-    public function __construct(AvisoService $service)
+    public function __construct(private readonly AvisoService $service)
     {
-        $this->service = $service;
     }
     public function index(Request $request)
     {
@@ -96,7 +94,7 @@ class WebAvisoController extends Controller
                 'options' => [
                     'urgente' => 'Urgente',
                     'media' => 'Media',
-                    'baja' => 'Alta'
+                    'baja' => 'Baja'
                 ]
             ]
         ];
@@ -113,9 +111,17 @@ class WebAvisoController extends Controller
             'trabajo' => $trabajo,
         ]);
     }
+    public function pdf(int $aviso)
+    {
+        $trabajo = Trabajo::with('materiales', 'aviso.usuario', 'aviso.cliente')->where('aviso_id', $aviso)->firstOrFail();
+
+        return view('admin.trabajo-pdf', [
+            'trabajo' => $trabajo,
+        ]);
+    }
     public function create()
     {
-        return view('admin.avisos.create', ['inputs' => $this->service->getFields()]);
+        return view('admin.avisos.create', ['inputs' => $this->service->getFields(isUpdate: false)]);
     }
     public function store(AvisoRequest $request)
     {
@@ -129,11 +135,8 @@ class WebAvisoController extends Controller
     {
         $avisoObtenido = $this->service->show($aviso);
         return view('admin.avisos.edit', [
-            'aviso' => new AvisoResource($avisoObtenido)->additional([
-                'status' => true,
-                'message' => 'Avisos obtenidos con exito'
-            ]),
-            'inputs' => $this->service->getFields()
+            'aviso' => new AvisoResource($avisoObtenido),
+            'inputs' => $this->service->getFields(isUpdate: true)
         ]);
     }
     public function update(AvisoRequest $request, Aviso $aviso)
@@ -146,7 +149,7 @@ class WebAvisoController extends Controller
     }
     public function destroy(int $aviso)
     {
-        $this->service->delete($aviso);
+        $this->service->destroy($aviso);
         return redirect()->route('admin.avisos.index')->with([
             'status' => true,
             'message' => 'Aviso eliminado con exito'

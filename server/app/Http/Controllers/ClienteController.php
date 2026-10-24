@@ -10,12 +10,11 @@ use Illuminate\Http\Request;
 
 class ClienteController extends Controller
 {
-    private ClienteService $service;
-    public function __construct(ClienteService $service)
+    public function __construct(private readonly ClienteService $service)
     {
-        $this->service = $service;
     }
-    public function index(Request $request){
+    public function index(Request $request)
+    {
 
         $clientes = $this->service->index($request);
         return ClienteResource::collection($clientes)->additional([
@@ -48,9 +47,9 @@ class ClienteController extends Controller
             'message' => 'Cliente actualizado con exito'
         ]);
     }
-    public function delete(int $cliente)
+    public function destroy(int $cliente)
     {
-        $this->service->delete($cliente);
+        $this->service->destroy($cliente);
         return response()->json([
             'status' => true,
             'message' => 'Cliente eliminado con exito'

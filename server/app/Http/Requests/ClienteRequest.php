@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ClienteRequest extends FormRequest
 {
@@ -15,6 +16,16 @@ class ClienteRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $asegurado = $this->boolean('asegurado');
+
+        $this->merge([
+            'asegurado' => $asegurado,
+            'asegurado_detalle' => $asegurado ? $this->input('asegurado_detalle') : null,
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -23,10 +34,15 @@ class ClienteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nombre' => ['required', 'max:50'],
+            'nombre' => ['required', 'string', 'max:50'],
             'email' => ['required', 'email', 'max:50'],
-            'asegurado' => ['required', 'boolean'],
-            'asegurado_detalle' => ['nullable', 'max:255']
+            'asegurado' => ['boolean'],
+            'asegurado_detalle' => [
+                Rule::requiredIf(fn() => $this->boolean('asegurado')),
+                'nullable',
+                'string',
+                'max:255',
+            ],
         ];
     }
 }

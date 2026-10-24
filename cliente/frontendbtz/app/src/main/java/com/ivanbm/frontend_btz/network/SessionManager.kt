@@ -1,3 +1,4 @@
+
 package com.ivanbm.frontend_btz.network
 
 import android.content.Context
@@ -8,6 +9,7 @@ object SessionManager {
     private const val CLAVE_TOKEN = "token"
     private const val CLAVE_USUARIO_ID = "usuario_id"
     private const val CLAVE_ROL = "rol"
+
     private lateinit var preferencias: android.content.SharedPreferences
 
     fun inicializar(context: Context) {

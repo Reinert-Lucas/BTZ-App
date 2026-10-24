@@ -19,11 +19,11 @@ class Aviso extends Model
 
     public function usuario(): BelongsTo
     {
-        return $this->belongsTo(Usuario::class, 'usuario_id');
+        return $this->belongsTo(Usuario::class, 'usuario_id')->withTrashed();
     }
     public function cliente(): BelongsTo
     {
-        return $this->belongsTo(Cliente::class, 'cliente_id');
+        return $this->belongsTo(Cliente::class, 'cliente_id')->withTrashed();
     }
     public function trabajo(): HasOne
     {

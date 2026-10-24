@@ -7,10 +7,8 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    private DashboardService $service;
-    public function __construct(DashboardService $service)
+    public function __construct(private readonly DashboardService $service)
     {
-        $this->service = $service;
     }
     public function index()
     {

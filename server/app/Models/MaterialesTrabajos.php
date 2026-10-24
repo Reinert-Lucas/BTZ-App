@@ -17,11 +17,11 @@ class MaterialesTrabajos extends Model
 
     public function material(): BelongsTo
     {
-        return $this->belongsTo(Material::class, 'material_id');
+        return $this->belongsTo(Material::class, 'material_id')->withTrashed();
     }
 
     public function trabajo(): BelongsTo
     {
-        return $this->belongsTo(Trabajo::class, 'trabajo_id');
+        return $this->belongsTo(Trabajo::class, 'trabajo_id')->withTrashed();
     }
 }
