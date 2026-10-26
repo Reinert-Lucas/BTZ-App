@@ -16,6 +16,9 @@ class DatabaseSeeder extends Seeder
             $this->command?->warn('Seeders de demo deshabilitados en producción. Crea el admin real con un comando Artisan.');
             return;
         }
+        if (!app()->environment(['local', 'testing'])) {
+            return;
+        }
 
         $this->call([
             UsuarioSeeder::class,

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\isAdmin;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
@@ -10,6 +11,7 @@ use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -20,8 +22,14 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'isAdmin' => \App\Http\Middleware\isAdmin::class,
+            'isAdmin' => isAdmin::class,
         ]);
+
+        // Rate limit general de la API (el limiter 'api' se define en AppServiceProvider).
+        $middleware->throttleApi();
+
+        // Descomentar si hay proxy/balanceador delante (Nginx, Cloudflare, etc.):
+        // $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // Toda ruta api/* responde JSON, incluso ante errores no controlados.
@@ -47,10 +55,11 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->render(function (HttpExceptionInterface $e, Request $request) {
             if ($request->is('api/*')) {
-                // No se filtran mensajes internos del framework (405, etc.).
+                // No se filtran mensajes internos del framework.
                 $message = match (true) {
                     $e instanceof NotFoundHttpException => 'Recurso no encontrado',
                     $e instanceof MethodNotAllowedHttpException => 'Método no permitido',
+                    $e instanceof TooManyRequestsHttpException => 'Demasiados intentos. Intenta nuevamente en unos instantes.',
                     default => $e->getMessage() ?: 'Error en la solicitud',
                 };
 
@@ -66,19 +75,29 @@ return Application::configure(basePath: dirname(__DIR__))
                 return redirect()->route('login')
                     ->withErrors(['dni' => 'Tu sesión expiró. Vuelve a iniciar sesión.']);
             }
+
+            // Web: conflictos de negocio (abort_if(..., 409)) vuelven al formulario con un mensaje.
+            if ($e->getStatusCode() === 409) {
+                return back()
+                    ->withInput()
+                    ->with('error', $e->getMessage() ?: 'La operación no se pudo completar.');
+            }
         });
 
         $exceptions->render(function (QueryException $e, Request $request) {
-            if (!$request->is('api/*')) {
-                return;
-            }
-
             [$status, $message] = match ($e->errorInfo[1] ?? null) {
                 1062 => [409, 'Ya existe un registro con esos datos'],
                 1451, 1452 => [409, 'La operación entra en conflicto con registros relacionados'],
                 default => [500, 'Error al procesar la solicitud'],
             };
 
-            return response()->json(['status' => false, 'message' => $message], $status);
+            if ($request->is('api/*')) {
+                return response()->json(['status' => false, 'message' => $message], $status);
+            }
+
+            // Web: solo los conflictos vuelven al formulario; el resto usa la página 500 por defecto.
+            if ($status === 409) {
+                return back()->withInput()->with('error', $message);
+            }
         });
     })->create();

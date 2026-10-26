@@ -28,14 +28,17 @@ class UsuarioService
             ->paginate(10)
             ->withQueryString();
     }
+
     public function show(int $usuario)
     {
         return Usuario::findOrFail($usuario);
     }
+
     public function create(array $usuarioValidado)
     {
         return Usuario::create($usuarioValidado);
     }
+
     public function update(array $newUsuario, Usuario $usuario)
     {
         $esUnoMismo = (int) $usuario->usuario_id === (int) Auth::id();
@@ -59,11 +62,29 @@ class UsuarioService
             return $usuario->fresh();
         });
     }
-    public function destroy(int $usuario)
+
+    public function destroy(int $usuario): bool
     {
         abort_if($usuario === (int) Auth::id(), 409, 'No puedes eliminar tu propio usuario.');
-        return Usuario::findOrFail($usuario)->delete();
+
+        return DB::transaction(function () use ($usuario) {
+            $usuarioObtenido = Usuario::lockForUpdate()->findOrFail($usuario);
+
+            // Un aviso pendiente sin operario activo queda huérfano: primero hay que reasignarlo.
+            abort_if(
+                $usuarioObtenido->aviso()->where('estado', 'pendiente')->exists(),
+                409,
+                'El usuario tiene avisos pendientes. Reasígnalos o eliminalos antes.'
+            );
+
+            // Que el dispositivo no siga autenticado ni recibiendo notificaciones.
+            $usuarioObtenido->tokens()->delete();
+            $usuarioObtenido->forceFill(['fcm_token' => null])->save();
+
+            return (bool) $usuarioObtenido->delete();
+        });
     }
+
     /** Un token FCM pertenece a un único usuario: se lo quita a cualquier otro. */
     public function saveFcmToken(Usuario $usuario, string $token): void
     {

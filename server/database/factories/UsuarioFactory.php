@@ -24,7 +24,7 @@ class UsuarioFactory extends Factory
                 ['admin', 'operario']
             ),
             'dni' => fake()->unique()->numberBetween('11111111', '99999999'),
-            'telefono' => fake()->phoneNumber()
+            'telefono' => fake()->numerify('###########'),
         ];
     }
     public function operario(): static

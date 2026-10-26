@@ -16,6 +16,9 @@ class UsuarioSeeder extends Seeder
         if (app()->isProduction()) {
             return;
         }
+        if (!app()->environment(['local', 'testing'])) {
+            return;
+        }
 
         Usuario::factory(10)->create();
         Usuario::create([

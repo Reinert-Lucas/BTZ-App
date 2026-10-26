@@ -25,7 +25,7 @@ class AvisoFactory extends Factory
             'fecha' => fake()->dateTimeBetween('-2 months', '+1 week')->format('Y-m-d'),
             'hora' => fake()->time('H:i:s'),
             'direccion' => fake()->streetAddress(),
-            'telefono' => fake()->phoneNumber(),
+            'telefono' => fake()->numerify('###########'),
             'mensaje' => fake()->randomElement([
                 'Pérdida de agua en el baño principal',
                 'No funciona ninguna toma de electricidad',

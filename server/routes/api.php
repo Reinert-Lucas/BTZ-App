@@ -17,6 +17,7 @@ API ROUTES
     El frontend en Kotlin se conecta a estas rutas para obtener y enviar datos de la aplicacion movil. Por otro lado, el frontend con Blade se conecta a las rutas definidas en routes/web.php para el panel de administracion.
 */
 
+// Routes [Direccion] <=> Controller [Filtros] <=> Service [Logica de Negocio] <=> DB [Persistencia]
 // Rutas publicas de auth
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login')->name('api.login');
 // auth:sanctum es el middleware que protege las rutas 

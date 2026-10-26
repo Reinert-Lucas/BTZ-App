@@ -12,20 +12,15 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         $this->app->singleton(FirebaseNotificationService::class);
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
         Paginator::useBootstrapFour();
+
         // IDs no numéricos => 404 limpio (en vez de TypeError/500).
         foreach (['usuario', 'cliente', 'material', 'aviso', 'usuario_id'] as $parametro) {
             Route::pattern($parametro, '[0-9]+');
@@ -35,5 +30,9 @@ class AppServiceProvider extends ServiceProvider
             Limit::perMinute(20)->by($request->ip()),
             Limit::perMinute(5)->by('dni|' . mb_strtolower((string) $request->input('dni'))),
         ]);
+
+        // Límite general de la API: por usuario autenticado o, si no hay, por IP.
+        RateLimiter::for('api', fn(Request $request) => Limit::perMinute(60)
+            ->by($request->user()?->getAuthIdentifier() ?: $request->ip()));
     }
 }

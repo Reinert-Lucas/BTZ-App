@@ -94,13 +94,14 @@ class AvisoService
 
     public function index(Request $request)
     {
+
         $usuarioAutenticado = Auth::user();
 
         $avisos = Aviso::query()
             ->with(['usuario', 'cliente', 'trabajo.materiales']);
 
-        if ($usuarioAutenticado && $usuarioAutenticado->rol === 'operario') {
-            $avisos->where('usuario_id', $usuarioAutenticado->usuario_id);
+        if ($usuarioAutenticado?->rol !== 'admin') {
+            $avisos->where('usuario_id', $usuarioAutenticado?->usuario_id);
         }
 
         $avisos
@@ -145,7 +146,7 @@ class AvisoService
     }
 
 
-
+    /** Ordenar los avisos [Fecha -> Hora -> Urgencia] */
     private function ordenarAvisos($query)
     {
         return $query
@@ -178,6 +179,7 @@ class AvisoService
 
     public function update(array $newAviso, Aviso $aviso)
     {
+
         $nuevoEstado = $newAviso['estado'] ?? $aviso->estado;
         $tieneTrabajo = $aviso->trabajo()->exists();
 
@@ -194,7 +196,7 @@ class AvisoService
 
         $aviso->update($newAviso);
 
-        if ($aviso->wasChanged('usuario_id')) {
+        if ($aviso->wasChanged('usuario_id') && $aviso->estado === 'pendiente') {
             $this->notificarAsignacion($aviso);
         }
 
@@ -206,7 +208,7 @@ class AvisoService
         return Aviso::findOrFail($aviso)->delete();
     }
 
-    /** Se envía DESPUÉS de responder: Firebase no demora (ni rompe) el request. */
+    /** Se notifica al operario de manera asyncrona para no romper la Request */
     private function notificarAsignacion(Aviso $aviso): void
     {
         $usuario = $aviso->usuario;

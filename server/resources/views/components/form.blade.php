@@ -25,9 +25,13 @@
                         </label>
                         @switch($input['type'])
                             @case('select')
-                                <select class="form-select" id="{{ $input['field'] }}" name="{{ $input['field'] }}">
+                                @php
+                                    $actual = old($input['field'], $isUpdate ? ${$parameter}?->{$input['field']} : '');
+                                @endphp
+                                <select class="form-select" id="{{ $input['field'] }}" name="{{ $input['field'] }}" required>
+                                    <option value="" disabled @selected($actual === '' || $actual === null)>Seleccionar...</option>
                                     @foreach ($input['options'] as $value => $text)
-                                        <option value="{{ $value }}" @selected(old($input['field'], $isUpdate ? ${$parameter}?->{$input['field']} : null) == $value)>
+                                        <option value="{{ $value }}" @selected($actual !== '' && $actual !== null && $actual == $value)>
                                             {{ $text }}
                                         </option>
                                     @endforeach

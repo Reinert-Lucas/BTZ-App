@@ -18,8 +18,8 @@ class ClienteService
             ->when($request->email, function ($query, $email) {
                 $query->where('email', $email);
             })
-            ->when($request->asegurado, function ($query, $asegurado) {
-                $query->where('asegurado', $asegurado);
+            ->when($request->filled('asegurado'), function ($query) use ($request) {
+                $query->where('asegurado', $request->boolean('asegurado'));
             })
             ->when($request->asegurado_detalle, function ($query, $detalle) {
                 $query->where('asegurado_detalle', 'like', "%{$detalle}%");

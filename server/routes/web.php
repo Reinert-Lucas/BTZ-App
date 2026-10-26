@@ -6,6 +6,7 @@ use App\Http\Controllers\WebAvisoController;
 use App\Http\Controllers\WebClienteController;
 use App\Http\Controllers\WebMaterialController;
 use App\Http\Controllers\WebUsuarioController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,21 +17,31 @@ WEB ROUTES
     - Usuarios con rol admin: pueden acceder a /admin/usuarios, /admin/avisos, /admin/clientes, /admin/materiales
     El frontend en Kotlin se conecta a las rutas definidas en routes/api.php para obtener y enviar datos de la aplicacion movil. Por otro lado, el frontend con Blade se conecta a estas rutas para el panel de administracion.
 */
+// Routes [Direccion] <=> Controller [Filtros] <=> Service [Logica de Negocio] <=> DB [Persistencia]
 
-// Rutas Publicas de auth
-Route::get('/', fn() => view('index'))->name("login");
+// Login: si ya hay sesión se redirige.
+Route::get('/', fn() => Auth::check()
+    ? redirect()->route('admin.dashboard')
+    : view('index'))->name('login');
 Route::post('/login', [WebAuthController::class, 'login'])->middleware('throttle:login')->name('admin.login');
-// Pagina de "Sin Acceso" para usuarios que intentan acceder a rutas de admin sin ser admin
+
+// Página de "Sin Acceso" para usuarios que intentan acceder a rutas de admin sin ser admin
 Route::get('/noaccess', fn() => view('noaccess'))->name('admin.noaccess');
-// Rutas protegidas por auth e isAdmin, para el panel de administracion
+
 Route::middleware(['auth'])->post('/logout', [WebAuthController::class, 'logout'])->name('admin.logout');
+
 Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/me', [WebAuthController::class, 'me'])->name('me');
-    Route::get('/', [DashboardController::class, 'index'])->name("dashboard");
-    Route::resource('usuarios', WebUsuarioController::class);
-    Route::resource('clientes', WebClienteController::class);
-    Route::resource('avisos', WebAvisoController::class);
-    Route::resource('materiales', WebMaterialController::class)->parameters(['materiales' => 'material']);
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Sin 'show': los controladores web no lo implementan.
+    Route::resource('usuarios', WebUsuarioController::class)->except('show');
+    Route::resource('clientes', WebClienteController::class)->except('show');
+    Route::resource('avisos', WebAvisoController::class)->except('show');
+    Route::resource('materiales', WebMaterialController::class)
+        ->parameters(['materiales' => 'material'])
+        ->except('show');
+
     Route::get('/trabajos/{aviso}/pdf', [WebAvisoController::class, 'pdf'])->name('trabajos.pdf');
     Route::get('/trabajos/{aviso}', [WebAvisoController::class, 'show'])->name('trabajos.show');
 });
