@@ -76,3 +76,6 @@ Reinert Lucas Iván y Britez Medina Iván
 
 Proyecto desarrollado con fines académicos como sistema integral de
 gestión con panel web y aplicación móvil.
+
+Crear Admin
+* php artisan usuarios:crear-admin dni "Nombre Apellido" nro
