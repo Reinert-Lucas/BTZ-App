@@ -32,45 +32,33 @@ import java.util.Calendar
 import java.util.Locale
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-
+import android.graphics.Rect
+import android.widget.ScrollView
 class EditarAvisoActivity : AppCompatActivity() {
-
     private lateinit var editTextFechaEditarAviso: EditText
     private lateinit var editTextHoraEditarAviso: EditText
     private lateinit var editTextDireccionEditarAviso: EditText
     private lateinit var editTextTelefonoEditarAviso: EditText
     private lateinit var editTextMensajeEditarAviso: EditText
     private lateinit var editTextObservacionEditarAviso: EditText
-
     private lateinit var spinnerUrgenciaEditarAviso: Spinner
-
     private lateinit var autoCompleteClienteEditarAviso: AutoCompleteTextView
     private lateinit var autoCompleteOperarioEditarAviso: AutoCompleteTextView
-
     private lateinit var buttonAnadirClienteEditarAviso: Button
     private lateinit var buttonGuardarCambiosAviso: Button
     private lateinit var buttonEliminarAviso: Button
-
     private lateinit var progressBarEditarAviso: ProgressBar
-
     private val clientes = mutableListOf<Cliente>()
     private val operarios = mutableListOf<Usuario>()
-
     private var clienteSeleccionado: Cliente? = null
     private var operarioSeleccionado: Usuario? = null
-
     private var avisoId: Int = -1
-
     private var estadoAviso: String = "pendiente"
-
     private var cargandoClientes = false
     private var cargandoOperarios = false
-
     private var avisoCargado = false
-
     private var clienteIdAviso: Int = -1
     private var operarioIdAviso: Int = -1
-
     private var primeraCargaClientes = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,24 +66,106 @@ class EditarAvisoActivity : AppCompatActivity() {
 
         enableEdgeToEdge()
         setContentView(R.layout.activity_editar_aviso)
-        val vistaPrincipal = findViewById<android.view.View>(R.id.scrollViewEditarAviso)
 
-        ViewCompat.setOnApplyWindowInsetsListener(vistaPrincipal) { vista, insets ->
+        val scrollViewEditarAviso =
+            findViewById<ScrollView>(R.id.scrollViewEditarAviso)
+
+        val paddingInicialIzquierdo =
+            scrollViewEditarAviso.paddingLeft
+
+        val paddingInicialSuperior =
+            scrollViewEditarAviso.paddingTop
+
+        val paddingInicialDerecho =
+            scrollViewEditarAviso.paddingRight
+
+        val paddingInicialInferior =
+            scrollViewEditarAviso.paddingBottom
+
+        ViewCompat.setOnApplyWindowInsetsListener(
+            scrollViewEditarAviso
+        ) { vista, insets ->
+
             val barrasSistema = insets.getInsets(
-                WindowInsetsCompat.Type.statusBars() or
+                WindowInsetsCompat.Type.systemBars() or
                         WindowInsetsCompat.Type.displayCutout()
             )
 
+            val teclado = insets.getInsets(
+                WindowInsetsCompat.Type.ime()
+            )
+
+            val tecladoVisible =
+                insets.isVisible(WindowInsetsCompat.Type.ime())
+
             vista.setPadding(
-                vista.paddingLeft,
-                barrasSistema.top,
-                vista.paddingRight,
-                vista.paddingBottom
+                paddingInicialIzquierdo + barrasSistema.left,
+                paddingInicialSuperior + barrasSistema.top,
+                paddingInicialDerecho + barrasSistema.right,
+                paddingInicialInferior + if (tecladoVisible) {
+                    maxOf(teclado.bottom, barrasSistema.bottom)
+                } else {
+                    barrasSistema.bottom
+                }
             )
 
             insets
         }
+
         inicializarVistas()
+
+        scrollViewEditarAviso.viewTreeObserver.addOnGlobalLayoutListener {
+
+            val campoEnfocado = currentFocus ?: return@addOnGlobalLayoutListener
+
+            if (campoEnfocado !is EditText) {
+                return@addOnGlobalLayoutListener
+            }
+
+            if (!campoEnfocado.isShown) {
+                return@addOnGlobalLayoutListener
+            }
+
+            val posicionCampo = Rect()
+
+            campoEnfocado.getDrawingRect(posicionCampo)
+
+            scrollViewEditarAviso.offsetDescendantRectToMyCoords(
+                campoEnfocado,
+                posicionCampo
+            )
+
+            val margen =
+                (16 * resources.displayMetrics.density).toInt()
+
+            val parteSuperiorVisible =
+                scrollViewEditarAviso.scrollY + margen
+
+            val parteInferiorVisible =
+                scrollViewEditarAviso.scrollY +
+                        scrollViewEditarAviso.height -
+                        scrollViewEditarAviso.paddingBottom -
+                        margen
+
+            when {
+
+                posicionCampo.bottom > parteInferiorVisible -> {
+
+                    scrollViewEditarAviso.smoothScrollBy(
+                        0,
+                        posicionCampo.bottom - parteInferiorVisible
+                    )
+                }
+
+                posicionCampo.top < parteSuperiorVisible -> {
+
+                    scrollViewEditarAviso.smoothScrollBy(
+                        0,
+                        posicionCampo.top - parteSuperiorVisible
+                    )
+                }
+            }
+        }
         avisoId = intent.getIntExtra("AVISO_ID", -1)
 
         if (avisoId == -1) {
@@ -528,7 +598,8 @@ class EditarAvisoActivity : AppCompatActivity() {
 
         val adapter = object : ArrayAdapter<Cliente>(
             this,
-            android.R.layout.simple_dropdown_item_1line,
+            R.layout.item_opcion_aviso,
+            R.id.textViewNombreOpcionAviso,
             clientes
         ) {
 
@@ -549,7 +620,7 @@ class EditarAvisoActivity : AppCompatActivity() {
                     )
 
                 view.findViewById<TextView>(
-                    android.R.id.text1
+                    R.id.textViewNombreOpcionAviso
                 ).text =
                     getItem(position)?.nombre ?: ""
 
@@ -570,7 +641,7 @@ class EditarAvisoActivity : AppCompatActivity() {
                     )
 
                 view.findViewById<TextView>(
-                    android.R.id.text1
+                    R.id.textViewNombreOpcionAviso
                 ).text =
                     getItem(position)?.nombre ?: ""
 
@@ -814,7 +885,8 @@ class EditarAvisoActivity : AppCompatActivity() {
 
         val adapter = object : ArrayAdapter<Usuario>(
             this,
-            android.R.layout.simple_dropdown_item_1line,
+            R.layout.item_opcion_aviso,
+            R.id.textViewNombreOpcionAviso,
             operarios
         ) {
 
@@ -835,7 +907,7 @@ class EditarAvisoActivity : AppCompatActivity() {
                     )
 
                 view.findViewById<TextView>(
-                    android.R.id.text1
+                    R.id.textViewNombreOpcionAviso
                 ).text =
                     getItem(position)?.nombre ?: ""
 
@@ -856,7 +928,7 @@ class EditarAvisoActivity : AppCompatActivity() {
                     )
 
                 view.findViewById<TextView>(
-                    android.R.id.text1
+                    R.id.textViewNombreOpcionAviso
                 ).text =
                     getItem(position)?.nombre ?: ""
 

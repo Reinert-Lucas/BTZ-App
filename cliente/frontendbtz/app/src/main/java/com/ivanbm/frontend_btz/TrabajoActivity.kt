@@ -1,16 +1,19 @@
 package com.ivanbm.frontend_btz
 
+import android.graphics.Rect
 import android.os.Bundle
+import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -19,21 +22,19 @@ import com.ivanbm.frontend_btz.model.Material
 import com.ivanbm.frontend_btz.model.MaterialSeleccionado
 import com.ivanbm.frontend_btz.model.MaterialTrabajo
 import com.ivanbm.frontend_btz.model.MaterialesResponse
-import com.ivanbm.frontend_btz.network.RetrofitClient
+import com.ivanbm.frontend_btz.model.Trabajo
 import com.ivanbm.frontend_btz.model.TrabajoRequest
 import com.ivanbm.frontend_btz.model.TrabajoResponse
+import com.ivanbm.frontend_btz.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import kotlin.collections.emptyList
-import com.ivanbm.frontend_btz.model.Trabajo
-import android.view.View
 
 class TrabajoActivity : AppCompatActivity() {
 
     private lateinit var editTextTrabajoRealizado: EditText
-
     private lateinit var editTextDesperfectoTrabajo: EditText
+
     private lateinit var textViewDireccionTrabajo: TextView
     private lateinit var textViewFechaTrabajo: TextView
     private lateinit var textViewClienteTrabajo: TextView
@@ -41,37 +42,45 @@ class TrabajoActivity : AppCompatActivity() {
     private lateinit var textViewUrgenciaTrabajo: TextView
     private lateinit var textViewMensajeTrabajo: TextView
     private lateinit var textViewObservacionTrabajo: TextView
+
     private lateinit var autoCompleteMaterialTrabajo: AutoCompleteTextView
     private lateinit var editTextCantidadMaterialTrabajo: EditText
     private lateinit var buttonAgregarMaterialTrabajo: Button
     private lateinit var buttonFinalizarTrabajo: Button
     private lateinit var recyclerViewMaterialesTrabajo: RecyclerView
     private lateinit var materialTrabajoAdapter: MaterialTrabajoAdapter
-    private var materialesDisponibles = mutableListOf<Material>()
+
+    private lateinit var scrollViewTrabajo: android.widget.ScrollView
+
+    private val materialesDisponibles = mutableListOf<Material>()
     private var materialSeleccionado: Material? = null
     private var avisoId: Int = -1
     private var avisoFinalizado = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
         setContentView(R.layout.activity_trabajo)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(
-                systemBars.left,
-                systemBars.top,
-                systemBars.right,
-                systemBars.bottom
-            )
-            insets
-        }
+        scrollViewTrabajo =
+            findViewById(R.id.scrollViewTrabajo)
+
+        configurarInsetsTeclado()
+        configurarDesplazamientoTeclado()
 
         inicializarVistas()
 
+        findViewById<ImageButton>(R.id.buttonVolverTrabajo)
+            .setOnClickListener {
+                finish()
+            }
+
         avisoId = intent.getIntExtra("AVISO_ID", -1)
-        avisoFinalizado = intent.getBooleanExtra("AVISO_FINALIZADO", false)
+        avisoFinalizado = intent.getBooleanExtra(
+            "AVISO_FINALIZADO",
+            false
+        )
 
         mostrarDatosAviso()
         configurarMateriales()
@@ -85,6 +94,101 @@ class TrabajoActivity : AppCompatActivity() {
             configurarBotonAgregarMaterial()
             configurarBotonFinalizarTrabajo()
         }
+    }
+
+    private fun configurarInsetsTeclado() {
+
+        val paddingInicialIzquierdo = scrollViewTrabajo.paddingLeft
+        val paddingInicialSuperior = scrollViewTrabajo.paddingTop
+        val paddingInicialDerecho = scrollViewTrabajo.paddingRight
+        val paddingInicialInferior = scrollViewTrabajo.paddingBottom
+
+        ViewCompat.setOnApplyWindowInsetsListener(
+            scrollViewTrabajo
+        ) { vista, insets ->
+
+            val barrasSistema = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or
+                        WindowInsetsCompat.Type.displayCutout()
+            )
+
+            val teclado = insets.getInsets(
+                WindowInsetsCompat.Type.ime()
+            )
+
+            val tecladoVisible = insets.isVisible(
+                WindowInsetsCompat.Type.ime()
+            )
+
+            vista.setPadding(
+                paddingInicialIzquierdo + barrasSistema.left,
+                paddingInicialSuperior + barrasSistema.top,
+                paddingInicialDerecho + barrasSistema.right,
+                paddingInicialInferior + if (tecladoVisible) {
+                    maxOf(teclado.bottom, barrasSistema.bottom)
+                } else {
+                    barrasSistema.bottom
+                }
+            )
+
+            insets
+        }
+    }
+
+    private fun configurarDesplazamientoTeclado() {
+
+        scrollViewTrabajo.viewTreeObserver
+            .addOnGlobalLayoutListener {
+
+                val campoEnfocado =
+                    currentFocus ?: return@addOnGlobalLayoutListener
+
+                if (campoEnfocado !is EditText) {
+                    return@addOnGlobalLayoutListener
+                }
+
+                if (!campoEnfocado.isShown) {
+                    return@addOnGlobalLayoutListener
+                }
+
+                val posicionCampo = Rect()
+
+                campoEnfocado.getDrawingRect(posicionCampo)
+
+                scrollViewTrabajo.offsetDescendantRectToMyCoords(
+                    campoEnfocado,
+                    posicionCampo
+                )
+
+                val margen =
+                    (16 * resources.displayMetrics.density).toInt()
+
+                val parteSuperiorVisible =
+                    scrollViewTrabajo.scrollY + margen
+
+                val parteInferiorVisible =
+                    scrollViewTrabajo.scrollY +
+                            scrollViewTrabajo.height -
+                            scrollViewTrabajo.paddingBottom -
+                            margen
+
+                when {
+
+                    posicionCampo.bottom > parteInferiorVisible -> {
+                        scrollViewTrabajo.smoothScrollBy(
+                            0,
+                            posicionCampo.bottom - parteInferiorVisible
+                        )
+                    }
+
+                    posicionCampo.top < parteSuperiorVisible -> {
+                        scrollViewTrabajo.smoothScrollBy(
+                            0,
+                            posicionCampo.top - parteSuperiorVisible
+                        )
+                    }
+                }
+            }
     }
 
     private fun inicializarVistas() {
@@ -134,29 +238,14 @@ class TrabajoActivity : AppCompatActivity() {
 
     private fun mostrarDatosAviso() {
 
-        val direccion =
-            intent.getStringExtra("AVISO_DIRECCION")
-
-        val fecha =
-            intent.getStringExtra("AVISO_FECHA")
-
-        val hora =
-            intent.getStringExtra("AVISO_HORA")
-
-        val cliente =
-            intent.getStringExtra("AVISO_CLIENTE")
-
-        val telefono =
-            intent.getStringExtra("AVISO_TELEFONO")
-
-        val urgencia =
-            intent.getStringExtra("AVISO_URGENCIA")
-
-        val mensaje =
-            intent.getStringExtra("AVISO_MENSAJE")
-
-        val observacion =
-            intent.getStringExtra("AVISO_OBSERVACION")
+        val direccion = intent.getStringExtra("AVISO_DIRECCION")
+        val fecha = intent.getStringExtra("AVISO_FECHA")
+        val hora = intent.getStringExtra("AVISO_HORA")
+        val cliente = intent.getStringExtra("AVISO_CLIENTE")
+        val telefono = intent.getStringExtra("AVISO_TELEFONO")
+        val urgencia = intent.getStringExtra("AVISO_URGENCIA")
+        val mensaje = intent.getStringExtra("AVISO_MENSAJE")
+        val observacion = intent.getStringExtra("AVISO_OBSERVACION")
 
         textViewDireccionTrabajo.text =
             "Dirección: ${direccion ?: "Sin dirección"}"
@@ -174,12 +263,14 @@ class TrabajoActivity : AppCompatActivity() {
             "Prioridad: ${urgencia ?: "Sin prioridad"}"
 
         textViewMensajeTrabajo.text =
-            "Mensaje: ${mensaje ?: "Sin mensaje"}"
+            mensaje?.takeIf { it.isNotBlank() } ?: "Sin mensaje"
 
         textViewObservacionTrabajo.text =
-            "Observación: ${observacion ?: "Sin observación"}"
+            observacion?.takeIf { it.isNotBlank() } ?: "Sin observación"
     }
+
     private fun configurarMateriales() {
+
         materialTrabajoAdapter = MaterialTrabajoAdapter(
             mutableListOf(),
             onEliminarMaterial = { materialSeleccionado ->
@@ -196,6 +287,7 @@ class TrabajoActivity : AppCompatActivity() {
         recyclerViewMaterialesTrabajo.adapter =
             materialTrabajoAdapter
     }
+
     private fun cargarMateriales(pagina: Int = 1) {
 
         RetrofitClient.api
@@ -211,9 +303,7 @@ class TrabajoActivity : AppCompatActivity() {
 
                         val respuesta = response.body()!!
 
-                        materialesDisponibles.addAll(
-                            respuesta.data
-                        )
+                        materialesDisponibles.addAll(respuesta.data)
 
                         if (
                             respuesta.meta.current_page <
@@ -256,7 +346,8 @@ class TrabajoActivity : AppCompatActivity() {
 
         val adapter = ArrayAdapter(
             this,
-            android.R.layout.simple_dropdown_item_1line,
+            R.layout.item_opcion_aviso,
+            R.id.textViewNombreOpcionAviso,
             nombresMateriales
         )
 
@@ -289,6 +380,7 @@ class TrabajoActivity : AppCompatActivity() {
                 }
         }
     }
+
     private fun configurarBotonAgregarMaterial() {
 
         buttonAgregarMaterialTrabajo.setOnClickListener {
@@ -317,8 +409,7 @@ class TrabajoActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val cantidad =
-                cantidadTexto.toIntOrNull()
+            val cantidad = cantidadTexto.toIntOrNull()
 
             if (cantidad == null || cantidad < 1) {
                 editTextCantidadMaterialTrabajo.error =
@@ -335,7 +426,6 @@ class TrabajoActivity : AppCompatActivity() {
                     }
 
             if (materialYaAgregado) {
-
                 Toast.makeText(
                     this,
                     "Ese material ya fue agregado",
@@ -345,22 +435,19 @@ class TrabajoActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val nuevoMaterial =
-                MaterialSeleccionado(
-                    material = material,
-                    cantidad = cantidad
-                )
-
-            materialTrabajoAdapter.agregarMaterial(
-                nuevoMaterial
+            val nuevoMaterial = MaterialSeleccionado(
+                material = material,
+                cantidad = cantidad
             )
 
-            materialSeleccionado = null
+            materialTrabajoAdapter.agregarMaterial(nuevoMaterial)
 
+            materialSeleccionado = null
             autoCompleteMaterialTrabajo.text.clear()
             editTextCantidadMaterialTrabajo.text.clear()
         }
     }
+
     private fun configurarBotonFinalizarTrabajo() {
 
         buttonFinalizarTrabajo.setOnClickListener {
@@ -434,17 +521,17 @@ class TrabajoActivity : AppCompatActivity() {
                     )
                 }
 
-            val request =
-                TrabajoRequest(
-                    trabajo_realizado = trabajoRealizado,
-                    desperfecto = desperfecto,
-                    aviso_id = avisoId,
-                    materiales = materialesRequest
-                )
+            val request = TrabajoRequest(
+                trabajo_realizado = trabajoRealizado,
+                desperfecto = desperfecto,
+                aviso_id = avisoId,
+                materiales = materialesRequest
+            )
 
             enviarTrabajo(request)
         }
     }
+
     private fun enviarTrabajo(request: TrabajoRequest) {
 
         buttonFinalizarTrabajo.isEnabled = false
@@ -501,8 +588,11 @@ class TrabajoActivity : AppCompatActivity() {
                 }
             })
     }
+
     private fun mostrarTrabajoFinalizado() {
-        val trabajoJson = intent.getStringExtra("AVISO_TRABAJO_JSON")
+
+        val trabajoJson =
+            intent.getStringExtra("AVISO_TRABAJO_JSON")
 
         if (trabajoJson.isNullOrBlank()) {
             Toast.makeText(
@@ -510,10 +600,12 @@ class TrabajoActivity : AppCompatActivity() {
                 "No se recibieron los detalles del trabajo finalizado",
                 Toast.LENGTH_LONG
             ).show()
+
             return
         }
 
         try {
+
             val trabajo = Gson().fromJson(
                 trabajoJson,
                 Trabajo::class.java
@@ -527,22 +619,25 @@ class TrabajoActivity : AppCompatActivity() {
                 trabajo.desperfecto
             )
 
-            val materialesUtilizados = trabajo.materiales.map { materialResponse ->
-                MaterialSeleccionado(
-                    material = Material(
-                        id = materialResponse.id,
-                        nombre = materialResponse.nombre,
-                        detalle = materialResponse.detalle ?: ""
-                    ),
-                    cantidad = materialResponse.cantidad
-                )
-            }
+            val materialesUtilizados =
+                trabajo.materiales.map { materialResponse ->
+
+                    MaterialSeleccionado(
+                        material = Material(
+                            id = materialResponse.id,
+                            nombre = materialResponse.nombre,
+                            detalle = materialResponse.detalle ?: ""
+                        ),
+                        cantidad = materialResponse.cantidad
+                    )
+                }
 
             materialTrabajoAdapter.mostrarMateriales(
                 materialesUtilizados
             )
 
         } catch (e: Exception) {
+
             Toast.makeText(
                 this,
                 "No se pudieron mostrar los detalles del trabajo",
@@ -550,10 +645,22 @@ class TrabajoActivity : AppCompatActivity() {
             ).show()
         }
     }
+
     private fun configurarModoSoloLectura() {
         editTextTrabajoRealizado.isEnabled = false
         editTextDesperfectoTrabajo.isEnabled = false
 
+        // Ocultar las indicaciones pensadas para completar el formulario
+        findViewById<TextView>(R.id.textViewSubtituloTrabajo)
+            .visibility = View.GONE
+
+        findViewById<TextView>(R.id.textViewAyudaRegistroTrabajo)
+            .visibility = View.GONE
+
+        findViewById<TextView>(R.id.textViewAyudaMaterialesTrabajo)
+            .visibility = View.GONE
+
+        // Ocultar los controles para agregar o finalizar el trabajo
         autoCompleteMaterialTrabajo.visibility = View.GONE
         editTextCantidadMaterialTrabajo.visibility = View.GONE
         buttonAgregarMaterialTrabajo.visibility = View.GONE

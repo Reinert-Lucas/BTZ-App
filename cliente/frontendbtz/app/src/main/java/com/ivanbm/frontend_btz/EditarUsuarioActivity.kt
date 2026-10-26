@@ -19,6 +19,12 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import org.json.JSONObject
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 class EditarUsuarioActivity : AppCompatActivity() {
 
     private var usuarioId: Int = -1
@@ -36,6 +42,27 @@ class EditarUsuarioActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_editar_usuario)
 
+        val scrollViewEditarUsuario =
+            findViewById<androidx.core.widget.NestedScrollView>(
+                R.id.scrollViewEditarUsuario
+            )
+
+        val paddingSuperiorInicial = scrollViewEditarUsuario.paddingTop
+        val paddingInferiorInicial = scrollViewEditarUsuario.paddingBottom
+
+        ViewCompat.setOnApplyWindowInsetsListener(scrollViewEditarUsuario) { vista, insets ->
+            val barrasSistema = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or
+                        WindowInsetsCompat.Type.displayCutout()
+            )
+
+            vista.updatePadding(
+                top = paddingSuperiorInicial + barrasSistema.top,
+                bottom = paddingInferiorInicial + barrasSistema.bottom
+            )
+
+            insets
+        }
         usuarioId = intent.getIntExtra(
             "USUARIO_ID",
             -1
@@ -65,6 +92,10 @@ class EditarUsuarioActivity : AppCompatActivity() {
         buttonEliminarUsuario.setOnClickListener {
             mostrarConfirmacionEliminar()
         }
+        findViewById<android.view.View>(R.id.buttonVolverEditarUsuario)
+            .setOnClickListener {
+                finish()
+            }
     }
 
     private fun inicializarVistas() {
@@ -84,7 +115,6 @@ class EditarUsuarioActivity : AppCompatActivity() {
         spinnerRolUsuario =
             findViewById(R.id.spinnerRolUsuario)
 
-
         buttonGuardarCambiosUsuario =
             findViewById(R.id.buttonGuardarCambiosUsuario)
 
@@ -94,27 +124,94 @@ class EditarUsuarioActivity : AppCompatActivity() {
         progressBarEditarUsuario =
             findViewById(R.id.progressBarEditarUsuario)
     }
-
     private fun configurarSpinnerRol() {
+        val roles = listOf("admin", "operario")
 
-        val roles = listOf(
-            "admin",
-            "operario"
-        )
+        fun obtenerIconoRol(rol: String): Int {
+            return when (rol) {
+                "admin" -> R.drawable.ic_usuario_administrador
+                "operario" -> R.drawable.ic_usuario_operario
+                else -> R.drawable.ic_usuario
+            }
+        }
 
-        val adapter = ArrayAdapter(
+        val adaptadorRoles = object : ArrayAdapter<String>(
             this,
-            android.R.layout.simple_spinner_item,
+            R.layout.item_rol_seleccionado,
+            R.id.textViewRolSeleccionado,
             roles
-        )
+        ) {
+            private fun configurarVista(
+                vista: View,
+                rol: String,
+                esOpcion: Boolean
+            ): View {
+                val imageView = vista.findViewById<ImageView>(
+                    if (esOpcion) {
+                        R.id.imageViewIconoOpcionRol
+                    } else {
+                        R.id.imageViewIconoRolSeleccionado
+                    }
+                )
 
-        adapter.setDropDownViewResource(
-            android.R.layout.simple_spinner_dropdown_item
-        )
+                val textView = vista.findViewById<TextView>(
+                    if (esOpcion) {
+                        R.id.textViewOpcionRol
+                    } else {
+                        R.id.textViewRolSeleccionado
+                    }
+                )
 
-        spinnerRolUsuario.adapter = adapter
+                imageView.setImageResource(obtenerIconoRol(rol))
+
+                textView.text = when (rol) {
+                    "admin" -> "Administrador"
+                    "operario" -> "Operario"
+                    else -> rol
+                }
+
+                return vista
+            }
+
+            override fun getView(
+                position: Int,
+                convertView: View?,
+                parent: ViewGroup
+            ): View {
+                val vista = convertView ?: layoutInflater.inflate(
+                    R.layout.item_rol_seleccionado,
+                    parent,
+                    false
+                )
+
+                return configurarVista(
+                    vista,
+                    getItem(position) ?: "",
+                    false
+                )
+            }
+
+            override fun getDropDownView(
+                position: Int,
+                convertView: View?,
+                parent: ViewGroup
+            ): View {
+                val vista = convertView ?: layoutInflater.inflate(
+                    R.layout.item_rol_opcion,
+                    parent,
+                    false
+                )
+
+                return configurarVista(
+                    vista,
+                    getItem(position) ?: "",
+                    true
+                )
+            }
+        }
+
+        spinnerRolUsuario.adapter = adaptadorRoles
     }
-
     private fun cargarUsuario() {
 
         RetrofitClient.api.obtenerUsuario(usuarioId)

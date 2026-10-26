@@ -20,10 +20,12 @@
         </service>
         <activity
             android:name=".BuscarAvisosActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".TrabajoActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".EditarMaterialActivity"
             android:exported="false" />
@@ -35,10 +37,12 @@
             android:exported="false" />
         <activity
             android:name=".EditarAvisoActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".CrearAvisoActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".EditarUsuarioActivity"
             android:exported="false" />

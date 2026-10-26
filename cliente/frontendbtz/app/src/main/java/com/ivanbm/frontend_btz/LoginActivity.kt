@@ -138,7 +138,15 @@ class LoginActivity : AppCompatActivity() {
                         }
 
                         if (usuarioLogueado?.rol.equals("operario", ignoreCase = true)) {
-                            registrarNotificaciones()
+                            try {
+                                registrarNotificaciones()
+                            } catch (e: Exception) {
+                                android.util.Log.e(
+                                    "LoginActivity",
+                                    "No se pudieron registrar las notificaciones",
+                                    e
+                                )
+                            }
                         }
 
                         Toast.makeText(

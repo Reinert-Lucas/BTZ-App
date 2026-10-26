@@ -4,212 +4,417 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollViewTrabajo"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F5F5FA"
     android:fillViewport="true"
+    android:clipToPadding="false"
     tools:context=".TrabajoActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:orientation="vertical"
+        android:paddingStart="18dp"
+        android:paddingEnd="18dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="24dp">
 
-        <TextView
-            android:id="@+id/textViewTituloTrabajo"
-            android:layout_width="wrap_content"
+        <!-- Encabezado -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Detalle del aviso"
-            android:textSize="26sp"
-            android:textStyle="bold"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="24dp">
 
-        <TextView
-            android:id="@+id/textViewDireccionTrabajo"
-            android:layout_width="0dp"
+            <ImageButton
+                android:id="@+id/buttonVolverTrabajo"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="14dp"
+                android:background="@drawable/bg_boton_volver"
+                android:src="@drawable/ic_volver"
+                android:scaleType="center"
+                android:padding="12dp"
+                android:contentDescription="Volver atrás"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textViewTituloTrabajo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Detalle del aviso"
+                    android:textColor="#2F2483"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textViewSubtituloTrabajo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Información y registro del trabajo"
+                    android:textColor="#77738B"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Información del aviso -->
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Dirección:"
-            android:textSize="18sp"
-            app:layout_constraintTop_toBottomOf="@id/textViewTituloTrabajo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:layout_marginBottom="18dp"
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:cardUseCompatPadding="false">
 
-        <TextView
-            android:id="@+id/textViewFechaTrabajo"
-            android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Información del aviso"
+                    android:textColor="#29263D"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="14dp" />
+
+                <TextView
+                    android:id="@+id/textViewDireccionTrabajo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Dirección:"
+                    android:textColor="#454357"
+                    android:textSize="14sp"
+                    android:paddingVertical="5dp" />
+
+                <TextView
+                    android:id="@+id/textViewFechaTrabajo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Fecha de visita:"
+                    android:textColor="#454357"
+                    android:textSize="14sp"
+                    android:paddingVertical="5dp" />
+
+                <TextView
+                    android:id="@+id/textViewClienteTrabajo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Cliente:"
+                    android:textColor="#454357"
+                    android:textSize="14sp"
+                    android:paddingVertical="5dp" />
+
+                <TextView
+                    android:id="@+id/textViewTelefonoTrabajo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Teléfono:"
+                    android:textColor="#454357"
+                    android:textSize="14sp"
+                    android:paddingVertical="5dp" />
+
+                <TextView
+                    android:id="@+id/textViewUrgenciaTrabajo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Prioridad:"
+                    android:textColor="#454357"
+                    android:textSize="14sp"
+                    android:paddingVertical="5dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:background="#ECEAF3" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Descripción del trabajo"
+                    android:textColor="#29263D"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="5dp" />
+
+                <TextView
+                    android:id="@+id/textViewMensajeTrabajo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Mensaje:"
+                    android:textColor="#77738B"
+                    android:textSize="14sp"
+                    android:paddingBottom="10dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Observaciones"
+                    android:textColor="#29263D"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="5dp" />
+
+                <TextView
+                    android:id="@+id/textViewObservacionTrabajo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Observación:"
+                    android:textColor="#77738B"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Registro del trabajo -->
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Fecha de visita:"
-            android:textSize="18sp"
-            app:layout_constraintTop_toBottomOf="@id/textViewDireccionTrabajo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:layout_marginBottom="18dp"
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:cardUseCompatPadding="false">
 
-        <TextView
-            android:id="@+id/textViewClienteTrabajo"
-            android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/textViewTituloCargaTrabajo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Registro del trabajo"
+                    android:textColor="#29263D"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="6dp" />
+
+                <TextView
+                    android:id="@+id/textViewAyudaRegistroTrabajo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Describí las tareas realizadas y los desperfectos encontrados."
+                    android:textColor="#77738B"
+                    android:textSize="13sp"
+                    android:layout_marginBottom="16dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Trabajo realizado"
+                    android:textColor="#454357"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="6dp" />
+
+                <EditText
+                    android:id="@+id/editTextTrabajoRealizado"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="110dp"
+                    android:background="@drawable/bg_campo_formulario"
+                    android:gravity="top|start"
+                    android:hint="Describí el trabajo realizado"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:maxLength="255"
+                    android:padding="14dp"
+                    android:textColor="#29263D"
+                    android:textColorHint="#898797"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="6dp"
+                    android:text="Desperfecto"
+                    android:textColor="#454357"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/editTextDesperfectoTrabajo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="110dp"
+                    android:background="@drawable/bg_campo_formulario"
+                    android:gravity="top|start"
+                    android:hint="Describí el desperfecto encontrado"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:maxLength="255"
+                    android:padding="14dp"
+                    android:textColor="#29263D"
+                    android:textColorHint="#898797"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Materiales -->
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Cliente:"
-            android:textSize="18sp"
-            app:layout_constraintTop_toBottomOf="@id/textViewFechaTrabajo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:cardUseCompatPadding="false">
 
-        <TextView
-            android:id="@+id/textViewTelefonoTrabajo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Teléfono:"
-            android:textSize="18sp"
-            app:layout_constraintTop_toBottomOf="@id/textViewClienteTrabajo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
 
-        <TextView
-            android:id="@+id/textViewUrgenciaTrabajo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Prioridad:"
-            android:textSize="18sp"
-            app:layout_constraintTop_toBottomOf="@id/textViewTelefonoTrabajo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+                <TextView
+                    android:id="@+id/textViewTituloMaterialesTrabajo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Materiales utilizados"
+                    android:textColor="#29263D"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="6dp" />
 
-        <TextView
-            android:id="@+id/textViewMensajeTrabajo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Mensaje:"
-            android:textSize="18sp"
-            app:layout_constraintTop_toBottomOf="@id/textViewUrgenciaTrabajo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+                <TextView
+                    android:id="@+id/textViewAyudaMaterialesTrabajo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Seleccioná los materiales y las cantidades utilizadas."
+                    android:textColor="#77738B"
+                    android:textSize="13sp"
+                    android:layout_marginBottom="16dp" />
 
-        <TextView
-            android:id="@+id/textViewObservacionTrabajo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Observación:"
-            android:textSize="18sp"
-            app:layout_constraintTop_toBottomOf="@id/textViewMensajeTrabajo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Material"
+                    android:textColor="#454357"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="6dp" />
 
-        <TextView
-            android:id="@+id/textViewTituloCargaTrabajo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="Carga del trabajo"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/textViewObservacionTrabajo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+                <AutoCompleteTextView
+                    android:id="@+id/autoCompleteMaterialTrabajo"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:background="@drawable/bg_campo_formulario"
+                    android:completionThreshold="1"
+                    android:hint="Buscar material"
+                    android:inputType="textCapWords"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:singleLine="true"
+                    android:textColor="#29263D"
+                    android:textColorHint="#898797"
+                    android:textSize="14sp" />
 
-        <EditText
-            android:id="@+id/editTextTrabajoRealizado"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:hint="Trabajo realizado"
-            android:gravity="top|start"
-            android:inputType="textMultiLine"
-            android:minLines="4"
-            android:maxLength="255"
-            app:layout_constraintTop_toBottomOf="@id/textViewTituloCargaTrabajo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="6dp"
+                    android:text="Cantidad"
+                    android:textColor="#454357"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/editTextDesperfectoTrabajo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:hint="Desperfecto"
-            android:gravity="top|start"
-            android:inputType="textMultiLine"
-            android:minLines="4"
-            android:maxLength="255"
-            app:layout_constraintTop_toBottomOf="@id/editTextTrabajoRealizado"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+                <EditText
+                    android:id="@+id/editTextCantidadMaterialTrabajo"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:background="@drawable/bg_campo_formulario"
+                    android:hint="Ingresar cantidad"
+                    android:inputType="number"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="14dp"
+                    android:singleLine="true"
+                    android:textColor="#29263D"
+                    android:textColorHint="#898797"
+                    android:textSize="14sp" />
 
-        <TextView
-            android:id="@+id/textViewTituloMaterialesTrabajo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="Materiales utilizados"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/editTextDesperfectoTrabajo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonAgregarMaterialTrabajo"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="12dp"
+                    android:text="Agregar material"
+                    android:textAllCaps="false"
+                    android:textColor="#2F2483"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="#F0EEFF"
+                    app:cornerRadius="12dp"
+                    app:strokeWidth="0dp" />
 
-        <AutoCompleteTextView
-            android:id="@+id/autoCompleteMaterialTrabajo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:hint="Seleccionar material"
-            android:inputType="text"
-            android:completionThreshold="1"
-            app:layout_constraintTop_toBottomOf="@id/textViewTituloMaterialesTrabajo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="18dp"
+                    android:layout_marginBottom="14dp"
+                    android:background="#ECEAF3" />
 
-        <EditText
-            android:id="@+id/editTextCantidadMaterialTrabajo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:hint="Cantidad"
-            android:inputType="number"
-            app:layout_constraintTop_toBottomOf="@id/autoCompleteMaterialTrabajo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Lista de materiales"
+                    android:textColor="#29263D"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
 
-        <Button
-            android:id="@+id/buttonAgregarMaterialTrabajo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Agregar material"
-            app:layout_constraintTop_toBottomOf="@id/editTextCantidadMaterialTrabajo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewMaterialesTrabajo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewMaterialesTrabajo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:nestedScrollingEnabled="false"
-            app:layout_constraintTop_toBottomOf="@id/buttonAgregarMaterialTrabajo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonFinalizarTrabajo"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:layout_marginTop="24dp"
+                    android:text="Finalizar trabajo"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="#2F2483"
+                    app:cornerRadius="14dp"
+                    app:strokeWidth="0dp" />
 
-        <Button
-            android:id="@+id/buttonFinalizarTrabajo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Finalizar trabajo"
-            app:layout_constraintTop_toBottomOf="@id/recyclerViewMaterialesTrabajo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            </LinearLayout>
 
+        </androidx.cardview.widget.CardView>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
 </ScrollView>

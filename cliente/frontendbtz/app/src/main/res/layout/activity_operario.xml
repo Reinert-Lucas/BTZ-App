@@ -7,69 +7,94 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F0F0F0"
     tools:context=".OperarioActivity">
 
+    <!-- Barra superior -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/barraSuperiorOperario"
         android:layout_width="0dp"
-        android:layout_height="56dp"
+        android:layout_height="64dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/fondo_barra_administrador"
+        android:elevation="4dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/textViewTituloOperario"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:text="Operario"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:textStyle="bold"
+        <ImageView
+            android:id="@+id/imageViewLogoOperario"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:contentDescription="Logo BTZ"
+            android:scaleType="fitCenter"
+            android:src="@drawable/icon_btz"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textViewTituloOperario"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="4dp"
+            android:text="Operario"
+            android:textColor="#F0F0F0"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/buttonMenuOperario"
+            app:layout_constraintStart_toEndOf="@id/imageViewLogoOperario"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5" />
 
         <ImageButton
             android:id="@+id/buttonMenuOperario"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Abrir menú del operario"
-            android:src="@android:drawable/ic_menu_more"
-            android:tint="@android:color/white"
+            android:padding="10dp"
+            android:src="@android:drawable/arrow_down_float"
+            app:tint="#F0F0F0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- Título de la lista -->
     <TextView
         android:id="@+id/textViewTituloAvisosOperario"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
         android:text="Avisos asignados"
-        android:textSize="20sp"
+        android:textColor="#2F2483"
+        android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/barraSuperiorOperario" />
 
+    <!-- Lista de avisos con actualización por deslizamiento -->
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshAvisosOperario"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="12dp"
         app:layout_constraintBottom_toTopOf="@id/barraInferiorOperario"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -84,6 +109,7 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+    <!-- Indicador de carga -->
     <ProgressBar
         android:id="@+id/progressBarCargaAvisosOperario"
         android:layout_width="wrap_content"
@@ -94,46 +120,163 @@
         app:layout_constraintStart_toStartOf="@id/swipeRefreshAvisosOperario"
         app:layout_constraintTop_toTopOf="@id/swipeRefreshAvisosOperario" />
 
-    <LinearLayout
+    <!-- Barra inferior con navegación animada -->
+    <FrameLayout
         android:id="@+id/barraInferiorOperario"
         android:layout_width="0dp"
-        android:layout_height="70dp"
+        android:layout_height="96dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp"
-        android:gravity="center"
-        android:orientation="horizontal"
+        android:layout_marginBottom="4dp"
+        android:background="@android:color/transparent"
+        android:elevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <Button
-            android:id="@+id/buttonAvisosPendientesOperario"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:minWidth="0dp"
-            android:text="Pendientes"
-            android:textAllCaps="false" />
+        <!-- Círculo que indica la opción seleccionada -->
+        <View
+            android:id="@+id/indicadorNavegacionOperario"
+            android:layout_width="84dp"
+            android:layout_height="84dp"
+            android:layout_gravity="top|start"
+            android:background="@drawable/fondo_icono_navegacion"
+            android:visibility="invisible" />
 
-        <Button
-            android:id="@+id/buttonAvisosFinalizadosOperario"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:minWidth="0dp"
-            android:text="Finalizados"
-            android:textAllCaps="false" />
+        <!-- Opciones de navegación -->
+        <LinearLayout
+            android:id="@+id/contenedorOpcionesNavegacionOperario"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
 
-        <Button
-            android:id="@+id/buttonBuscarAvisosOperario"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:minWidth="0dp"
-            android:text="Buscar"
-            android:textAllCaps="false" />
+            <!-- Pendientes -->
+            <LinearLayout
+                android:id="@+id/buttonAvisosPendientesOperario"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground">
 
-    </LinearLayout>
+                <FrameLayout
+                    android:id="@+id/contenedorIconoPendientesOperario"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp">
+
+                    <ImageView
+                        android:id="@+id/iconoPendientesOperario"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_nav_pendientes"
+                        android:contentDescription="@null"
+                        app:tint="#2F2483" />
+
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/textoPendientesOperario"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pendientes"
+                    android:textSize="13sp"
+                    android:textColor="#2F2483"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:includeFontPadding="false" />
+
+            </LinearLayout>
+
+            <!-- Finalizados -->
+            <LinearLayout
+                android:id="@+id/buttonAvisosFinalizadosOperario"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground">
+
+                <FrameLayout
+                    android:id="@+id/contenedorIconoFinalizadosOperario"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp">
+
+                    <ImageView
+                        android:id="@+id/iconoFinalizadosOperario"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_nav_finalizados"
+                        android:contentDescription="@null"
+                        app:tint="#2F2483" />
+
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/textoFinalizadosOperario"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Finalizados"
+                    android:textSize="13sp"
+                    android:textColor="#2F2483"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:includeFontPadding="false" />
+
+            </LinearLayout>
+
+            <!-- Buscar -->
+            <LinearLayout
+                android:id="@+id/buttonBuscarAvisosOperario"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground">
+
+                <FrameLayout
+                    android:id="@+id/contenedorIconoBuscarOperario"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp">
+
+                    <ImageView
+                        android:id="@+id/iconoBuscarOperario"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_nav_buscar"
+                        android:contentDescription="@null"
+                        app:tint="#2F2483" />
+
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/textoBuscarOperario"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Buscar"
+                    android:textSize="13sp"
+                    android:textColor="#2F2483"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:includeFontPadding="false" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -27,6 +27,8 @@ import android.app.TimePickerDialog
 import android.widget.ImageButton
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import android.graphics.Rect
+import android.view.ViewTreeObserver
 class CrearAvisoActivity : AppCompatActivity() {
 
     private lateinit var editTextFechaAviso: EditText
@@ -68,21 +70,43 @@ class CrearAvisoActivity : AppCompatActivity() {
 
         enableEdgeToEdge()
         setContentView(R.layout.activity_crear_aviso)
-        val vistaPrincipal = findViewById<android.view.View>(
-            R.id.scrollViewCrearAviso
-        )
 
-        ViewCompat.setOnApplyWindowInsetsListener(vistaPrincipal) { vista, insets ->
+        val scrollViewCrearAviso =
+            findViewById<android.widget.ScrollView>(
+                R.id.scrollViewCrearAviso
+            )
+
+        val paddingInicialIzquierdo = scrollViewCrearAviso.paddingLeft
+        val paddingInicialSuperior = scrollViewCrearAviso.paddingTop
+        val paddingInicialDerecho = scrollViewCrearAviso.paddingRight
+        val paddingInicialInferior = scrollViewCrearAviso.paddingBottom
+
+        ViewCompat.setOnApplyWindowInsetsListener(
+            scrollViewCrearAviso
+        ) { vista, insets ->
+
             val barrasSistema = insets.getInsets(
                 WindowInsetsCompat.Type.systemBars() or
                         WindowInsetsCompat.Type.displayCutout()
             )
 
+            val teclado = insets.getInsets(
+                WindowInsetsCompat.Type.ime()
+            )
+
+            val tecladoVisible = insets.isVisible(
+                WindowInsetsCompat.Type.ime()
+            )
+
             vista.setPadding(
-                barrasSistema.left,
-                barrasSistema.top,
-                barrasSistema.right,
-                barrasSistema.bottom
+                paddingInicialIzquierdo + barrasSistema.left,
+                paddingInicialSuperior + barrasSistema.top,
+                paddingInicialDerecho + barrasSistema.right,
+                paddingInicialInferior + if (tecladoVisible) {
+                    maxOf(teclado.bottom, barrasSistema.bottom)
+                } else {
+                    barrasSistema.bottom
+                }
             )
 
             insets
@@ -181,11 +205,53 @@ class CrearAvisoActivity : AppCompatActivity() {
         buttonAnadirClienteAviso =
             findViewById(R.id.buttonAnadirClienteAviso)
 
-        configurarSpinnerUrgencia()
+        scrollViewCrearAviso.viewTreeObserver.addOnGlobalLayoutListener {
+            val rectanguloVisible = Rect()
+            scrollViewCrearAviso.getWindowVisibleDisplayFrame(rectanguloVisible)
 
-        cargarClientes()
+            val campoEnfocado = currentFocus ?: return@addOnGlobalLayoutListener
 
-        cargarOperarios()
+            if (campoEnfocado !is EditText) {
+                return@addOnGlobalLayoutListener
+            }
+
+            if (!campoEnfocado.isShown) {
+                return@addOnGlobalLayoutListener
+            }
+
+            val posicionCampo = Rect()
+            campoEnfocado.getDrawingRect(posicionCampo)
+            scrollViewCrearAviso.offsetDescendantRectToMyCoords(
+                campoEnfocado,
+                posicionCampo
+            )
+
+            val margen = (16 * resources.displayMetrics.density).toInt()
+            val parteSuperiorVisible =
+                scrollViewCrearAviso.scrollY + margen
+
+            val parteInferiorVisible =
+                scrollViewCrearAviso.scrollY +
+                        scrollViewCrearAviso.height -
+                        scrollViewCrearAviso.paddingBottom -
+                        margen
+
+            when {
+                posicionCampo.bottom > parteInferiorVisible -> {
+                    scrollViewCrearAviso.smoothScrollBy(
+                        0,
+                        posicionCampo.bottom - parteInferiorVisible
+                    )
+                }
+
+                posicionCampo.top < parteSuperiorVisible -> {
+                    scrollViewCrearAviso.smoothScrollBy(
+                        0,
+                        posicionCampo.top - parteSuperiorVisible
+                    )
+                }
+            }
+        }
 
         buttonGuardarAviso.setOnClickListener {
             crearAviso()
@@ -198,6 +264,10 @@ class CrearAvisoActivity : AppCompatActivity() {
 
             startActivity(intent)
         }
+
+        configurarSpinnerUrgencia()
+        cargarClientes()
+        cargarOperarios()
     }
 
     private fun configurarSpinnerUrgencia() {
@@ -303,7 +373,8 @@ class CrearAvisoActivity : AppCompatActivity() {
 
         val adapter = object : ArrayAdapter<Cliente>(
             this,
-            android.R.layout.simple_dropdown_item_1line,
+            R.layout.item_opcion_aviso,
+            R.id.textViewNombreOpcionAviso,
             clientes
         ) {
 
@@ -318,7 +389,7 @@ class CrearAvisoActivity : AppCompatActivity() {
                 val view = super.getView(position, convertView, parent)
 
                 view.findViewById<android.widget.TextView>(
-                    android.R.id.text1
+                    R.id.textViewNombreOpcionAviso
                 ).text = getItem(position)?.nombre ?: ""
 
                 return view
@@ -337,7 +408,7 @@ class CrearAvisoActivity : AppCompatActivity() {
                 )
 
                 view.findViewById<android.widget.TextView>(
-                    android.R.id.text1
+                    R.id.textViewNombreOpcionAviso
                 ).text = getItem(position)?.nombre ?: ""
 
                 return view
@@ -499,10 +570,10 @@ class CrearAvisoActivity : AppCompatActivity() {
 
         val adapter = object : ArrayAdapter<Usuario>(
             this,
-            android.R.layout.simple_dropdown_item_1line,
+            R.layout.item_opcion_aviso,
+            R.id.textViewNombreOpcionAviso,
             operarios
         ) {
-
             private val operariosOriginales = ArrayList(operarios)
 
             override fun getView(
@@ -514,7 +585,7 @@ class CrearAvisoActivity : AppCompatActivity() {
                 val view = super.getView(position, convertView, parent)
 
                 view.findViewById<android.widget.TextView>(
-                    android.R.id.text1
+                    R.id.textViewNombreOpcionAviso
                 ).text = getItem(position)?.nombre ?: ""
 
                 return view
@@ -533,7 +604,7 @@ class CrearAvisoActivity : AppCompatActivity() {
                 )
 
                 view.findViewById<android.widget.TextView>(
-                    android.R.id.text1
+                    R.id.textViewNombreOpcionAviso
                 ).text = getItem(position)?.nombre ?: ""
 
                 return view

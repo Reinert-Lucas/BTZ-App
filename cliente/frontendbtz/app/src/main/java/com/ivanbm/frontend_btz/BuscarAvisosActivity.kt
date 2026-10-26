@@ -26,9 +26,12 @@ import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
-
+import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 class BuscarAvisosActivity : AppCompatActivity() {
-
+    private lateinit var scrollViewContenidoBuscarAvisos: ScrollView
+    private lateinit var textViewTituloResultadosBuscarAvisos: TextView
     private lateinit var buttonVolverBuscarAvisos: ImageButton
     private lateinit var buttonMostrarFiltrosAvisos: Button
     private lateinit var buttonEjecutarBusquedaAvisos: Button
@@ -52,7 +55,8 @@ class BuscarAvisosActivity : AppCompatActivity() {
     private var cargandoAvisos = false
     private var hayMasAvisos = true
     private var busquedaActual: FiltrosBusqueda? = null
-
+    private var busquedaIniciada = false
+    private lateinit var cardFiltrosAvanzadosBuscarAvisos: androidx.cardview.widget.CardView
     private data class FiltrosBusqueda(
         val buscar: String? = null,
         val direccion: String? = null,
@@ -62,10 +66,54 @@ class BuscarAvisosActivity : AppCompatActivity() {
         val hora: String? = null,
         val estado: String? = null
     )
+    private fun desplazarAResultados() {
+        textViewTituloResultadosBuscarAvisos.post {
+            val ubicacionTitulo = IntArray(2)
+            val ubicacionScroll = IntArray(2)
 
+            textViewTituloResultadosBuscarAvisos
+                .getLocationOnScreen(ubicacionTitulo)
+
+            scrollViewContenidoBuscarAvisos
+                .getLocationOnScreen(ubicacionScroll)
+
+            val desplazamiento =
+                ubicacionTitulo[1] - ubicacionScroll[1]
+
+            scrollViewContenidoBuscarAvisos.smoothScrollBy(
+                0,
+                desplazamiento.coerceAtLeast(0)
+            )
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_buscar_avisos)
+
+        window.setSoftInputMode(
+            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+        )
+
+        val vistaPrincipal = findViewById<View>(
+            R.id.layoutPrincipalBuscarAvisos
+        )
+
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(
+            vistaPrincipal
+        ) { vista, insets ->
+            val barrasSistema = insets.getInsets(
+                androidx.core.view.WindowInsetsCompat.Type.statusBars()
+            )
+
+            vista.setPadding(
+                vista.paddingLeft,
+                barrasSistema.top,
+                vista.paddingRight,
+                vista.paddingBottom
+            )
+
+            insets
+        }
 
         inicializarVistas()
         configurarRecyclerView()
@@ -75,9 +123,15 @@ class BuscarAvisosActivity : AppCompatActivity() {
         configurarSelectorHora()
         configurarBotonesBusqueda()
         configurarPaginacion()
+        configurarTecladoBusqueda()
     }
 
     private fun inicializarVistas() {
+        scrollViewContenidoBuscarAvisos =
+            findViewById(R.id.scrollViewContenidoBuscarAvisos)
+
+        textViewTituloResultadosBuscarAvisos =
+            findViewById(R.id.textViewTituloResultadosBuscarAvisos)
         buttonVolverBuscarAvisos =
             findViewById(R.id.buttonVolverBuscarAvisos)
 
@@ -93,8 +147,8 @@ class BuscarAvisosActivity : AppCompatActivity() {
         buttonLimpiarFiltrosAvisos =
             findViewById(R.id.buttonLimpiarFiltrosAvisos)
 
-        scrollViewFiltrosAvisos =
-            findViewById(R.id.scrollViewFiltrosAvisos)
+        cardFiltrosAvanzadosBuscarAvisos =
+            findViewById(R.id.cardFiltrosAvanzadosBuscarAvisos)
 
         editTextBusquedaGeneralAvisos =
             findViewById(R.id.editTextBusquedaGeneralAvisos)
@@ -143,44 +197,19 @@ class BuscarAvisosActivity : AppCompatActivity() {
             finish()
         }
     }
-
     private fun configurarFiltrosAvanzados() {
         buttonMostrarFiltrosAvisos.setOnClickListener {
             val mostrarFiltros =
-                scrollViewFiltrosAvisos.visibility != View.VISIBLE
+                cardFiltrosAvanzadosBuscarAvisos.visibility != View.VISIBLE
 
-            scrollViewFiltrosAvisos.visibility =
+            cardFiltrosAvanzadosBuscarAvisos.visibility =
                 if (mostrarFiltros) View.VISIBLE else View.GONE
 
             buttonMostrarFiltrosAvisos.text =
                 if (mostrarFiltros) "Filtros avanzados ▲"
                 else "Filtros avanzados ▼"
-
-            val parametrosResultados =
-                recyclerViewResultadosBuscarAvisos.layoutParams as
-                        androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
-
-            val parametrosCarga =
-                progressBarBuscarAvisos.layoutParams as
-                        androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
-
-            val vistaSuperior = if (mostrarFiltros) {
-                R.id.scrollViewFiltrosAvisos
-            } else {
-                R.id.buttonMostrarFiltrosAvisos
-            }
-
-            parametrosResultados.topToBottom = vistaSuperior
-            parametrosCarga.topToBottom = vistaSuperior
-
-            recyclerViewResultadosBuscarAvisos.layoutParams =
-                parametrosResultados
-
-            progressBarBuscarAvisos.layoutParams =
-                parametrosCarga
         }
     }
-
     private fun configurarBotonesBusqueda() {
         buttonEjecutarBusquedaAvisos.setOnClickListener {
             val termino = editTextBusquedaGeneralAvisos.text
@@ -204,13 +233,18 @@ class BuscarAvisosActivity : AppCompatActivity() {
         buttonAplicarFiltrosAvisos.setOnClickListener {
             val filtros = crearFiltrosAvanzados() ?: return@setOnClickListener
 
+            val todosLosEstadosSeleccionados =
+                radioGroupEstadoFiltroAvisos.checkedRadioButtonId ==
+                        R.id.radioButtonTodosEstadosAvisos
+
             if (filtros.buscar == null &&
                 filtros.direccion == null &&
                 filtros.telefono == null &&
                 filtros.avisoId == null &&
                 filtros.fecha == null &&
                 filtros.hora == null &&
-                filtros.estado == null
+                filtros.estado == null &&
+                !todosLosEstadosSeleccionados
             ) {
                 Toast.makeText(
                     this,
@@ -219,9 +253,9 @@ class BuscarAvisosActivity : AppCompatActivity() {
                 ).show()
                 return@setOnClickListener
             }
-
             iniciarBusqueda(filtros)
         }
+
 
         buttonLimpiarFiltrosAvisos.setOnClickListener {
             limpiarCamposBusqueda()
@@ -321,8 +355,8 @@ class BuscarAvisosActivity : AppCompatActivity() {
             null
         }
     }
-
     private fun iniciarBusqueda(filtros: FiltrosBusqueda) {
+        busquedaIniciada = true
         busquedaActual = filtros
         paginaActual = 1
         hayMasAvisos = true
@@ -333,36 +367,31 @@ class BuscarAvisosActivity : AppCompatActivity() {
 
         cargarAvisos()
     }
-
     private fun configurarPaginacion() {
-        recyclerViewResultadosBuscarAvisos.addOnScrollListener(
-            object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(
-                    recyclerView: RecyclerView,
-                    dx: Int,
-                    dy: Int
-                ) {
-                    super.onScrolled(recyclerView, dx, dy)
+        scrollViewContenidoBuscarAvisos.setOnScrollChangeListener {
+                _: View,
+                _: Int,
+                scrollY: Int,
+                _: Int,
+                _: Int ->
 
-                    val layoutManager =
-                        recyclerView.layoutManager as? LinearLayoutManager
-                            ?: return
-
-                    val ultimoVisible =
-                        layoutManager.findLastVisibleItemPosition()
-
-                    if (dy > 0 &&
-                        !cargandoAvisos &&
-                        hayMasAvisos &&
-                        ultimoVisible >= avisoAdapter.itemCount - 2
-                    ) {
-                        cargarAvisos()
-                    }
-                }
+            if (!busquedaIniciada || cargandoAvisos || !hayMasAvisos) {
+                return@setOnScrollChangeListener
             }
-        )
-    }
 
+            val contenido =
+                scrollViewContenidoBuscarAvisos.getChildAt(0)
+                    ?: return@setOnScrollChangeListener
+
+            val distanciaAlFinal =
+                contenido.height -
+                        (scrollY + scrollViewContenidoBuscarAvisos.height)
+
+            if (distanciaAlFinal <= 200) {
+                cargarAvisos()
+            }
+        }
+    }
     private fun cargarAvisos() {
         if (cargandoAvisos || !hayMasAvisos) return
 
@@ -412,6 +441,11 @@ class BuscarAvisosActivity : AppCompatActivity() {
                 if (paginaActual == 1) {
                     avisoAdapter.actualizarAvisos(respuesta.data)
 
+                    textViewTituloResultadosBuscarAvisos.text =
+                        "Resultados de búsqueda (${respuesta.meta.total})"
+
+                    desplazarAResultados()
+
                     if (respuesta.data.isEmpty()) {
                         Toast.makeText(
                             this@BuscarAvisosActivity,
@@ -421,6 +455,9 @@ class BuscarAvisosActivity : AppCompatActivity() {
                     }
                 } else {
                     avisoAdapter.agregarAvisos(respuesta.data)
+
+                    textViewTituloResultadosBuscarAvisos.text =
+                        "Resultados de búsqueda (${avisoAdapter.itemCount})"
                 }
 
                 hayMasAvisos =
@@ -568,6 +605,58 @@ class BuscarAvisosActivity : AppCompatActivity() {
                 calendario.get(Calendar.MINUTE),
                 true
             ).show()
+        }
+    }
+    private fun configurarTecladoBusqueda() {
+        editTextBusquedaGeneralAvisos.setOnEditorActionListener {
+                _, actionId, _ ->
+
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                buttonEjecutarBusquedaAvisos.performClick()
+                true
+            } else {
+                false
+            }
+        }
+
+        val scrollContenido =
+            findViewById<ScrollView>(R.id.scrollViewContenidoBuscarAvisos)
+
+        val camposTexto = listOf(
+            editTextBusquedaGeneralAvisos,
+            editTextDireccionFiltroAvisos,
+            editTextTelefonoFiltroAvisos,
+            editTextNumeroAvisoFiltro
+        )
+
+        camposTexto.forEach { campo ->
+            campo.setOnFocusChangeListener { vista, tieneFoco ->
+                if (tieneFoco) {
+                    vista.post {
+                        val ubicacionCampo = IntArray(2)
+                        val ubicacionScroll = IntArray(2)
+
+                        vista.getLocationInWindow(ubicacionCampo)
+                        scrollContenido.getLocationInWindow(ubicacionScroll)
+
+                        val parteInferiorCampo =
+                            ubicacionCampo[1] + vista.height
+
+                        val parteInferiorVisible =
+                            ubicacionScroll[1] + scrollContenido.height
+
+                        val desplazamiento =
+                            parteInferiorCampo - parteInferiorVisible + 40
+
+                        if (desplazamiento > 0) {
+                            scrollContenido.smoothScrollBy(
+                                0,
+                                desplazamiento
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }

@@ -1,212 +1,374 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layoutPrincipalBuscarAvisos"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:background="#F5F5FA"
+    android:paddingStart="18dp"
+    android:paddingEnd="18dp"
+    android:paddingBottom="12dp"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <!-- Encabezado -->
-    <ImageButton
-        android:id="@+id/buttonVolverBuscarAvisos"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Volver"
-        android:src="@android:drawable/ic_media_previous"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textViewTituloBuscarAvisos"
+    <LinearLayout
+        android:id="@+id/contenedorTituloBuscarAvisos"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="Buscar avisos"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/buttonVolverBuscarAvisos"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/buttonVolverBuscarAvisos"
-        app:layout_constraintTop_toTopOf="@id/buttonVolverBuscarAvisos" />
-
-    <!-- Búsqueda rápida -->
-    <EditText
-        android:id="@+id/editTextBusquedaGeneralAvisos"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:hint="Dirección, teléfono o N.º de aviso"
-        android:inputType="text"
-        android:maxLines="1"
-        android:imeOptions="actionSearch"
-        android:padding="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="2dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buttonVolverBuscarAvisos" />
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <Button
-        android:id="@+id/buttonEjecutarBusquedaAvisos"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Buscar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editTextBusquedaGeneralAvisos" />
+        <ImageButton
+            android:id="@+id/buttonVolverBuscarAvisos"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="14dp"
+            android:background="@drawable/bg_boton_volver"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="Volver atrás"
+            android:padding="12dp"
+            android:scaleType="center"
+            android:src="@drawable/ic_volver" />
 
-    <!-- Mostrar u ocultar filtros -->
-    <Button
-        android:id="@+id/buttonMostrarFiltrosAvisos"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="Filtros avanzados ▼"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buttonEjecutarBusquedaAvisos" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-    <!-- Filtros avanzados desplegables -->
+            <TextView
+                android:id="@+id/textViewTituloBuscarAvisos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Buscar avisos"
+                android:textColor="#2F2483"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"/>
+
+            <TextView
+                android:id="@+id/textViewSubtituloBuscarAvisos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Utiliza las distintas opciones de búsqueda"
+                android:textColor="#77738B"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Contenido desplazable -->
     <ScrollView
-        android:id="@+id/scrollViewFiltrosAvisos"
+        android:id="@+id/scrollViewContenidoBuscarAvisos"
         android:layout_width="0dp"
-        android:layout_height="180dp"
-        android:layout_marginTop="4dp"
-        android:visibility="gone"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
         android:fillViewport="true"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:clipToPadding="false"
+        android:scrollbars="vertical"
+        android:descendantFocusability="afterDescendants"
+        app:layout_constraintTop_toBottomOf="@id/contenedorTituloBuscarAvisos"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buttonMostrarFiltrosAvisos">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="4dp">
+            android:paddingBottom="8dp">
 
+            <!-- Búsqueda general -->
             <EditText
-                android:id="@+id/editTextDireccionFiltroAvisos"
+                android:id="@+id/editTextBusquedaGeneralAvisos"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:background="@drawable/bg_campo_formulario"
+                android:hint="Dirección, teléfono o N.º de aviso"
+                android:inputType="text"
+                android:imeOptions="actionSearch"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:textColor="#29263D"
+                android:textColorHint="#77738B"
+                android:textSize="14sp" />
+
+            <!-- Acción principal -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonEjecutarBusquedaAvisos"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="12dp"
+                android:text="Buscar avisos"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:backgroundTint="#2F2483"
+                app:cornerRadius="12dp" />
+
+            <!-- Filtros avanzados -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonMostrarFiltrosAvisos"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:text="Filtros avanzados ▼"
+                android:textAllCaps="false"
+                android:textColor="#2F2483"
+                android:textSize="14sp"
+                app:backgroundTint="#EAE8F5"
+                app:cornerRadius="12dp" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardFiltrosAvanzadosBuscarAvisos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Dirección"
-                android:inputType="textPostalAddress"
-                android:maxLines="1" />
+                android:layout_marginTop="12dp"
+                android:visibility="gone"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp">
 
-            <EditText
-                android:id="@+id/editTextTelefonoFiltroAvisos"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Teléfono"
-                android:inputType="phone"
-                android:maxLines="1" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="14dp">
 
-            <EditText
-                android:id="@+id/editTextNumeroAvisoFiltro"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Número de aviso"
-                android:inputType="number"
-                android:maxLines="1" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Refiná tu búsqueda"
+                        android:textColor="#2F2483"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="14dp" />
 
-            <EditText
-                android:id="@+id/editTextFechaFiltroAvisos"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Seleccionar fecha"
-                android:focusable="false"
-                android:clickable="true"
-                android:cursorVisible="false"
-                android:inputType="none"
-                android:maxLines="1" />
+                    <EditText
+                        android:id="@+id/editTextDireccionFiltroAvisos"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/bg_campo_formulario"
+                        android:hint="Dirección"
+                        android:inputType="textPostalAddress"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:textColor="#29263D"
+                        android:textColorHint="#77738B"
+                        android:textSize="14sp" />
 
-            <EditText
-                android:id="@+id/editTextHoraFiltroAvisos"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Seleccionar hora"
-                android:focusable="false"
-                android:clickable="true"
-                android:cursorVisible="false"
-                android:inputType="none"
-                android:maxLines="1" />
+                    <EditText
+                        android:id="@+id/editTextTelefonoFiltroAvisos"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/bg_campo_formulario"
+                        android:hint="Teléfono"
+                        android:inputType="phone"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:textColor="#29263D"
+                        android:textColorHint="#77738B"
+                        android:textSize="14sp" />
+
+                    <EditText
+                        android:id="@+id/editTextNumeroAvisoFiltro"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/bg_campo_formulario"
+                        android:hint="Número de aviso"
+                        android:inputType="number"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:textColor="#29263D"
+                        android:textColorHint="#77738B"
+                        android:textSize="14sp" />
+
+                    <EditText
+                        android:id="@+id/editTextFechaFiltroAvisos"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/bg_campo_formulario"
+                        android:hint="Seleccionar fecha"
+                        android:focusable="false"
+                        android:clickable="true"
+                        android:cursorVisible="false"
+                        android:inputType="none"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:textColor="#29263D"
+                        android:textColorHint="#77738B"
+                        android:textSize="14sp" />
+
+                    <EditText
+                        android:id="@+id/editTextHoraFiltroAvisos"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="14dp"
+                        android:background="@drawable/bg_campo_formulario"
+                        android:hint="Seleccionar hora"
+                        android:focusable="false"
+                        android:clickable="true"
+                        android:cursorVisible="false"
+                        android:inputType="none"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:textColor="#29263D"
+                        android:textColorHint="#77738B"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="6dp"
+                        android:text="Estado del aviso"
+                        android:textColor="#29263D"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupEstadoFiltroAvisos"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <RadioButton
+                            android:id="@+id/radioButtonTodosEstadosAvisos"
+                            android:layout_width="match_parent"
+                            android:layout_height="44dp"
+                            android:checked="true"
+                            android:buttonTint="#2F2483"
+                            android:text="Todos los estados"
+                            android:textColor="#29263D" />
+
+                        <RadioButton
+                            android:id="@+id/radioButtonPendientesFiltroAvisos"
+                            android:layout_width="match_parent"
+                            android:layout_height="44dp"
+                            android:buttonTint="#2F2483"
+                            android:text="Pendientes"
+                            android:textColor="#29263D" />
+
+                        <RadioButton
+                            android:id="@+id/radioButtonFinalizadosFiltroAvisos"
+                            android:layout_width="match_parent"
+                            android:layout_height="44dp"
+                            android:buttonTint="#2F2483"
+                            android:text="Finalizados"
+                            android:textColor="#29263D" />
+
+                        <RadioButton
+                            android:id="@+id/radioButtonCanceladosFiltroAvisos"
+                            android:layout_width="match_parent"
+                            android:layout_height="44dp"
+                            android:buttonTint="#2F2483"
+                            android:text="Cancelados"
+                            android:textColor="#29263D" />
+
+                    </RadioGroup>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonAplicarFiltrosAvisos"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="12dp"
+                        android:text="Aplicar filtros"
+                        android:textAllCaps="false"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        app:backgroundTint="#2F2483"
+                        app:cornerRadius="12dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonLimpiarFiltrosAvisos"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="8dp"
+                        android:text="Limpiar filtros"
+                        android:textAllCaps="false"
+                        android:textColor="#2F2483"
+                        app:backgroundTint="#EAE8F5"
+                        app:cornerRadius="12dp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
 
             <TextView
+                android:id="@+id/textViewTituloResultadosBuscarAvisos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Estado del aviso"
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="10dp"
+                android:text="Resultados de búsqueda"
+                android:textColor="#2F2483"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <RadioGroup
-                android:id="@+id/radioGroupEstadoFiltroAvisos"
+            <!-- Lista de resultados -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardResultadosBuscarAvisos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginTop="18dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp">
 
-                <RadioButton
-                    android:id="@+id/radioButtonTodosEstadosAvisos"
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="Todos" />
+                    android:minHeight="120dp">
 
-                <RadioButton
-                    android:id="@+id/radioButtonPendientesFiltroAvisos"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Pendientes" />
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerViewResultadosBuscarAvisos"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        android:clipToPadding="false"
+                        android:paddingStart="8dp"
+                        android:paddingTop="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="8dp" />
 
-                <RadioButton
-                    android:id="@+id/radioButtonFinalizadosFiltroAvisos"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Finalizados" />
+                    <ProgressBar
+                        android:id="@+id/progressBarBuscarAvisos"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_gravity="center"
+                        android:indeterminateTint="#2F2483"
+                        android:visibility="gone" />
 
-                <RadioButton
-                    android:id="@+id/radioButtonCanceladosFiltroAvisos"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Cancelados" />
+                </FrameLayout>
 
-            </RadioGroup>
-
-            <Button
-                android:id="@+id/buttonAplicarFiltrosAvisos"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Aplicar filtros" />
-
-            <Button
-                android:id="@+id/buttonLimpiarFiltrosAvisos"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Limpiar filtros" />
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
+
     </ScrollView>
-
-    <!-- Indicador de carga -->
-    <ProgressBar
-        android:id="@+id/progressBarBuscarAvisos"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/scrollViewFiltrosAvisos" />
-
-    <!-- Resultados con paginación -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewResultadosBuscarAvisos"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="8dp"
-            android:clipToPadding="false"
-            android:paddingBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/scrollViewFiltrosAvisos" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
