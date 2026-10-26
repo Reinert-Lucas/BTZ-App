@@ -1,7 +1,9 @@
 # BTZ App
 
-  Sistema de gestión de avisos, trabajos y clientes desarrollado con
-  Laravel 12, Kotlin y MySQL.
+![description](https://raw.githubusercontent.com/Reinert-Lucas/BTZ-App/refs/heads/main/dashboard.png)
+  
+Sistema de gestión de avisos, trabajos y clientes desarrollado con
+Laravel 12, Kotlin y MySQL.
 
 Tecnologías utilizadas
 
