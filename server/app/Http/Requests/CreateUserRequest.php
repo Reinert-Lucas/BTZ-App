@@ -29,14 +29,15 @@ class CreateUserRequest extends FormRequest
             // Alta: obligatoria. Edición: opcional (vacía = no cambia la contraseña).
             'password' => [$esAlta ? 'required' : 'nullable', 'string', Password::min(8)],
             'rol' => ['required', Rule::in(['admin', 'operario'])],
+            // Mismo criterio que el comando usuarios:crear-admin (DNI argentino: 7 u 8 dígitos).
             // El unique de BD también cuenta usuarios eliminados (soft delete).
             'dni' => [
                 'required',
                 'string',
-                'max:8',
+                'digits_between:7,8',
                 Rule::unique('usuarios', 'dni')->ignore($usuario?->usuario_id, 'usuario_id'),
             ],
-            'telefono' => ['required', 'string', 'max:20'], // la columna es string(20)
+            'telefono' => ['required', 'string', 'max:20', 'regex:/^[0-9+\-\s()]+$/'],
         ];
     }
 }

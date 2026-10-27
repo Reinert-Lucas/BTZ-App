@@ -1,9 +1,11 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\Usuario;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -15,8 +17,9 @@ class AuthService
     {
         $usuario = Usuario::where('dni', $credentials['dni'])->first();
 
-        // Se verifica SIEMPRE un hash: el tiempo de respuesta no revela si el DNI existe.
-        $hash = $usuario?->password ?? Hash::make(Str::random(32));
+        // Siempre se ejecuta UN solo Hash::check (exista o no el DNI): el tiempo de
+        // respuesta no revela si el DNI existe. 
+        $hash = $usuario?->password ?? $this->hashSenuelo();
         $passwordValida = Hash::check($credentials['password'], $hash);
 
         if (!$usuario || !$passwordValida) {
@@ -49,5 +52,14 @@ class AuthService
         if ($token instanceof PersonalAccessToken) {
             $token->delete();
         }
+    }
+
+    /** Hash con el mismo costo configurado que los hashes reales (bcrypt rounds). */
+    private function hashSenuelo(): string
+    {
+        return Cache::rememberForever(
+            'auth.hash_senuelo',
+            fn() => Hash::make(Str::random(32))
+        );
     }
 }

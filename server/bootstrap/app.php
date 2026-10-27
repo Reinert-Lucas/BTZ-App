@@ -28,10 +28,20 @@ return Application::configure(basePath: dirname(__DIR__))
         // Rate limit general de la API (el limiter 'api' se define en AppServiceProvider).
         $middleware->throttleApi();
 
-        // Descomentar si hay proxy/balanceador delante (Nginx, Cloudflare, etc.):
-        // $middleware->trustProxies(at: '*');
+        // SI HAY proxy/balanceador delante (Nginx, Cloudflare, etc.) ACTIVAR ESTO:
+        // sin él, $request->ip() es la IP del proxy y todos los usuarios comparten el
+        // mismo límite de login (20/min). Usar las IPs reales del proxy; '*' solo si el
+        // servidor NO es accesible directamente (si no, X-Forwarded-For se puede falsificar).
+        // $middleware->trustProxies(at: ['10.0.0.0/8']);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        // Nunca se reinyectan contraseñas en la sesión (sesiones en BD, sin cifrar por defecto).
+        $inputSeguro = fn(Request $request): array => $request->except([
+            'password',
+            'password_confirmation',
+            'current_password',
+        ]);
+
         // Toda ruta api/* responde JSON, incluso ante errores no controlados.
         $exceptions->shouldRenderJsonWhen(
             fn(Request $request, Throwable $e) => $request->is('api/*') || $request->expectsJson()
@@ -53,7 +63,7 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         });
 
-        $exceptions->render(function (HttpExceptionInterface $e, Request $request) {
+        $exceptions->render(function (HttpExceptionInterface $e, Request $request) use ($inputSeguro) {
             if ($request->is('api/*')) {
                 // No se filtran mensajes internos del framework.
                 $message = match (true) {
@@ -79,12 +89,13 @@ return Application::configure(basePath: dirname(__DIR__))
             // Web: conflictos de negocio (abort_if(..., 409)) vuelven al formulario con un mensaje.
             if ($e->getStatusCode() === 409) {
                 return back()
-                    ->withInput()
+                    ->withInput($inputSeguro($request))
                     ->with('error', $e->getMessage() ?: 'La operación no se pudo completar.');
             }
         });
 
-        $exceptions->render(function (QueryException $e, Request $request) {
+        $exceptions->render(function (QueryException $e, Request $request) use ($inputSeguro) {
+            // Códigos de error de MySQL/MariaDB (el proyecto usa MySQL en producción).
             [$status, $message] = match ($e->errorInfo[1] ?? null) {
                 1062 => [409, 'Ya existe un registro con esos datos'],
                 1451, 1452 => [409, 'La operación entra en conflicto con registros relacionados'],
@@ -97,7 +108,19 @@ return Application::configure(basePath: dirname(__DIR__))
 
             // Web: solo los conflictos vuelven al formulario; el resto usa la página 500 por defecto.
             if ($status === 409) {
-                return back()->withInput()->with('error', $message);
+                return back()->withInput($inputSeguro($request))->with('error', $message);
+            }
+        });
+
+        // Último recurso para la API: cualquier otro Throwable (TypeError, error de
+        // Firebase, etc.) mantiene el mismo formato {status, message} que espera la app
+        // Kotlin. En desarrollo (APP_DEBUG=true) se deja el detalle por defecto de Laravel.
+        $exceptions->render(function (Throwable $e, Request $request) {
+            if ($request->is('api/*') && !config('app.debug')) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Error interno del servidor',
+                ], 500);
             }
         });
     })->create();

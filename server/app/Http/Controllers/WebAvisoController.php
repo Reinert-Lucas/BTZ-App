@@ -136,7 +136,7 @@ class WebAvisoController extends Controller
         $avisoObtenido = $this->service->show($aviso);
         return view('admin.avisos.edit', [
             'aviso' => new AvisoResource($avisoObtenido),
-            'inputs' => $this->service->getFields(isUpdate: true)
+            'inputs' => $this->service->getFields(isUpdate: true, aviso: $avisoObtenido)
         ]);
     }
     public function update(AvisoRequest $request, Aviso $aviso)

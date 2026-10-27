@@ -7,6 +7,7 @@ use App\Models\Cliente;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Kreait\Firebase\Exception\Messaging\NotFound;
 use Throwable;
 
@@ -16,39 +17,32 @@ class AvisoService
         protected FirebaseNotificationService $firebaseNotificationService
     ) {
     }
-    public function getFields(bool $isUpdate)
+
+    /**
+     * @param Aviso|null $aviso 
+     * Al editar, se pasa el aviso para que su operario/cliente actual aparezcan en el select aunque estén dados de baja.
+     */
+    public function getFields(bool $isUpdate, ?Aviso $aviso = null)
     {
+        $clientes = Cliente::withTrashed()
+            ->where(fn($q) => $q->whereNull('deleted_at')
+                ->when($aviso, fn($q2) => $q2->orWhere('cliente_id', $aviso->cliente_id)))
+            ->pluck('nombre', 'cliente_id');
+
+        $operarios = Usuario::query()
+            ->withTrashed()
+            ->where('rol', 'operario')
+            ->where(fn($q) => $q->whereNull('deleted_at')
+                ->when($aviso, fn($q2) => $q2->orWhere('usuario_id', $aviso->usuario_id)))
+            ->pluck('nombre', 'usuario_id');
+
         $inputs = [
-            [
-                'label' => 'Fecha',
-                'field' => 'fecha',
-                'type' => 'date'
-            ],
-            [
-                'label' => 'Hora',
-                'field' => 'hora',
-                'type' => 'time'
-            ],
-            [
-                'label' => 'Direccion',
-                'field' => 'direccion',
-                'type' => 'text'
-            ],
-            [
-                'label' => 'Telefono',
-                'field' => 'telefono',
-                'type' => 'tel'
-            ],
-            [
-                'label' => 'Mensaje',
-                'field' => 'mensaje',
-                'type' => 'textarea'
-            ],
-            [
-                'label' => 'Observacion',
-                'field' => 'observacion',
-                'type' => 'textarea'
-            ],
+            ['label' => 'Fecha', 'field' => 'fecha', 'type' => 'date'],
+            ['label' => 'Hora', 'field' => 'hora', 'type' => 'time'],
+            ['label' => 'Direccion', 'field' => 'direccion', 'type' => 'text'],
+            ['label' => 'Telefono', 'field' => 'telefono', 'type' => 'tel'],
+            ['label' => 'Mensaje', 'field' => 'mensaje', 'type' => 'textarea'],
+            ['label' => 'Observacion', 'field' => 'observacion', 'type' => 'textarea'],
             [
                 'label' => 'Urgencia',
                 'field' => 'urgencia',
@@ -56,21 +50,11 @@ class AvisoService
                 'options' => [
                     'urgente' => 'Urgente',
                     'media' => 'Media',
-                    'baja' => 'Baja'
-                ]
+                    'baja' => 'Baja',
+                ],
             ],
-            [
-                'label' => 'Cliente',
-                'field' => 'cliente_id',
-                'type' => 'select',
-                'options' => Cliente::pluck('nombre', 'cliente_id')
-            ],
-            [
-                'label' => 'Operario',
-                'field' => 'usuario_id',
-                'type' => 'select',
-                'options' => Usuario::where('rol', 'operario')->pluck('nombre', 'usuario_id')
-            ]
+            ['label' => 'Cliente', 'field' => 'cliente_id', 'type' => 'select', 'options' => $clientes],
+            ['label' => 'Operario', 'field' => 'usuario_id', 'type' => 'select', 'options' => $operarios],
         ];
 
         if ($isUpdate) {
@@ -82,19 +66,15 @@ class AvisoService
                     'pendiente' => 'Pendiente',
                     'finalizado' => 'Finalizado',
                     'cancelado' => 'Cancelado',
-                ]
+                ],
             ];
         }
 
         return $inputs;
     }
 
-
-
-
     public function index(Request $request)
     {
-
         $usuarioAutenticado = Auth::user();
 
         $avisos = Aviso::query()
@@ -145,7 +125,6 @@ class AvisoService
             ->withQueryString();
     }
 
-
     /** Ordenar los avisos [Fecha -> Hora -> Urgencia] */
     private function ordenarAvisos($query)
     {
@@ -179,23 +158,32 @@ class AvisoService
 
     public function update(array $newAviso, Aviso $aviso)
     {
+        $aviso = DB::transaction(function () use ($newAviso, $aviso) {
+            // Mismo lock que TrabajoController::store: si el operario está cargando el
+            // trabajo en este instante, uno espera al otro y no queda un aviso
+            // "cancelado" que ya tiene trabajo cargado.
+            $actual = Aviso::whereKey($aviso->getKey())->lockForUpdate()->firstOrFail();
 
-        $nuevoEstado = $newAviso['estado'] ?? $aviso->estado;
-        $tieneTrabajo = $aviso->trabajo()->exists();
+            $nuevoEstado = $newAviso['estado'] ?? $actual->estado;
+            $tieneTrabajo = $actual->trabajo()->exists();
 
-        abort_if(
-            $nuevoEstado === 'finalizado' && !$tieneTrabajo,
-            409,
-            'Un aviso solo pasa a finalizado cuando el operario carga el trabajo.'
-        );
-        abort_if(
-            $tieneTrabajo && $nuevoEstado !== 'finalizado',
-            409,
-            'No se puede reabrir un aviso que ya tiene un trabajo cargado.'
-        );
+            abort_if(
+                $nuevoEstado === 'finalizado' && !$tieneTrabajo,
+                409,
+                'Un aviso solo pasa a finalizado cuando el operario carga el trabajo.'
+            );
+            abort_if(
+                $tieneTrabajo && $nuevoEstado !== 'finalizado',
+                409,
+                'No se puede reabrir un aviso que ya tiene un trabajo cargado.'
+            );
 
-        $aviso->update($newAviso);
+            $actual->update($newAviso);
 
+            return $actual;
+        });
+
+        // La notificación se envía recién cuando la transacción ya hizo commit.
         if ($aviso->wasChanged('usuario_id') && $aviso->estado === 'pendiente') {
             $this->notificarAsignacion($aviso);
         }
@@ -203,9 +191,21 @@ class AvisoService
         return $aviso->fresh();
     }
 
-    public function destroy(int $aviso)
+    public function destroy(int $aviso): bool
     {
-        return Aviso::findOrFail($aviso)->delete();
+        return DB::transaction(function () use ($aviso) {
+            $avisoObtenido = Aviso::lockForUpdate()->findOrFail($aviso);
+
+            // Borrar el aviso dejaría el trabajo (y sus materiales) contando en las
+            // métricas del dashboard sin un aviso visible. Se conserva el historial.
+            abort_if(
+                $avisoObtenido->trabajo()->exists(),
+                409,
+                'No se puede eliminar un aviso con trabajo cargado (se conserva el historial).'
+            );
+
+            return (bool) $avisoObtenido->delete();
+        });
     }
 
     /** Se notifica al operario de manera asyncrona para no romper la Request */

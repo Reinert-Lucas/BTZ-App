@@ -3,6 +3,7 @@ namespace App\Services;
 
 use App\Models\Cliente;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ClienteService
 {
@@ -28,21 +29,36 @@ class ClienteService
             ->paginate(10)
             ->withQueryString();
     }
+
     public function show(int $cliente)
     {
         return Cliente::findOrFail($cliente);
     }
+
     public function create(array $clienteValidado)
     {
         return Cliente::create($clienteValidado);
     }
+
     public function update(array $newCliente, Cliente $cliente)
     {
         $cliente->update($newCliente);
         return $cliente->fresh();
     }
-    public function destroy(int $cliente)
+
+    public function destroy(int $cliente): bool
     {
-        return Cliente::findOrFail($cliente)->delete();
+        return DB::transaction(function () use ($cliente) {
+            $clienteObtenido = Cliente::lockForUpdate()->findOrFail($cliente);
+
+            // Mismo criterio que UsuarioService::destroy: no dejar avisos pendientes huérfanos.
+            abort_if(
+                $clienteObtenido->aviso()->where('estado', 'pendiente')->exists(),
+                409,
+                'El cliente tiene avisos pendientes. Cancélalos o cambia su cliente antes de eliminarlo.'
+            );
+
+            return (bool) $clienteObtenido->delete();
+        });
     }
 }
