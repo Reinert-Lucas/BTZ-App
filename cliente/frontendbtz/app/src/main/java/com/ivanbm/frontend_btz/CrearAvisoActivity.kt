@@ -29,6 +29,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import android.graphics.Rect
 import android.view.ViewTreeObserver
+import org.json.JSONObject
+
 class CrearAvisoActivity : AppCompatActivity() {
 
     private lateinit var editTextFechaAviso: EditText
@@ -187,6 +189,14 @@ class CrearAvisoActivity : AppCompatActivity() {
         editTextObservacionAviso =
             findViewById(R.id.editTextObservacionAviso)
 
+        editTextMensajeAviso.filters = arrayOf(
+            android.text.InputFilter.LengthFilter(255)
+        )
+
+        editTextObservacionAviso.filters = arrayOf(
+            android.text.InputFilter.LengthFilter(255)
+        )
+
         spinnerUrgenciaAviso =
             findViewById(R.id.spinnerUrgenciaAviso)
 
@@ -271,26 +281,104 @@ class CrearAvisoActivity : AppCompatActivity() {
     }
 
     private fun configurarSpinnerUrgencia() {
+        val urgencias = listOf("Urgente", "Media", "Baja")
 
-        val urgencias = listOf(
-            "Urgente",
-            "Media",
-            "Baja"
-        )
+        fun colorUrgencia(urgencia: String): Int {
+            return when (urgencia) {
+                "Urgente" -> android.graphics.Color.rgb(198, 40, 40)
+                "Media" -> android.graphics.Color.rgb(239, 143, 0)
+                else -> android.graphics.Color.rgb(46, 125, 50)
+            }
+        }
 
-        val adapter = ArrayAdapter(
+        fun fondoUrgencia(urgencia: String): Int {
+            return when (urgencia) {
+                "Urgente" -> R.drawable.bg_urgencia_urgente
+                "Media" -> R.drawable.bg_urgencia_media
+                else -> R.drawable.bg_urgencia_baja
+            }
+        }
+
+        val adapter = object : ArrayAdapter<String>(
             this,
-            android.R.layout.simple_spinner_item,
+            R.layout.item_urgencia_dropdown,
+            R.id.textViewOpcionUrgencia,
             urgencias
-        )
+        ) {
+            override fun getView(
+                position: Int,
+                convertView: View?,
+                parent: android.view.ViewGroup
+            ): View {
+                val view = super.getView(position, convertView, parent)
+                val urgencia = getItem(position) ?: ""
 
-        adapter.setDropDownViewResource(
-            android.R.layout.simple_spinner_dropdown_item
-        )
+                val texto = view.findViewById<android.widget.TextView>(
+                    R.id.textViewOpcionUrgencia
+                )
+
+                texto.apply {
+                    text = urgencia
+                    setTextColor(colorUrgencia(urgencia))
+                    setBackgroundColor(android.graphics.Color.TRANSPARENT)
+                }
+
+                return view
+            }
+
+            override fun getDropDownView(
+                position: Int,
+                convertView: View?,
+                parent: android.view.ViewGroup
+            ): View {
+                val view = super.getDropDownView(position, convertView, parent)
+                val urgencia = getItem(position) ?: ""
+
+                view.findViewById<android.widget.TextView>(
+                    R.id.textViewOpcionUrgencia
+                ).apply {
+                    text = urgencia
+                    setTextColor(colorUrgencia(urgencia))
+                    setBackgroundResource(fondoUrgencia(urgencia))
+                }
+
+                return view
+            }
+        }
 
         spinnerUrgenciaAviso.adapter = adapter
-    }
 
+        fun actualizarFondoUrgencia(urgencia: String) {
+            val colorFondo = when (urgencia) {
+                "Urgente" -> android.graphics.Color.rgb(252, 232, 230)
+                "Media" -> android.graphics.Color.rgb(255, 242, 214)
+                else -> android.graphics.Color.rgb(227, 245, 232)
+            }
+
+            spinnerUrgenciaAviso.backgroundTintList =
+                android.content.res.ColorStateList.valueOf(colorFondo)
+        }
+
+        spinnerUrgenciaAviso.onItemSelectedListener =
+            object : android.widget.AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: android.widget.AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    actualizarFondoUrgencia(urgencias[position])
+                }
+
+                override fun onNothingSelected(
+                    parent: android.widget.AdapterView<*>?
+                ) = Unit
+            }
+
+        actualizarFondoUrgencia(
+            spinnerUrgenciaAviso.selectedItem.toString()
+        )
+    }
     private fun cargarClientes(pagina: Int = 1) {
 
         if (pagina == 1) {
@@ -710,6 +798,20 @@ class CrearAvisoActivity : AppCompatActivity() {
         val observacion =
             editTextObservacionAviso.text.toString().trim()
 
+        if (mensaje.length > 255) {
+            editTextMensajeAviso.error =
+                "El mensaje no puede superar los 255 caracteres"
+            editTextMensajeAviso.requestFocus()
+            return
+        }
+
+        if (observacion.length > 255) {
+            editTextObservacionAviso.error =
+                "La observación no puede superar los 255 caracteres"
+            editTextObservacionAviso.requestFocus()
+            return
+        }
+
         if (fecha.isEmpty()) {
 
             editTextFechaAviso.error =
@@ -819,9 +921,7 @@ class CrearAvisoActivity : AppCompatActivity() {
                     mostrarCargando(false)
 
                     if (!response.isSuccessful) {
-
-                        val error =
-                            response.errorBody()?.string()
+                        val error = response.errorBody()?.string()
 
                         android.util.Log.e(
                             "CREAR_AVISO",
@@ -833,15 +933,13 @@ class CrearAvisoActivity : AppCompatActivity() {
                             error ?: "Sin información del error"
                         )
 
-                        Toast.makeText(
-                            this@CrearAvisoActivity,
-                            error,
-                            Toast.LENGTH_LONG
-                        ).show()
+                        mostrarErrorServidor(
+                            response.code(),
+                            error
+                        )
 
                         return
                     }
-
                     val respuesta = response.body()
 
                     android.util.Log.d(
@@ -891,7 +989,72 @@ class CrearAvisoActivity : AppCompatActivity() {
                 }
             })
     }
+    private fun mostrarErrorServidor(
+        codigoHttp: Int,
+        cuerpoError: String?
+    ) {
+        if (codigoHttp == 422 && !cuerpoError.isNullOrBlank()) {
+            try {
+                val json = JSONObject(cuerpoError)
+                val errores = json.optJSONObject("errors")
 
+                val mensajeError = errores
+                    ?.optJSONArray("mensaje")
+                    ?.optString(0)
+                    ?.takeIf { it.isNotBlank() }
+
+                val observacionError = errores
+                    ?.optJSONArray("observacion")
+                    ?.optString(0)
+                    ?.takeIf { it.isNotBlank() }
+
+                if (mensajeError != null) {
+                    editTextMensajeAviso.error =
+                        "El mensaje no puede superar los 255 caracteres"
+                    editTextMensajeAviso.requestFocus()
+                }
+
+                if (observacionError != null) {
+                    editTextObservacionAviso.error =
+                        "La observación no puede superar los 255 caracteres"
+
+                    if (mensajeError == null) {
+                        editTextObservacionAviso.requestFocus()
+                    }
+                }
+
+                if (mensajeError != null || observacionError != null) {
+                    Toast.makeText(
+                        this,
+                        "Revisá los campos indicados: máximo 255 caracteres",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    return
+                }
+
+                Toast.makeText(
+                    this,
+                    "Hay datos inválidos. Revisá los campos ingresados.",
+                    Toast.LENGTH_LONG
+                ).show()
+
+            } catch (e: Exception) {
+                Toast.makeText(
+                    this,
+                    "Los datos ingresados no son válidos.",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+            return
+        }
+
+        Toast.makeText(
+            this,
+            "No se pudo crear el aviso. Error del servidor: HTTP $codigoHttp",
+            Toast.LENGTH_LONG
+        ).show()
+    }
     private fun mostrarCargando(cargando: Boolean) {
 
         if (cargando) {

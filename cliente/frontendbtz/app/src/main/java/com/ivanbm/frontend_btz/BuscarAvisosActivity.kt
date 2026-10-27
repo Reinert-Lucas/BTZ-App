@@ -29,6 +29,7 @@ import java.util.Locale
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 class BuscarAvisosActivity : AppCompatActivity() {
     private lateinit var scrollViewContenidoBuscarAvisos: ScrollView
     private lateinit var textViewTituloResultadosBuscarAvisos: TextView
@@ -56,6 +57,15 @@ class BuscarAvisosActivity : AppCompatActivity() {
     private var hayMasAvisos = true
     private var busquedaActual: FiltrosBusqueda? = null
     private var busquedaIniciada = false
+
+    private val editorAvisoLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            if (busquedaIniciada && busquedaActual != null) {
+                iniciarBusqueda(busquedaActual!!)
+            }
+        }
     private lateinit var cardFiltrosAvanzadosBuscarAvisos: androidx.cardview.widget.CardView
     private data class FiltrosBusqueda(
         val buscar: String? = null,
@@ -499,7 +509,6 @@ class BuscarAvisosActivity : AppCompatActivity() {
             }
 
             val intentTrabajo = Intent(this, TrabajoActivity::class.java)
-
             intentTrabajo.putExtra("AVISO_ID", aviso.id)
             intentTrabajo.putExtra("AVISO_FECHA", aviso.fecha)
             intentTrabajo.putExtra("AVISO_HORA", aviso.hora)
@@ -510,10 +519,8 @@ class BuscarAvisosActivity : AppCompatActivity() {
             intentTrabajo.putExtra("AVISO_URGENCIA", aviso.urgencia)
             intentTrabajo.putExtra("AVISO_CLIENTE", aviso.cliente.nombre)
             intentTrabajo.putExtra("AVISO_FINALIZADO", true)
-            intentTrabajo.putExtra(
-                "AVISO_TRABAJO_JSON",
-                Gson().toJson(aviso.trabajo)
-            )
+            intentTrabajo.putExtra("AVISO_OPERARIO", aviso.operario.nombre)
+            intentTrabajo.putExtra("AVISO_TRABAJO_JSON", Gson().toJson(aviso.trabajo))
 
             startActivity(intentTrabajo)
             return
@@ -538,10 +545,10 @@ class BuscarAvisosActivity : AppCompatActivity() {
             return
         }
 
-        // Si es administrador, conserva la edición del aviso pendiente
+        // Si es administrador, abre el editor y actualiza los resultados al volver
         val intentEdicion = Intent(this, EditarAvisoActivity::class.java)
         intentEdicion.putExtra("AVISO_ID", aviso.id)
-        startActivity(intentEdicion)
+        editorAvisoLauncher.launch(intentEdicion)
     }
 
 

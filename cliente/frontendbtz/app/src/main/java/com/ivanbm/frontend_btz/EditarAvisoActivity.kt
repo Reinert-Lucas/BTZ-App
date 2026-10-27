@@ -34,6 +34,11 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import android.graphics.Rect
 import android.widget.ScrollView
+import android.content.res.ColorStateList
+import android.view.View
+import android.view.ViewGroup
+import android.graphics.Color
+import android.widget.AdapterView
 class EditarAvisoActivity : AppCompatActivity() {
     private lateinit var editTextFechaEditarAviso: EditText
     private lateinit var editTextHoraEditarAviso: EditText
@@ -46,6 +51,7 @@ class EditarAvisoActivity : AppCompatActivity() {
     private lateinit var autoCompleteOperarioEditarAviso: AutoCompleteTextView
     private lateinit var buttonAnadirClienteEditarAviso: Button
     private lateinit var buttonGuardarCambiosAviso: Button
+    private lateinit var buttonCancelarAviso: Button
     private lateinit var buttonEliminarAviso: Button
     private lateinit var progressBarEditarAviso: ProgressBar
     private val clientes = mutableListOf<Cliente>()
@@ -183,9 +189,18 @@ class EditarAvisoActivity : AppCompatActivity() {
             finish()
         }
         buttonGuardarCambiosAviso.setOnClickListener {
-            actualizarAviso()
+            val estadoNuevo = if (
+                estadoAviso.equals("cancelado", ignoreCase = true)
+            ) {
+                "pendiente"
+            } else {
+                null
+            }
+            actualizarAviso(estadoNuevo)
         }
-
+        buttonCancelarAviso.setOnClickListener {
+            mostrarConfirmacionCancelar()
+        }
         buttonEliminarAviso.setOnClickListener {
             mostrarConfirmacionEliminar()
         }
@@ -200,7 +215,8 @@ class EditarAvisoActivity : AppCompatActivity() {
     }
 
     private fun inicializarVistas() {
-
+        buttonCancelarAviso =
+            findViewById(R.id.buttonCancelarAviso)
         editTextFechaEditarAviso =
             findViewById(R.id.editTextFechaEditarAviso)
 
@@ -343,31 +359,123 @@ class EditarAvisoActivity : AppCompatActivity() {
             ).show()
         }
     }
-
     private fun configurarSpinnerUrgencia() {
 
-        val urgencias =
-            listOf(
-                "Urgente",
-                "Media",
-                "Baja"
-            )
-
-        val adapter =
-            ArrayAdapter(
-                this,
-                android.R.layout.simple_spinner_item,
-                urgencias
-            )
-
-        adapter.setDropDownViewResource(
-            android.R.layout.simple_spinner_dropdown_item
+        val urgencias = listOf(
+            "Urgente",
+            "Media",
+            "Baja"
         )
 
+        fun colorUrgencia(urgencia: String): Int {
+            return when (urgencia) {
+                "Urgente" -> Color.rgb(198, 40, 40)
+                "Media" -> Color.rgb(239, 143, 0)
+                else -> Color.rgb(46, 125, 50)
+            }
+        }
+
+        fun fondoUrgencia(urgencia: String): Int {
+            return when (urgencia) {
+                "Urgente" -> R.drawable.bg_urgencia_urgente
+                "Media" -> R.drawable.bg_urgencia_media
+                else -> R.drawable.bg_urgencia_baja
+            }
+        }
+
+        val adapter = object : ArrayAdapter<String>(
+            this,
+            R.layout.item_urgencia_dropdown,
+            R.id.textViewOpcionUrgencia,
+            urgencias
+        ) {
+
+            override fun getView(
+                position: Int,
+                convertView: View?,
+                parent: ViewGroup
+            ): View {
+
+                val view = super.getView(
+                    position,
+                    convertView,
+                    parent
+                )
+
+                val urgencia = getItem(position) ?: ""
+
+                view.findViewById<TextView>(
+                    R.id.textViewOpcionUrgencia
+                ).apply {
+                    text = urgencia
+                    setTextColor(colorUrgencia(urgencia))
+                    setBackgroundColor(Color.TRANSPARENT)
+                }
+
+                return view
+            }
+
+            override fun getDropDownView(
+                position: Int,
+                convertView: View?,
+                parent: ViewGroup
+            ): View {
+
+                val view = super.getDropDownView(
+                    position,
+                    convertView,
+                    parent
+                )
+
+                val urgencia = getItem(position) ?: ""
+
+                view.findViewById<TextView>(
+                    R.id.textViewOpcionUrgencia
+                ).apply {
+                    text = urgencia
+                    setTextColor(colorUrgencia(urgencia))
+                    setBackgroundResource(fondoUrgencia(urgencia))
+                }
+
+                return view
+            }
+        }
+
         spinnerUrgenciaEditarAviso.adapter = adapter
+
+        fun actualizarFondoUrgencia(urgencia: String) {
+
+            val colorFondo = when (urgencia) {
+                "Urgente" -> Color.rgb(252, 232, 230)
+                "Media" -> Color.rgb(255, 242, 214)
+                else -> Color.rgb(227, 245, 232)
+            }
+
+            spinnerUrgenciaEditarAviso.backgroundTintList =
+                ColorStateList.valueOf(colorFondo)
+        }
+
+        spinnerUrgenciaEditarAviso.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    actualizarFondoUrgencia(urgencias[position])
+                }
+
+                override fun onNothingSelected(
+                    parent: AdapterView<*>?
+                ) = Unit
+            }
+
+        actualizarFondoUrgencia(
+            spinnerUrgenciaEditarAviso.selectedItem?.toString() ?: "Media"
+        )
     }
-
-
     private fun cargarAviso() {
 
         mostrarCargando(true)
@@ -1125,8 +1233,9 @@ class EditarAvisoActivity : AppCompatActivity() {
         primeraCargaClientes = false
     }
 
-    private fun actualizarAviso() {
-
+    private fun actualizarAviso(
+        estadoNuevo: String? = null
+    ) {
         val fechaPantalla =
             editTextFechaEditarAviso.text.toString().trim()
 
@@ -1274,7 +1383,7 @@ class EditarAvisoActivity : AppCompatActivity() {
                     } else {
                         observacion
                     },
-                estado = estadoAviso,
+                estado = estadoNuevo ?: estadoAviso,
                 urgencia = urgenciaSeleccionada,
                 usuario_id = operarioSeleccionado!!.id,
                 cliente_id = clienteSeleccionado!!.id
@@ -1439,11 +1548,33 @@ class EditarAvisoActivity : AppCompatActivity() {
             } else {
                 ProgressBar.GONE
             }
-
+        buttonCancelarAviso.isEnabled = !cargando
         buttonGuardarCambiosAviso.isEnabled =
             !cargando
 
         buttonEliminarAviso.isEnabled =
             !cargando
+    }
+    private fun mostrarConfirmacionCancelar() {
+
+        if (!estadoAviso.equals("pendiente", ignoreCase = true)) {
+            Toast.makeText(
+                this,
+                "Solo se pueden cancelar avisos pendientes",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle("Cancelar aviso")
+            .setMessage(
+                "¿Estás seguro de que querés cancelar este aviso?"
+            )
+            .setNegativeButton("No", null)
+            .setPositiveButton("Sí, cancelar") { _, _ ->
+                actualizarAviso("cancelado")
+            }
+            .show()
     }
 }

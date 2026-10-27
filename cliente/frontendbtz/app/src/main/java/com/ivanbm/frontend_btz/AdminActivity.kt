@@ -179,8 +179,6 @@ class AdminActivity : AppCompatActivity() {
         buttonMenuAdministrador.setOnClickListener {
             mostrarMenuAdministrador(buttonMenuAdministrador)
         }
-
-        cargarAvisos()
     }
 
     override fun onResume() {
@@ -598,12 +596,9 @@ class AdminActivity : AppCompatActivity() {
         intent.putExtra("AVISO_OBSERVACION", aviso.observacion)
         intent.putExtra("AVISO_URGENCIA", aviso.urgencia)
         intent.putExtra("AVISO_CLIENTE", aviso.cliente.nombre)
+        intent.putExtra("AVISO_OPERARIO", aviso.operario.nombre)
         intent.putExtra("AVISO_FINALIZADO", true)
-
-        intent.putExtra(
-            "AVISO_TRABAJO_JSON",
-            Gson().toJson(aviso.trabajo)
-        )
+        intent.putExtra("AVISO_TRABAJO_JSON", Gson().toJson(aviso.trabajo))
 
         startActivity(intent)
     }

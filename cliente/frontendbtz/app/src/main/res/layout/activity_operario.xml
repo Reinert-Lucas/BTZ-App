@@ -41,19 +41,17 @@
             android:id="@+id/textViewTituloOperario"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="4dp"
+            android:gravity="center"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:text="Operario"
             android:textColor="#F0F0F0"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:maxLines="1"
-            android:ellipsize="end"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/buttonMenuOperario"
-            app:layout_constraintStart_toEndOf="@id/imageViewLogoOperario"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.5" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/buttonMenuOperario"
@@ -63,10 +61,10 @@
             android:contentDescription="Abrir menú del operario"
             android:padding="10dp"
             android:src="@android:drawable/arrow_down_float"
-            app:tint="#F0F0F0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="#F0F0F0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -271,7 +271,8 @@
                     android:background="@drawable/bg_campo_formulario"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
-                    android:spinnerMode="dropdown" />
+                    android:spinnerMode="dropdown"
+                    android:popupBackground="@drawable/bg_menu_opciones" />
 
                 <!-- Cliente -->
 

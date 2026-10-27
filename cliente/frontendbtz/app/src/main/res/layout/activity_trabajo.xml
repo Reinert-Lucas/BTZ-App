@@ -126,6 +126,16 @@
                     android:paddingVertical="5dp" />
 
                 <TextView
+                    android:id="@+id/textViewOperarioTrabajo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Operario responsable:"
+                    android:textColor="#454357"
+                    android:textSize="14sp"
+                    android:paddingVertical="5dp"
+                    android:visibility="gone" />
+
+                <TextView
                     android:id="@+id/textViewTelefonoTrabajo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

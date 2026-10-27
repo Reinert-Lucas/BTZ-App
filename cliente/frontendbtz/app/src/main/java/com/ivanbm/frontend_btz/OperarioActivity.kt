@@ -165,6 +165,12 @@ class OperarioActivity : AppCompatActivity() {
                 intent.putExtra("AVISO_OBSERVACION", aviso.observacion)
                 intent.putExtra("AVISO_URGENCIA", aviso.urgencia)
                 intent.putExtra("AVISO_CLIENTE", aviso.cliente.nombre)
+                if (mostrarFinalizados) {
+                    intent.putExtra(
+                        "AVISO_OPERARIO",
+                        aviso.operario.nombre
+                    )
+                }
                 intent.putExtra(
                     "AVISO_FINALIZADO",
                     mostrarFinalizados

@@ -34,7 +34,7 @@ class TrabajoActivity : AppCompatActivity() {
 
     private lateinit var editTextTrabajoRealizado: EditText
     private lateinit var editTextDesperfectoTrabajo: EditText
-
+    private lateinit var textViewOperarioTrabajo: TextView
     private lateinit var textViewDireccionTrabajo: TextView
     private lateinit var textViewFechaTrabajo: TextView
     private lateinit var textViewClienteTrabajo: TextView
@@ -192,7 +192,8 @@ class TrabajoActivity : AppCompatActivity() {
     }
 
     private fun inicializarVistas() {
-
+        textViewOperarioTrabajo =
+            findViewById(R.id.textViewOperarioTrabajo)
         textViewDireccionTrabajo =
             findViewById(R.id.textViewDireccionTrabajo)
 
@@ -267,6 +268,20 @@ class TrabajoActivity : AppCompatActivity() {
 
         textViewObservacionTrabajo.text =
             observacion?.takeIf { it.isNotBlank() } ?: "Sin observación"
+        if (avisoFinalizado) {
+            val nombreOperario =
+                intent.getStringExtra("AVISO_OPERARIO")
+
+            if (!nombreOperario.isNullOrBlank()) {
+                textViewOperarioTrabajo.text =
+                    "Operario responsable: $nombreOperario"
+                textViewOperarioTrabajo.visibility = View.VISIBLE
+            } else {
+                textViewOperarioTrabajo.visibility = View.GONE
+            }
+        } else {
+            textViewOperarioTrabajo.visibility = View.GONE
+        }
     }
 
     private fun configurarMateriales() {
