@@ -114,7 +114,6 @@ class WebAvisoController extends Controller
     public function pdf(int $aviso)
     {
         $trabajo = Trabajo::with('materiales', 'aviso.usuario', 'aviso.cliente')->where('aviso_id', $aviso)->firstOrFail();
-
         return view('admin.trabajo-pdf', [
             'trabajo' => $trabajo,
         ]);

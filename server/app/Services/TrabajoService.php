@@ -23,16 +23,13 @@ class TrabajoService
             ")
             ->paginate(10);
     }
-
     public function trabajosFinalizados(?int $usuario_id = null)
     {
         $query = Aviso::with(['usuario', 'cliente', 'trabajo.materiales'])
             ->where('estado', 'finalizado');
-
         if ($usuario_id) {
             $query->where('usuario_id', $usuario_id);
         }
-
         return $query
             ->orderBy('fecha', 'desc')
             ->orderBy('hora', 'desc')

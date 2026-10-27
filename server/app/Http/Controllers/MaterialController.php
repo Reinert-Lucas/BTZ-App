@@ -29,7 +29,6 @@ class MaterialController extends Controller
             'message' => 'Material obtenido con exito'
         ]);
     }
-
     public function store(MaterialRequest $request)
     {
         $material = $this->service->create($request->validated());

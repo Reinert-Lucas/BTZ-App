@@ -25,7 +25,6 @@ class AuthController extends Controller
     public function __construct(private readonly AuthService $service)
     {
     }
-
     public function login(LoginUserRequest $request)
     {
         try {
@@ -36,7 +35,6 @@ class AuthController extends Controller
                 'message' => 'Credenciales incorrectas',
             ], 401);
         }
-
         return response()->json([
             'status' => true,
             'message' => 'Sesión iniciada con éxito',
@@ -44,7 +42,6 @@ class AuthController extends Controller
             'token' => $data['token'], // El token pasa de ser NewAccessToken a string [REVISAR SI ANDA]
         ]);
     }
-
     public function me(Request $request)
     {
         return response()->json([
@@ -53,11 +50,9 @@ class AuthController extends Controller
             'user' => new UsuarioResource($this->service->me($request)),
         ]);
     }
-
     public function logout(Request $request)
     {
         $this->service->logout($request);
-
         return response()->json([
             'status' => true,
             'message' => 'sesion cerrada con exito',

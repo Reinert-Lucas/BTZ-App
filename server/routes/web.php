@@ -24,24 +24,17 @@ Route::get('/', fn() => Auth::check()
     ? redirect()->route('admin.dashboard')
     : view('index'))->name('login');
 Route::post('/login', [WebAuthController::class, 'login'])->middleware('throttle:login')->name('admin.login');
-
 // Página de "Sin Acceso" para usuarios que intentan acceder a rutas de admin sin ser admin
 Route::get('/noaccess', fn() => view('noaccess'))->name('admin.noaccess');
-
 Route::middleware(['auth'])->post('/logout', [WebAuthController::class, 'logout'])->name('admin.logout');
-
 Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/me', [WebAuthController::class, 'me'])->name('me');
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-
     // Sin 'show': los controladores web no lo implementan.
     Route::resource('usuarios', WebUsuarioController::class)->except('show');
     Route::resource('clientes', WebClienteController::class)->except('show');
     Route::resource('avisos', WebAvisoController::class)->except('show');
-    Route::resource('materiales', WebMaterialController::class)
-        ->parameters(['materiales' => 'material'])
-        ->except('show');
-
+    Route::resource('materiales', WebMaterialController::class)->parameters(['materiales' => 'material'])->except('show');
     Route::get('/trabajos/{aviso}/pdf', [WebAvisoController::class, 'pdf'])->name('trabajos.pdf');
     Route::get('/trabajos/{aviso}', [WebAvisoController::class, 'show'])->name('trabajos.show');
 });

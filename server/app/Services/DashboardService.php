@@ -33,7 +33,6 @@ class DashboardService
     {
         return Trabajo::with(['aviso'])->latest()->take(5)->get();
     }
-
     /** Usuarios con más trabajos realizados */
     private function usuariosMasActivos()
     {
@@ -45,7 +44,6 @@ class DashboardService
             ->take(5)
             ->get();
     }
-
     /** Materiales más usados */
     private function materialesMasUsados()
     {

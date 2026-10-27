@@ -10,7 +10,6 @@ use RuntimeException;
 class FirebaseNotificationService
 {
     protected $messaging;
-
     public function sendToToken(
         string $token,
         string $title,
@@ -22,12 +21,10 @@ class FirebaseNotificationService
             if (!$credentials) {
                 throw new RuntimeException('FIREBASE_CREDENTIALS no está configurado.');
             }
-
             $this->messaging = (new Factory)
                 ->withServiceAccount($credentials)
                 ->createMessaging();
         }
-
         $message = CloudMessage::withTarget('token', $token)
             ->withAndroidConfig(AndroidConfig::fromArray([
                 'priority' => 'high',
@@ -36,7 +33,6 @@ class FirebaseNotificationService
                 'title' => $title,
                 'body' => $body,
             ]));
-
         return $this->messaging->send($message);
     }
 }

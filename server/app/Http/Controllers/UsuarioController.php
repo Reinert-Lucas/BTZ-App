@@ -60,9 +60,7 @@ class UsuarioController extends Controller
         $datos = $request->validate([
             'token' => ['required', 'string', 'max:255'],
         ]);
-
         $this->service->saveFcmToken($request->user(), $datos['token']);
-
         return response()->json([
             'status' => true,
             'message' => 'Token FCM actualizado',

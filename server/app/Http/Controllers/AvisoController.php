@@ -29,7 +29,6 @@ class AvisoController extends Controller
             'message' => 'Aviso obtenido con exito'
         ]);
     }
-
     public function store(AvisoRequest $request)
     {
         $aviso = $this->service->create($request->validated());

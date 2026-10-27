@@ -30,7 +30,6 @@ class ClienteController extends Controller
             'message' => 'Cliente obtenido con exito'
         ]);
     }
-
     public function store(ClienteRequest $request)
     {
         $cliente = $this->service->create($request->validated());
