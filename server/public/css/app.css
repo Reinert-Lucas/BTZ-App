@@ -15,7 +15,7 @@
 
 .logo-form {
     width: 18rem;
-    height: 13rem;
+    height: 18rem;
     margin: 0;
 }
 
@@ -160,6 +160,11 @@
 /* Materiales */
 .material-item {
     margin-bottom: 1rem;
+}
+
+.material-icon {
+    width: 25px;
+    height: 25x;
 }
 
 .progress {

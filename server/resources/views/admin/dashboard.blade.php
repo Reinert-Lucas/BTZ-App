@@ -52,11 +52,11 @@
                             @foreach ($metrica['content'] as $material)
                                 <div class="material-item">
                                     <div class="d-flex justify-content-between">
-                                        <span>{{ $material->material->nombre }}</span>
+                                        <span> <img src={{ asset('imgs/tool.png') }} alt="Tool" class="material-icon"> {{ $material->material->nombre }}</span>
                                         <strong>{{ $material->total }}</strong>
                                     </div>
-                                    <div class="progress mt-1">
-                                        <div class="progress-bar" style="width: {{ ($material->total / $max) * 100 }}%">
+                                    <div class="progress mt-2 mb-2">
+                                        <div class="progress-bar" style="width: 100%">
                                         </div>
                                     </div>
                                 </div>

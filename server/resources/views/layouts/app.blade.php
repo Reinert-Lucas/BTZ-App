@@ -15,7 +15,7 @@
 <body class="d-flex flex-column min-vh-100">
     <header>
         <div class="title-div">
-            <img src="{{ asset('imgs/logo.png') }}" alt="Logo" class="img-fluid" style="max-height: 80px;">
+            <img src="{{ asset('imgs/logo.png') }}" alt="Logo" class="img-fluid logo-header" style="max-height: 80px;">
             <a href={{ route('admin.dashboard') }} class="title">BTZ-APP</a>
             @yield('texto')
         </div>
