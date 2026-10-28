@@ -54,6 +54,14 @@ class WebAvisoController extends Controller
             [
                 'label' => 'Urgencia',
                 'field' => 'urgencia',
+            ],
+            [
+                'label' => 'Cliente',
+                'field' => 'cliente.nombre'
+            ],
+            [
+                'label' => 'Operario',
+                'field' => 'usuario.nombre'
             ]
         ];
         $filters = [

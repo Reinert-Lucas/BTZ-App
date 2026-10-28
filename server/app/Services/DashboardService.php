@@ -33,21 +33,33 @@ class DashboardService
     {
         return Trabajo::with(['aviso'])->latest()->take(5)->get();
     }
-    /** Usuarios con más trabajos realizados */
+    /**
+     * Usuarios más activos de los últimos 7 días
+     */
     private function usuariosMasActivos()
     {
+        $desde = now()->subDays(7);
+
         return Usuario::where('rol', 'operario')
             ->withCount([
-                'aviso as avisos_finalizados_count' => fn($query) => $query->where('estado', 'finalizado'),
+                'aviso as avisos_finalizados_count' => fn($query) => $query
+                    ->where('estado', 'finalizado')
+                    ->where('fecha', '>=', $desde),
             ])
             ->orderByDesc('avisos_finalizados_count')
             ->take(5)
             ->get();
     }
-    /** Materiales más usados */
+
+    /**
+     * Materiales más usados de los últimos 7 días
+     */
     private function materialesMasUsados()
     {
-        return MaterialesTrabajos::selectRaw('material_id, SUM(cantidad) as total')
+        return MaterialesTrabajos::selectRaw(
+            'material_id, SUM(cantidad) as total'
+        )
+            ->where('created_at', '>=', now()->subDays(7))
             ->groupBy('material_id')
             ->with('material')
             ->orderByDesc('total')

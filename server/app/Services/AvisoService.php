@@ -117,6 +117,12 @@ class AvisoService
     private function ordenarAvisos($query)
     {
         return $query
+            ->orderByRaw("
+                CASE estado
+                    WHEN 'pendiente' THEN 1
+                    ELSE 4
+                END
+            ")
             ->orderBy('fecha')
             ->orderBy('hora')
             ->orderByRaw("

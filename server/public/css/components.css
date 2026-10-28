@@ -119,19 +119,30 @@
 }
 
 /* TABLAS */
-
-.admin-table {
-    border-collapse: separate;
-    border-spacing: 0 8px;
-    width: 100%;
-}
-
+/* CONTENEDOR */
 .table-responsive {
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
+    min-width: 0;
+    display: block;
+    overflow-x: auto;
+}
+
+.table-card {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    background: white;
+    border-radius: 12px;
+    padding: .75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
+    margin: 2rem 0 0;
+}
+
+/* TABLA DESKTOP */
+.admin-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
 }
 
 .admin-table thead th {
@@ -140,49 +151,50 @@
     font-weight: 600;
     border: none;
     padding: .85rem .75rem;
+    text-align: left;
+    white-space: nowrap;
 }
 
-.admin-table thead th:first-of-type {
+.admin-table thead th:first-child {
     border-radius: 15px 0 0 15px;
 }
 
-.admin-table thead th:last-of-type {
-    border-radius: 0 15px 15px 0;
-}
-
-.admin-table tbody td:first-of-type {
-    border-radius: 15px 0 0 15px;
-}
-
-.admin-table tbody td:last-of-type {
+.admin-table thead th:last-child {
     border-radius: 0 15px 15px 0;
 }
 
 .admin-table tbody td {
     background: white;
     border: none;
-    padding: .9rem .75rem;
+    padding: .85rem .75rem;
     vertical-align: middle;
+    overflow-wrap: normal;
+}
+
+.admin-table tbody td:first-child {
+    border-radius: 15px 0 0 15px;
+}
+
+.admin-table tbody td:last-child {
+    border-radius: 0 15px 15px 0;
 }
 
 .admin-table tbody tr {
-    border-radius: 15px;
-}
-
-.admin-table tbody tr {
-    transition: .15s ease;
+    transition: background .15s ease;
 }
 
 .admin-table tbody tr:hover td {
     background: #EEF2FF;
 }
 
+/* ESTADOS Y URGENCIAS */
 .status,
 .urgency,
 .trabajo-btn {
-    display: flex;
-    flex-direction: column;
+    display: inline-flex;
     width: max-content;
+    max-width: 100%;
+    box-sizing: border-box;
     padding: .25rem .75rem;
     border-radius: 999px;
     font-size: .8rem;
@@ -190,27 +202,33 @@
     justify-content: center;
     align-items: center;
     text-align: center;
+    text-decoration: none;
 }
-.status-pendiente, .urgency-baja{
+
+.cell-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .5rem;
+}
+
+.status-pendiente,
+.urgency-baja {
     background: #F3F4F6;
     color: #374151;
 }
 
-.status-finalizado, .trabajo-btn{
+.status-finalizado,
+.trabajo-btn {
     background: #DCFCE7;
     color: #166534;
 }
-
-.status-cancelado{
-    background: #FEE2E2;
-    color: #B91C1C;
+.trabajo-btn {
+    text-decoration: underline;
+    font-weight: 900;
 }
 
-.urgency-urgente{
-    background: #FEE2E2;
-    color: #B91C1C;
-}
-
+.status-cancelado,
 .urgency-urgente {
     background: #FEE2E2;
     color: #B91C1C;
@@ -221,13 +239,28 @@
     color: #92400E;
 }
 
-.actions{
+/* ACCIONES */
+.actions {
     white-space: nowrap;
 }
 
+.action-buttons {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+}
+
+.action-buttons form {
+    display: inline-flex;
+    margin: 0;
+}
+
 .actions img {
-    width: 34px;
-    height: 34px;
+    display: block;
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
 }
 
 .btn-danger,
@@ -235,19 +268,140 @@
     border-radius: 8px;
 }
 
-.table-card {
-    background: white;
-    border-radius: 12px;
-    padding: .75rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
-    margin: 2rem 0 0 0;
-}
-
+/* PAGINACIÓN */
 .admin-pagination {
     margin-top: 1.5rem;
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
+    gap: .5rem;
 }
+
+/* MOBILE: CADA FILA SE CONVIERTE EN TARJETA */
+@media (max-width: 768px) {
+    .table-card {
+        padding: .75rem;
+    }
+
+    .table-responsive {
+        overflow-x: visible;
+    }
+
+    .admin-table,
+    .admin-table tbody {
+        display: block;
+        width: 100%;
+    }
+
+    .admin-table thead {
+        display: none;
+    }
+
+    .admin-table {
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .admin-table tbody tr:not(.empty-row) {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        margin-bottom: 1rem;
+        padding: .5rem .85rem;
+        background: #fff;
+        border: 1px solid #E5E7EB;
+        border-radius: 12px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, .04);
+    }
+
+    .admin-table tbody tr:not(.empty-row):hover td {
+        background: transparent;
+    }
+
+    .admin-table tbody td {
+        display: grid;
+        grid-template-columns: minmax(95px, 40%) minmax(0, 1fr);
+        align-items: start;
+        gap: .75rem;
+        width: 100%;
+        box-sizing: border-box;
+        padding: .75rem 0;
+        border-radius: 0 !important;
+        border-bottom: 1px solid #F1F5F9;
+        text-align: left;
+        overflow-wrap: anywhere;
+    }
+
+    .admin-table tbody td:last-child {
+        border-bottom: none;
+    }
+
+    /* Etiqueta generada desde data-label */
+    .admin-table tbody td[data-label]::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #64748B;
+        font-size: .85rem;
+    }
+
+    /* Alinear botones y contenido de estados */
+    .admin-table tbody td .cell-content {
+        align-items: flex-start;
+    }
+
+    .admin-table tbody td.actions {
+        white-space: normal;
+    }
+
+    .action-buttons {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    /* Mensaje cuando no hay registros */
+    .admin-table tbody tr.empty-row {
+        display: block;
+        padding: .75rem 0;
+    }
+
+    .admin-table tbody tr.empty-row td {
+        display: block;
+        padding: 1rem .5rem;
+        text-align: center;
+        border: none;
+    }
+
+    .admin-table tbody tr.empty-row td::before {
+        content: none;
+    }
+
+    .admin-pagination {
+        max-width: 100%;
+        overflow-x: auto;
+        justify-content: center;
+    }
+}
+
+/* CELULARES MUY ANGOSTOS */
+@media (max-width: 380px) {
+    .table-card {
+        padding: .5rem;
+    }
+
+    .admin-table tbody tr:not(.empty-row) {
+        padding: .4rem .65rem;
+    }
+
+    .admin-table tbody td {
+        grid-template-columns: 1fr;
+        gap: .35rem;
+    }
+
+    .admin-table tbody td[data-label]::before {
+        font-size: .8rem;
+    }
+}
+
 
 /* Contenedor */
 .admin-pagination .pagination {
