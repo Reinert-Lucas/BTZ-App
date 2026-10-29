@@ -71,7 +71,6 @@ class BuscarAvisosActivity : AppCompatActivity() {
     private lateinit var buttonEjecutarBusquedaAvisos: Button
     private lateinit var buttonAplicarFiltrosAvisos: Button
     private lateinit var buttonLimpiarFiltrosAvisos: Button
-
     private lateinit var editTextBusquedaGeneralAvisos: EditText
     private lateinit var editTextDireccionFiltroAvisos: EditText
     private lateinit var editTextTelefonoFiltroAvisos: EditText
@@ -127,7 +126,6 @@ class BuscarAvisosActivity : AppCompatActivity() {
                 )
             }
         }
-
     private val editorUsuarioLauncher =
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -168,12 +166,10 @@ class BuscarAvisosActivity : AppCompatActivity() {
     private lateinit var buttonAplicarFiltrosUsuarios: Button
     private lateinit var buttonLimpiarFiltrosUsuarios: Button
     private lateinit var cardFiltrosAvanzadosBuscarUsuarios: androidx.cardview.widget.CardView
-
     private lateinit var editTextNumeroFiltroUsuarios: EditText
     private lateinit var editTextNombreFiltroUsuarios: EditText
     private lateinit var editTextDniFiltroUsuarios: EditText
     private lateinit var radioGroupRolFiltroUsuarios: RadioGroup
-
     private data class FiltrosBusqueda(
         val buscar: String? = null,
         val direccion: String? = null,
@@ -193,9 +189,7 @@ class BuscarAvisosActivity : AppCompatActivity() {
         val materialId: Int? = null,
         val nombre: String? = null
     )
-
     private var filtrosMaterialesActuales = FiltrosMateriales()
-
     private data class FiltrosUsuarios(
         val usuarioId: Int? = null,
         val nombre: String? = null,
@@ -204,7 +198,6 @@ class BuscarAvisosActivity : AppCompatActivity() {
     )
     private var filtrosUsuariosActuales = FiltrosUsuarios()
     private var filtrosClientesActuales = FiltrosClientes()
-
     private enum class SeccionBusqueda {
         AVISOS,
         CLIENTES,
@@ -219,7 +212,6 @@ class BuscarAvisosActivity : AppCompatActivity() {
     private val materialesResultado = mutableListOf<Material>()
     private val usuariosResultado = mutableListOf<Usuario>()
     private var terminoBusquedaGeneralActual: String? = null
-
     private fun actualizarTituloResultados(cantidad: Int) {
         textViewTituloResultadosBuscarAvisos.text = when (seccionActiva) {
             SeccionBusqueda.AVISOS -> "Resultados de búsqueda ($cantidad)"

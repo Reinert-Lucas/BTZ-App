@@ -14,7 +14,8 @@ class ClienteAdapter(
 ) : RecyclerView.Adapter<ClienteAdapter.ClienteViewHolder>() {
 
     class ClienteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
+        val textViewNumeroCliente: TextView =
+            itemView.findViewById(R.id.textViewNumeroCliente)
         val textViewNombreCliente: TextView =
             itemView.findViewById(R.id.textViewNombreCliente)
 
@@ -43,7 +44,7 @@ class ClienteAdapter(
         position: Int
     ) {
         val cliente = clientes[position]
-
+        holder.textViewNumeroCliente.text = "N°${cliente.id}"
         holder.textViewNombreCliente.text = cliente.nombre
         holder.textViewEmailCliente.text = cliente.email
 

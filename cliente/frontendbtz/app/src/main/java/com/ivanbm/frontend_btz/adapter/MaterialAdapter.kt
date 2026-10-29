@@ -15,7 +15,8 @@ class MaterialAdapter(
 
     class MaterialViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
-
+        val textViewNumeroMaterial: TextView =
+            itemView.findViewById(R.id.textViewNumeroMaterial)
         val textViewNombreMaterial: TextView =
             itemView.findViewById(R.id.textViewNombreMaterial)
 
@@ -40,7 +41,7 @@ class MaterialAdapter(
     ) {
 
         val material = materiales[position]
-
+        holder.textViewNumeroMaterial.text = "N°${material.id}"
         holder.textViewNombreMaterial.text =
             material.nombre
 
