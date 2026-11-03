@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.google.services)   // <-- faltaba: habilita Firebase/FCM
 }
 
 android {
@@ -16,16 +17,22 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "BASE_URL", "\"http://192.168.100.5:8000/api/\"")
+        }
         release {
-            isMinifyEnabled = false
+            buildConfigField("String", "BASE_URL", "\"https://TU-DOMINIO/api/\"")
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
+                -keepattributes Signature, *Annotation*
+                -keep class com.ivanbm.frontend_btz.model.** { *; }
             )
         }
     }
@@ -35,6 +42,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
@@ -47,24 +55,14 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.androidx.junit)
-    // Retrofit
+
     implementation("com.squareup.retrofit2:retrofit:3.0.0")
     implementation("com.squareup.retrofit2:converter-gson:3.0.0")
+    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+    implementation("com.google.firebase:firebase-messaging:24.1.2")
 
-    // Tests
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
-
-    //Icon
-    implementation("androidx.core:core-splashscreen:1.0.1")
-
-    // Actualización de listas deslizando hacia abajo
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-
-    // Firebase Cloud Messaging para notificaciones push
-    implementation("com.google.firebase:firebase-messaging:24.1.2")
 }

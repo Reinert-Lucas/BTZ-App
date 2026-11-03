@@ -180,7 +180,6 @@ class AdminActivity : AppCompatActivity() {
             mostrarMenuAdministrador(buttonMenuAdministrador)
         }
 
-        cargarAvisos()
     }
 
     override fun onResume() {

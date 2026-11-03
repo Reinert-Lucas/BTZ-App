@@ -148,12 +148,10 @@ class AvisoService
     public function update(array $newAviso, Aviso $aviso)
     {
         $aviso = DB::transaction(function () use ($newAviso, $aviso) {
-            // Mismo lock que TrabajoController::store: si el operario está cargando el
-            // trabajo en este instante, uno espera al otro y no queda un aviso
-            // "cancelado" que ya tiene trabajo cargado.
             $actual = Aviso::whereKey($aviso->getKey())->lockForUpdate()->firstOrFail();
             $nuevoEstado = $newAviso['estado'] ?? $actual->estado;
             $tieneTrabajo = $actual->trabajo()->exists();
+
             abort_if(
                 $nuevoEstado === 'finalizado' && !$tieneTrabajo,
                 409,
@@ -164,10 +162,19 @@ class AvisoService
                 409,
                 'No se puede reabrir un aviso que ya tiene un trabajo cargado.'
             );
+            // El historial del trabajo pertenece al operario que lo hizo.
+            abort_if(
+                $tieneTrabajo
+                    && isset($newAviso['usuario_id'])
+                    && (int) $newAviso['usuario_id'] !== (int) $actual->usuario_id,
+                409,
+                'No se puede reasignar un aviso que ya tiene un trabajo cargado.'
+            );
+
             $actual->update($newAviso);
             return $actual;
         });
-        // La notificación se envía recién cuando la transacción ya hizo commit.
+
         if ($aviso->wasChanged('usuario_id') && $aviso->estado === 'pendiente') {
             $this->notificarAsignacion($aviso);
         }

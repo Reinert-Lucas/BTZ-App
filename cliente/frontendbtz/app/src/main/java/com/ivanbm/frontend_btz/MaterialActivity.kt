@@ -128,7 +128,6 @@ class MaterialActivity : AppCompatActivity() {
             }
         )
 
-        cargarMateriales()
     }
 
     override fun onResume() {

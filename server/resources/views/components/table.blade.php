@@ -51,7 +51,7 @@
 
                             @case('hora')
                                 <td data-label="{{ $column['label'] }}">
-                                    {{ \Carbon\Carbon::parse(data_get($row, $column['field']))->format('h:m') }}
+                                    {{ \Carbon\Carbon::parse(data_get($row, $column['field']))->format('H:i') }}
                                 </td>
                                 @break
 
