@@ -6,15 +6,15 @@ use App\Http\Requests\AvisoRequest;
 use App\Http\Resources\AvisoResource;
 use App\Http\Resources\TrabajoResource;
 use App\Models\Aviso;
+use App\Models\Cliente;
 use App\Models\Trabajo;
+use App\Models\Usuario;
 use App\Services\AvisoService;
 use Illuminate\Http\Request;
 
 class WebAvisoController extends Controller
 {
-    public function __construct(private readonly AvisoService $service)
-    {
-    }
+    public function __construct(private readonly AvisoService $service) {}
     public function index(Request $request)
     {
         $avisos = $this->service->index($request);
@@ -104,7 +104,19 @@ class WebAvisoController extends Controller
                     'media' => 'Media',
                     'baja' => 'Baja'
                 ]
-            ]
+            ],
+            [
+                'label' => 'Cliente',
+                'field' => 'cliente_id',
+                'type' => 'select',
+                'options' => Cliente::withTrashed()->orderBy('nombre')->pluck('nombre', 'cliente_id')->all()
+            ],
+            [
+                'label' => 'Operario',
+                'field' => 'usuario_id',
+                'type' => 'select',
+                'options' => Usuario::withTrashed()->where('rol', 'operario')->orderBy('nombre')->pluck('nombre', 'usuario_id')->all()
+            ],
         ];
         return view('admin.avisos.index', [
             'avisos' => AvisoResource::collection($avisos),
@@ -160,6 +172,22 @@ class WebAvisoController extends Controller
         return redirect()->route('admin.avisos.index')->with([
             'status' => true,
             'message' => 'Aviso eliminado con exito'
+        ]);
+    }
+    public function restore(int $aviso)
+    {
+        $this->service->restore($aviso);
+        return redirect()->route('admin.avisos.index')->with([
+            'status' => true,
+            'message' => 'Aviso restaurado con exito'
+        ]);
+    }
+    public function forceDelete(int $aviso)
+    {
+        $this->service->forceDelete($aviso);
+        return redirect()->route('admin.avisos.index')->with([
+            'status' => true,
+            'message' => 'Aviso eliminado para siempre'
         ]);
     }
 }

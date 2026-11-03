@@ -32,9 +32,17 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     // Sin 'show': los controladores web no lo implementan.
     Route::resource('usuarios', WebUsuarioController::class)->except('show');
+    Route::get('usuarios/{usuario}/restore', [WebUsuarioController::class, 'restore'])->name('usuarios.restore');
+    Route::delete('usuarios/{usuario}/force-delete', [WebUsuarioController::class, 'forceDelete'])->name('usuarios.forceDelete');
     Route::resource('clientes', WebClienteController::class)->except('show');
+    Route::get('clientes/{cliente}/restore', [WebClienteController::class, 'restore'])->name('clientes.restore');
+    Route::delete('clientes/{cliente}/force-delete', [WebClienteController::class, 'forceDelete'])->name('clientes.forceDelete');
     Route::resource('avisos', WebAvisoController::class)->except('show');
+    Route::get('avisos/{aviso}/restore', [WebAvisoController::class, 'restore'])->name('avisos.restore');
+    Route::delete('avisos/{aviso}/force-delete', [WebAvisoController::class, 'forceDelete'])->name('avisos.forceDelete');
     Route::resource('materiales', WebMaterialController::class)->parameters(['materiales' => 'material'])->except('show');
+    Route::get('materiales/{material}/restore', [WebMaterialController::class, 'restore'])->name('materiales.restore');
+    Route::delete('materiales/{material}/force-delete', [WebMaterialController::class, 'forceDelete'])->name('materiales.forceDelete');
     Route::get('/trabajos/{aviso}/pdf', [WebAvisoController::class, 'pdf'])->name('trabajos.pdf');
     Route::get('/trabajos/{aviso}', [WebAvisoController::class, 'show'])->name('trabajos.show');
 });

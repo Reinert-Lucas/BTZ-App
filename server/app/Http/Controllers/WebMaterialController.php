@@ -10,9 +10,7 @@ use Illuminate\Http\Request;
 
 class WebMaterialController extends Controller
 {
-    public function __construct(private readonly MaterialService $service)
-    {
-    }
+    public function __construct(private readonly MaterialService $service) {}
     public function index(Request $request)
     {
         $materiales = $this->service->index($request);
@@ -105,6 +103,22 @@ class WebMaterialController extends Controller
         return redirect()->route('admin.materiales.index')->with([
             'status' => true,
             'message' => 'Material eliminado con exito'
+        ]);
+    }
+    public function restore(int $material)
+    {
+        $this->service->restore($material);
+        return redirect()->route('admin.materiales.index')->with([
+            'status' => true,
+            'message' => 'Material restaurado con exito'
+        ]);
+    }
+    public function forceDelete(int $material)
+    {
+        $this->service->forceDelete($material);
+        return redirect()->route('admin.materiales.index')->with([
+            'status' => true,
+            'message' => 'Material eliminado para siempre'
         ]);
     }
 }
