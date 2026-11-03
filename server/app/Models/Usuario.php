@@ -14,7 +14,7 @@ class Usuario extends Authenticatable
 
     protected $table = 'usuarios';
     protected $primaryKey = 'usuario_id';
-    protected $fillable = ['nombre', 'password', 'dni', 'telefono', 'rol'];
+    protected $fillable = ['nombre', 'password', 'dni', 'telefono', 'rol', 'deleted_at'];
     protected $hidden = ['password', 'fcm_token'];
 
     // Única fuente de hasheo: el cast 'hashed' (no vuelve a hashear un valor ya hasheado).

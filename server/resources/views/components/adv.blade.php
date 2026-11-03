@@ -44,7 +44,7 @@
             filters.appendChild(clone);
         });
 
-    filters.addEventListener("change", e => {
+    filters.addEventListener("change", async e => {
         if (!e.target.classList.contains("filter-type")) {
             return;
         }
@@ -59,6 +59,7 @@
         <select
             class="form-select select-adpt"
             name="${e.target.value}">
+            <option value="">Seleccionar...</option>
     `;
                 for (const [value, label] of Object.entries(options)) {
                     html += `

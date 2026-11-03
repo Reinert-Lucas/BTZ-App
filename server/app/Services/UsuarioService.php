@@ -24,6 +24,9 @@ class UsuarioService
             ->when($request->rol, function ($query, $rol) {
                 $query->where('rol', $rol);
             })
+            ->when($request->eliminados, function ($query) {
+                $query->onlyTrashed();
+            })
             ->orderBy('usuario_id', 'desc')
             ->paginate(10)
             ->withQueryString();
@@ -69,6 +72,24 @@ class UsuarioService
             $usuarioObtenido->tokens()->delete();
             $usuarioObtenido->forceFill(['fcm_token' => null])->save();
             return (bool) $usuarioObtenido->delete();
+        });
+    }
+    public function restore(int $usuario): bool
+    {
+        return (bool) Usuario::withTrashed()->findOrFail($usuario)->restore();
+    }
+    public function forceDelete(int $usuario): bool
+    {
+        return DB::transaction(function () use ($usuario) {
+            $usuarioObtenido = Usuario::onlyTrashed()->lockForUpdate()->findOrFail($usuario);
+            abort_if(
+                $usuarioObtenido->aviso()->withTrashed()->exists(),
+                409,
+                'No se puede eliminar para siempre un usuario con avisos relacionados.'
+            );
+            $usuarioObtenido->tokens()->delete();
+            $usuarioObtenido->forceFill(['fcm_token' => null])->save();
+            return (bool) $usuarioObtenido->forceDelete();
         });
     }
     /** Un token FCM pertenece a un único usuario: se lo quita a cualquier otro. */

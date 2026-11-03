@@ -15,8 +15,7 @@ class AvisoService
 {
     public function __construct(
         protected FirebaseNotificationService $firebaseNotificationService
-    ) {
-    }
+    ) {}
     /**
      * @param Aviso|null $aviso 
      * Al editar, se pasa el aviso para que su operario/cliente actual aparezcan en el select aunque estén dados de baja.
@@ -103,11 +102,20 @@ class AvisoService
             ->when($request->filled('telefono'), function ($query) use ($request) {
                 $query->where('telefono', 'like', '%' . $request->input('telefono') . '%');
             })
+            ->when($request->filled('cliente_id'), function ($query) use ($request) {
+                $query->where('cliente_id', $request->input('cliente_id'));
+            })
+            ->when($request->filled('usuario_id'), function ($query) use ($request) {
+                $query->where('usuario_id', $request->input('usuario_id'));
+            })
             ->when($request->filled('estado'), function ($query) use ($request) {
                 $query->where('estado', $request->input('estado'));
             })
             ->when($request->filled('urgencia'), function ($query) use ($request) {
                 $query->where('urgencia', $request->input('urgencia'));
+            })
+            ->when($request->eliminados, function ($query) {
+                $query->onlyTrashed();
             });
         return $this->ordenarAvisos($avisos)
             ->paginate(10)
@@ -185,6 +193,22 @@ class AvisoService
                 'No se puede eliminar un aviso con trabajo cargado (se conserva el historial).'
             );
             return (bool) $avisoObtenido->delete();
+        });
+    }
+    public function restore(int $aviso): bool
+    {
+        return (bool) Aviso::withTrashed()->findOrFail($aviso)->restore();
+    }
+    public function forceDelete(int $aviso): bool
+    {
+        return DB::transaction(function () use ($aviso) {
+            $avisoObtenido = Aviso::onlyTrashed()->lockForUpdate()->findOrFail($aviso);
+            abort_if(
+                $avisoObtenido->trabajo()->withTrashed()->exists(),
+                409,
+                'No se puede eliminar para siempre un aviso con trabajo relacionado.'
+            );
+            return (bool) $avisoObtenido->forceDelete();
         });
     }
     /** Se notifica al operario de manera asyncrona para no romper la Request */

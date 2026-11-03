@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\Cliente;
@@ -24,6 +25,9 @@ class ClienteService
             })
             ->when($request->asegurado_detalle, function ($query, $detalle) {
                 $query->where('asegurado_detalle', 'like', "%{$detalle}%");
+            })
+            ->when($request->eliminados, function ($query) {
+                $query->onlyTrashed();
             })
             ->orderBy('cliente_id', 'desc')
             ->paginate(10)
@@ -53,6 +57,22 @@ class ClienteService
                 'El cliente tiene avisos pendientes. Cancélalos o cambia su cliente antes de eliminarlo.'
             );
             return (bool) $clienteObtenido->delete();
+        });
+    }
+    public function restore(int $cliente): bool
+    {
+        return (bool) Cliente::withTrashed()->findOrFail($cliente)->restore();
+    }
+    public function forceDelete(int $cliente): bool
+    {
+        return DB::transaction(function () use ($cliente) {
+            $clienteObtenido = Cliente::onlyTrashed()->lockForUpdate()->findOrFail($cliente);
+            abort_if(
+                $clienteObtenido->aviso()->withTrashed()->exists(),
+                409,
+                'No se puede eliminar para siempre un cliente con avisos relacionados.'
+            );
+            return (bool) $clienteObtenido->forceDelete();
         });
     }
 }

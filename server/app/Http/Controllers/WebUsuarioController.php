@@ -10,9 +10,7 @@ use Illuminate\Http\Request;
 
 class WebUsuarioController extends Controller
 {
-    public function __construct(private readonly UsuarioService $service)
-    {
-    }
+    public function __construct(private readonly UsuarioService $service) {}
     public function index(Request $request)
     {
         $usuarios = $this->service->index($request);
@@ -170,6 +168,22 @@ class WebUsuarioController extends Controller
         return redirect()->route('admin.usuarios.index')->with([
             'status' => true,
             'message' => 'Usuario eliminado con exito'
+        ]);
+    }
+    public function restore(int $usuario)
+    {
+        $this->service->restore($usuario);
+        return redirect()->route('admin.usuarios.index')->with([
+            'status' => true,
+            'message' => 'Usuario restaurado con exito'
+        ]);
+    }
+    public function forceDelete(int $usuario)
+    {
+        $this->service->forceDelete($usuario);
+        return redirect()->route('admin.usuarios.index')->with([
+            'status' => true,
+            'message' => 'Usuario eliminado para siempre'
         ]);
     }
 }

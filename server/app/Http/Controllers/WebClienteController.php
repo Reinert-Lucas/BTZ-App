@@ -10,9 +10,7 @@ use Illuminate\Http\Request;
 
 class WebClienteController extends Controller
 {
-    public function __construct(private readonly ClienteService $service)
-    {
-    }
+    public function __construct(private readonly ClienteService $service) {}
     public function index(Request $request)
     {
         $clientes = $this->service->index($request);
@@ -148,6 +146,22 @@ class WebClienteController extends Controller
         return redirect()->route('admin.clientes.index')->with([
             'status' => true,
             'message' => 'Cliente eliminado con exito'
+        ]);
+    }
+    public function restore(int $cliente)
+    {
+        $this->service->restore($cliente);
+        return redirect()->route('admin.clientes.index')->with([
+            'status' => true,
+            'message' => 'Cliente restaurado con exito'
+        ]);
+    }
+    public function forceDelete(int $cliente)
+    {
+        $this->service->forceDelete($cliente);
+        return redirect()->route('admin.clientes.index')->with([
+            'status' => true,
+            'message' => 'Cliente eliminado para siempre'
         ]);
     }
 }

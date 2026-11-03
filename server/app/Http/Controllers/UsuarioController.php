@@ -11,9 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class UsuarioController extends Controller
 {
-    public function __construct(private readonly UsuarioService $service)
-    {
-    }
+    public function __construct(private readonly UsuarioService $service) {}
     public function index(Request $request)
     {
         $usuarios = $this->service->index($request);
@@ -66,4 +64,5 @@ class UsuarioController extends Controller
             'message' => 'Token FCM actualizado',
         ]);
     }
+    public function restore() {}
 }

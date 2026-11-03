@@ -20,11 +20,13 @@
     color: var(--text-white);
     font-weight: bold;
 }
+
 .modal-btn {
     background-color: var(--primary);
     color: var(--text-white);
     font-weight: bold;
 }
+
 .modal-btn:hover {
     background-color: var(--primary-hover);
     color: var(--text-white);
@@ -56,6 +58,7 @@
     border-radius: 8px;
     padding: .5rem;
 }
+
 .adv-form button:hover {
     background-color: var(--primary-hover);
     color: var(--text-white);
@@ -79,6 +82,7 @@
     background-color: #FFF;
     border: 2px solid var(--bg-gray);
 }
+
 .form-check {
     display: flex;
     justify-content: flex-start;
@@ -89,6 +93,7 @@
     transition: .2s;
     padding: .7rem .9rem;
 }
+
 .select-adpt {
     width: fit-content;
 }
@@ -223,6 +228,7 @@
     background: #DCFCE7;
     color: #166534;
 }
+
 .trabajo-btn {
     text-decoration: underline;
     font-weight: 900;
@@ -443,22 +449,22 @@
     box-shadow: none;
 }
 
-.admin-form-card{
+.admin-form-card {
     background: #FFF;
     border-radius: 14px;
     padding: 1.75rem;
     margin-top: 1rem;
     border: 1px solid #E5E7EB;
-    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
 }
 
-.admin-form-card .form-label{
+.admin-form-card .form-label {
     color: #374151;
     margin-bottom: .35rem;
 }
 
 .admin-form-card .form-control,
-.admin-form-card .form-select{
+.admin-form-card .form-select {
     border-radius: 10px;
     border: 1px solid #D1D5DB;
     padding: .7rem .9rem;
@@ -466,27 +472,27 @@
 }
 
 .admin-form-card .form-control:focus,
-.admin-form-card .form-select:focus{
+.admin-form-card .form-select:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 0 .2rem rgba(67,56,202,.15);
+    box-shadow: 0 0 0 .2rem rgba(67, 56, 202, .15);
 }
 
-.admin-form-card textarea{
+.admin-form-card textarea {
     resize: vertical;
     min-height: 110px;
 }
 
-.admin-form-card .form-check-input{
+.admin-form-card .form-check-input {
     width: 1.1rem;
     height: 1.1rem;
 }
 
-.admin-form-card .form-check-input:checked{
+.admin-form-card .form-check-input:checked {
     background-color: var(--primary);
     border-color: var(--primary);
 }
 
-.admin-form-card .btn-primary{
+.admin-form-card .btn-primary {
     background: var(--primary);
     border: none;
     border-radius: 10px;
@@ -494,6 +500,36 @@
     padding: .65rem 1.5rem;
 }
 
-.admin-form-card .btn-primary:hover{
+.show-all {
+    background: var(--primary);
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    padding: .65rem 1.5rem;
+    color: var(--text-white);
+    text-decoration: none;
+}
+
+.show-deleted {
+    background: var(--danger);
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    padding: .65rem 1.5rem;
+    color: var(--text-white);
+    text-decoration: none;
+}
+
+.show-all:hover {
+    background: var(--primary-hover);
+    color: var(--text-white);
+}
+
+.show-deleted:hover {
+    background: var(--danger-hover);
+    color: var(--text-white);
+}
+
+.admin-form-card .btn-primary:hover {
     background: #3730A3;
 }
