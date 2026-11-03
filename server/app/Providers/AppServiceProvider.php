@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $esProduccion = $this->app->environment('production');
 
-        Paginator::useBootstrapFive();
+        Paginator::useBootstrapFour();
 
         // En desarrollo avisa de N+1 (lanza excepción); en producción no hace nada.
         Model::preventLazyLoading(! $esProduccion);
