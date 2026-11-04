@@ -64,5 +64,4 @@ class UsuarioController extends Controller
             'message' => 'Token FCM actualizado',
         ]);
     }
-    public function restore() {}
 }

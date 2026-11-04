@@ -6,6 +6,7 @@ use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class UsuarioService
 {
@@ -70,14 +71,15 @@ class UsuarioService
             );
             // Que el dispositivo no siga autenticado ni recibiendo notificaciones.
             $usuarioObtenido->tokens()->delete();
-            $usuarioObtenido->forceFill(['fcm_token' => null])->save();
+            $usuarioObtenido->forceFill(['fcm_token' => null])->save(); // En teoria no hae falta, pero lo dejo por las dudas
             return (bool) $usuarioObtenido->delete();
         });
     }
     public function restore(int $usuario): bool
     {
-        return (bool) Usuario::withTrashed()->findOrFail($usuario)->restore();
+        return (bool) Usuario::onlyTrashed()->findOrFail($usuario)->restore();
     }
+
     public function forceDelete(int $usuario): bool
     {
         return DB::transaction(function () use ($usuario) {
@@ -88,8 +90,13 @@ class UsuarioService
                 'No se puede eliminar para siempre un usuario con avisos relacionados.'
             );
             $usuarioObtenido->tokens()->delete();
-            $usuarioObtenido->forceFill(['fcm_token' => null])->save();
-            return (bool) $usuarioObtenido->forceDelete();
+            $borrado = (bool) $usuarioObtenido->forceDelete();
+            Log::warning('Eliminación permanente', [
+                'modelo' => 'Usuario',
+                'id' => $usuario,
+                'usuario_id' => Auth::id(),
+            ]);
+            return $borrado;
         });
     }
     /** Un token FCM pertenece a un único usuario: se lo quita a cualquier otro. */

@@ -42,7 +42,6 @@ Route::middleware('auth:sanctum')->group(function () {
                 DELETE /usuarios/{usuario} -> destroy
         */
         Route::apiResource('usuarios', UsuarioController::class);
-        Route::get('usuarios/restore', [UsuarioController::class, 'restore'])->name("usuarios.restore");
         Route::apiResource('avisos', AvisoController::class)->except(['index']);
         Route::apiResource('clientes', ClienteController::class);
         Route::apiResource('materiales', MaterialController::class)->parameters(['materiales' => 'material'])->except(['index']);

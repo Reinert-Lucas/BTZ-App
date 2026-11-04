@@ -13,6 +13,12 @@ class MaterialRequest extends FormRequest
     {
         return true;
     }
+    public function messages(): array
+    {
+        return [
+            'nombre.unique' => 'Ya existe un material con ese nombre (puede estar en "Mostrar Eliminados": restáuralo o elimínalo permanentemente).',
+        ];
+    }
 
     /**
      * @return array<string, ValidationRule|array<mixed>|string>
