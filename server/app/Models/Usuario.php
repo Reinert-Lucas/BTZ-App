@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,11 +12,11 @@ use Laravel\Sanctum\HasApiTokens;
 
 class Usuario extends Authenticatable
 {
-    use HasApiTokens, HasFactory, SoftDeletes;
+    use HasApiTokens, HasFactory, SoftDeletes, Prunable;
 
     protected $table = 'usuarios';
     protected $primaryKey = 'usuario_id';
-    protected $fillable = ['nombre', 'password', 'dni', 'telefono', 'rol', 'deleted_at'];
+    protected $fillable = ['nombre', 'password', 'dni', 'telefono', 'rol'];
     protected $hidden = ['password', 'fcm_token'];
 
     // Única fuente de hasheo: el cast 'hashed' (no vuelve a hashear un valor ya hasheado).
@@ -26,5 +28,16 @@ class Usuario extends Authenticatable
     public function aviso(): HasMany
     {
         return $this->hasMany(Aviso::class, 'usuario_id');
+    }
+    public function prunable(): Builder
+    {
+        return static::onlyTrashed()
+            ->where('deleted_at', '<=', now()->subDays(90))
+            ->whereDoesntHave('aviso', fn($q) => $q->withTrashed());
+    }
+
+    protected function pruning(): void
+    {
+        $this->tokens()->delete();
     }
 }

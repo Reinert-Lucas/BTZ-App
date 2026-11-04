@@ -10,3 +10,5 @@ Artisan::command('inspire', function () {
 
 // Elimina tokens de Sanctum vencidos hace más de 24 h (requiere cron: php artisan schedule:run).
 Schedule::command('sanctum:prune-expired --hours=24')->daily();
+/** Test: php artisan model:prune --pretend */
+Schedule::command('model:prune')->daily();

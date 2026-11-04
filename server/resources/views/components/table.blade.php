@@ -57,7 +57,7 @@
 
                 @case('hora')
                 <td data-label="{{ $column['label'] }}">
-                    {{ \Carbon\Carbon::parse(data_get($row, $column['field']))->format('h:m') }}
+                    {{ \Carbon\Carbon::parse(data_get($row, $column['field']))->format('H:i') }}
                 </td>
                 @break
 
@@ -73,10 +73,10 @@
                         {{-- Si el registro está eliminado --}}
                         @if ($row->trashed())
                         <form action="{{ route("admin.$resource.restore", [$parameter => $id]) }}"
-                            method="GET"
+                            method="POST"
                             onsubmit="return confirm('¿Desea restaurar este registro?');">
                             @csrf
-                            @method('GET')
+                            @method('PATCH')
 
                             <button type="submit" class="btn btn-success btn-sm"
                                 aria-label="Restaurar">

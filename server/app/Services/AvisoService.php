@@ -8,6 +8,7 @@ use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Kreait\Firebase\Exception\Messaging\NotFound;
 use Throwable;
 
@@ -114,9 +115,10 @@ class AvisoService
             ->when($request->filled('urgencia'), function ($query) use ($request) {
                 $query->where('urgencia', $request->input('urgencia'));
             })
-            ->when($request->eliminados, function ($query) {
-                $query->onlyTrashed();
-            });
+            ->when(
+                $request->boolean('eliminados') && $usuarioAutenticado?->rol === 'admin',
+                fn($query) => $query->onlyTrashed()
+            );
         return $this->ordenarAvisos($avisos)
             ->paginate(10)
             ->withQueryString();
@@ -197,8 +199,24 @@ class AvisoService
     }
     public function restore(int $aviso): bool
     {
-        return (bool) Aviso::withTrashed()->findOrFail($aviso)->restore();
+        return DB::transaction(function () use ($aviso) {
+            $avisoObtenido = Aviso::onlyTrashed()->lockForUpdate()->findOrFail($aviso);
+
+            abort_if(
+                Usuario::onlyTrashed()->whereKey($avisoObtenido->usuario_id)->exists(),
+                409,
+                'El operario de este aviso está eliminado. Restáuralo primero.'
+            );
+            abort_if(
+                Cliente::onlyTrashed()->whereKey($avisoObtenido->cliente_id)->exists(),
+                409,
+                'El cliente de este aviso está eliminado. Restáuralo primero.'
+            );
+
+            return (bool) $avisoObtenido->restore();
+        });
     }
+
     public function forceDelete(int $aviso): bool
     {
         return DB::transaction(function () use ($aviso) {
@@ -208,7 +226,13 @@ class AvisoService
                 409,
                 'No se puede eliminar para siempre un aviso con trabajo relacionado.'
             );
-            return (bool) $avisoObtenido->forceDelete();
+            $borrado = (bool) $avisoObtenido->forceDelete();
+            Log::warning('Eliminación permanente', [
+                'modelo' => 'Aviso',
+                'id' => $aviso,
+                'usuario_id' => Auth::id(),
+            ]);
+            return $borrado;
         });
     }
     /** Se notifica al operario de manera asyncrona para no romper la Request */
