@@ -28,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
 
         RateLimiter::for('login', fn(Request $request) => [
             Limit::perMinute(20)->by($request->ip()),
-            Limit::perMinute(5)->by('dni|' . mb_strtolower((string) $request->input('dni'))),
+            Limit::perMinute(5)->by($request->ip() . '|' . mb_strtolower((string) $request->input('dni'))),
         ]);
 
         // Límite general de la API: por usuario autenticado o, si no hay, por IP.

@@ -3,7 +3,7 @@
     $rutaBase = "admin.$resource.index"
     @endphp
     <a href="{{ route($rutaBase) }}" class="btn show-all">Mostrar Todos</a>
-    <a href="{{ route($rutaBase, ['eliminados=1']) }}" class="btn show-deleted">Mostrar Eliminados</a>
+    <a href="{{ route($rutaBase, ['eliminados' => 1]) }}" class="btn show-deleted">Mostrar Eliminados</a>
     <table class="admin-table">
         <thead>
             <tr>

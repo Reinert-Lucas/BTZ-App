@@ -9,14 +9,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Kreait\Firebase\Exception\Messaging\NotFound;
-use Throwable;
 
 class AvisoService
 {
-    public function __construct(
-        protected FirebaseNotificationService $firebaseNotificationService
-    ) {}
     /**
      * @param Aviso|null $aviso 
      * Al editar, se pasa el aviso para que su operario/cliente actual aparezcan en el select aunque estén dados de baja.
@@ -235,27 +230,9 @@ class AvisoService
             return $borrado;
         });
     }
-    /** Se notifica al operario de manera asyncrona para no romper la Request */
+    /** Se notifica al operario en segundo plano, con reintentos. */
     private function notificarAsignacion(Aviso $aviso): void
     {
-        $usuario = $aviso->usuario;
-        if (!$usuario?->fcm_token) {
-            return;
-        }
-        defer(function () use ($aviso, $usuario) {
-            try {
-                $this->firebaseNotificationService->sendToToken(
-                    $usuario->fcm_token,
-                    '✅ Nuevo Aviso Asignado',
-                    'Se te ha asignado un nuevo aviso. Toca para ver los detalles.',
-                    ['aviso_id' => (string) $aviso->aviso_id]
-                );
-            } catch (NotFound) {
-                // Token dado de baja en FCM: se limpia para no reintentar siempre.
-                $usuario->forceFill(['fcm_token' => null])->save();
-            } catch (Throwable $exception) {
-                report($exception);
-            }
-        });
+        \App\Jobs\NotificarAvisoAsignado::dispatch($aviso->aviso_id);
     }
 }

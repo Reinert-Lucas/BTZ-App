@@ -161,14 +161,6 @@ class AdminActivity : AppCompatActivity() {
 
                     val ultimoElementoVisible =
                         layoutManager.findLastVisibleItemPosition()
-
-                    if (
-                        ultimoElementoVisible >= totalElementos - 1 &&
-                        !cargandoAvisos &&
-                        hayMasAvisos
-                    ) {
-                        cargarAvisos()
-                    }
                 }
             }
         )

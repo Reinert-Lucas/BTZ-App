@@ -14,25 +14,21 @@ object RetrofitClient {
 
     private val clienteHttp = OkHttpClient.Builder()
         .addInterceptor(Interceptor { cadena ->
-
             val token = SessionManager.obtenerToken()
-
-            val solicitudOriginal = cadena.request()
-
-            val solicitudNueva = if (!token.isNullOrEmpty()) {
-
-                solicitudOriginal.newBuilder()
-                    .addHeader(
-                        "Authorization",
-                        "Bearer $token"
-                    )
-                    .build()
-
-            } else {
-                solicitudOriginal
+            val original = cadena.request()
+            val solicitud = if (!token.isNullOrEmpty()) {
+                original.newBuilder().addHeader("Authorization", "Bearer $token").build()
+            } else original
+        
+            val respuesta = cadena.proceed(solicitud)
+        
+            // 401 con un token guardado (y que no sea el propio login) = sesión vencida o desplazada.
+            if (respuesta.code == 401 && !token.isNullOrEmpty() &&
+                !original.url.encodedPath.endsWith("/login")
+            ) {
+                SessionManager.expirarSesion()
             }
-
-            cadena.proceed(solicitudNueva)
+            respuesta
         })
         .build()
 

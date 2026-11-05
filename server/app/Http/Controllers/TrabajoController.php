@@ -13,9 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class TrabajoController extends Controller
 {
-    public function __construct(private readonly TrabajoService $trabajoService)
-    {
-    }
+    public function __construct(private readonly TrabajoService $trabajoService) {}
     public function index(Request $request)
     {
         $trabajos = $this->trabajoService->trabajosAsignados($request->user()->usuario_id);
@@ -49,7 +47,7 @@ class TrabajoController extends Controller
             );
             $aviso->update(['estado' => 'finalizado']);
             return $trabajo->load('materiales');
-        });
+        }, attempts: 3);
         return (new TrabajoResource($trabajo))
             ->additional(['status' => true, 'message' => 'Trabajo cargado correctamente'])
             ->response()
