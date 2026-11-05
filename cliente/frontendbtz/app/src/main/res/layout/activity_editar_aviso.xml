@@ -388,12 +388,11 @@
                     android:layout_marginTop="16dp"
                     android:text="Eliminar aviso"
                     android:textAllCaps="false"
-                    android:textColor="#C62828"
+                    android:textColor="@android:color/white"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    app:backgroundTint="#FFF0F0"
+                    app:backgroundTint="#C62828"
                     app:cornerRadius="14dp"
-                    app:strokeColor="#F1CACA"
                     app:strokeWidth="1dp" />
 
             </LinearLayout>
