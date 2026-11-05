@@ -6,7 +6,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5FA"
+    android:background="#F0F0F0"
     android:paddingStart="18dp"
     android:paddingEnd="18dp"
     android:paddingBottom="12dp">
@@ -48,7 +48,7 @@
                 android:id="@+id/textViewTituloMateriales"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Materiales y herramientas"
+                android:text="Gestión de Materiales y herramientas"
                 android:textColor="#2F2483"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -72,7 +72,7 @@
         android:layout_width="0dp"
         android:layout_height="52dp"
         android:layout_marginTop="20dp"
-        android:text="Añadir material"
+        android:text="Añadir material o herramienta"
         android:textAllCaps="false"
         android:textColor="#FFFFFF"
         android:textSize="15sp"
