@@ -48,7 +48,7 @@
                 android:id="@+id/textViewTituloMateriales"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Gestión de Materiales y herramientas"
+                android:text="Gestión de materiales y herramientas"
                 android:textColor="#2F2483"
                 android:textSize="20sp"
                 android:textStyle="bold" />
