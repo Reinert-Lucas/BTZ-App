@@ -245,14 +245,16 @@
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
+
                 <Spinner
                     android:id="@+id/spinnerUrgenciaEditarAviso"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginTop="6dp"
-                    android:background="@drawable/bg_campo_formulario"
+                    android:background="@drawable/bg_urgencia_media"
                     android:paddingStart="8dp"
-                    android:paddingEnd="8dp" />
+                    android:paddingEnd="8dp"
+                    android:popupBackground="#FFFFFF" />
 
                 <!-- Cliente -->
                 <TextView
@@ -361,6 +363,22 @@
                     android:layout_height="1dp"
                     android:layout_marginTop="24dp"
                     android:background="#EAE7F2" />
+
+                <!-- Cancelar aviso -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonCancelarAviso"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="16dp"
+                    android:text="Cancelar aviso"
+                    android:textAllCaps="false"
+                    android:textColor="#9A6700"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="#FFF4D6"
+                    app:cornerRadius="14dp"
+                    app:strokeColor="#F0D99A"
+                    app:strokeWidth="1dp" />
 
                 <!-- Eliminar aviso -->
                 <com.google.android.material.button.MaterialButton

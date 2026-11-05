@@ -14,7 +14,8 @@ class UsuarioAdapter(
 ) : RecyclerView.Adapter<UsuarioAdapter.UsuarioViewHolder>() {
 
     class UsuarioViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
+        val textViewNumeroUsuario: TextView =
+            itemView.findViewById(R.id.textViewNumeroUsuario)
         val textViewNombreUsuario: TextView =
             itemView.findViewById(R.id.textViewNombreUsuario)
 
@@ -47,7 +48,7 @@ class UsuarioAdapter(
         position: Int
     ) {
         val usuario = usuarios[position]
-
+        holder.textViewNumeroUsuario.text = "N°${usuario.id}"
         when (usuario.rol.trim().lowercase()) {
             "admin", "administrador" -> {
                 holder.imageViewIconoUsuario.setImageResource(

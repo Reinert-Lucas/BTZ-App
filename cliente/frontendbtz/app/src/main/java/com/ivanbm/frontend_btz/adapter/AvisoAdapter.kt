@@ -17,6 +17,8 @@ class AvisoAdapter(
 
     class AvisoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+        val textViewNumeroAviso: TextView =
+            itemView.findViewById(R.id.textViewNumeroAviso)
         val textViewDireccionAviso: TextView =
             itemView.findViewById(R.id.textViewDireccionAviso)
 
@@ -45,7 +47,7 @@ class AvisoAdapter(
         position: Int
     ) {
         val aviso = avisos[position]
-
+        holder.textViewNumeroAviso.text = "N°${aviso.id}"
         holder.textViewDireccionAviso.text = aviso.direccion
         holder.textViewFechaAviso.text = "${aviso.fecha} · ${aviso.hora}"
         holder.textViewClienteAviso.text = aviso.cliente.nombre
