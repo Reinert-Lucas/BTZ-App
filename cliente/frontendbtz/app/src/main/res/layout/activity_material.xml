@@ -89,7 +89,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/contenedorTituloMateriales" />
 
-    <!-- Lista de materiales: se conserva el RecyclerView para la paginación -->
+    <!-- Lista de materiales -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardListaMateriales"
         android:layout_width="0dp"

@@ -85,20 +85,31 @@
         app:layout_constraintTop_toBottomOf="@id/contenedorEncabezadoPersonal" />
 
     <!-- Listado paginado -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewListaPersonal"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardListaUsuarios"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:clipToPadding="false"
-        android:paddingTop="2dp"
-        android:paddingBottom="12dp"
-        android:scrollbars="none"
         android:layout_marginTop="18dp"
+        android:layout_marginBottom="12dp"
+        app:cardBackgroundColor="#FFFFFF"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buttonNuevoUsuario" />
+        app:layout_constraintTop_toBottomOf="@id/buttonNuevoUsuario">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewListaPersonal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingStart="8dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="8dp" />
+
+    </androidx.cardview.widget.CardView>
     <!-- Indicador de carga -->
     <ProgressBar
         android:id="@+id/progressBarCargaPersonal"
@@ -106,9 +117,9 @@
         android:layout_height="40dp"
         android:indeterminateTint="#2F2483"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/recyclerViewListaPersonal"
-        app:layout_constraintEnd_toEndOf="@id/recyclerViewListaPersonal"
-        app:layout_constraintStart_toStartOf="@id/recyclerViewListaPersonal"
-        app:layout_constraintTop_toTopOf="@id/recyclerViewListaPersonal" />
+        app:layout_constraintBottom_toBottomOf="@id/cardListaUsuarios"
+        app:layout_constraintEnd_toEndOf="@id/cardListaUsuarios"
+        app:layout_constraintStart_toStartOf="@id/cardListaUsuarios"
+        app:layout_constraintTop_toTopOf="@id/cardListaUsuarios" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
