@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reporte Trabajo N°{{ $trabajo->trabajo_id }}</title>
+    <title>
+        {{ $esTrabajo ? "Reporte Trabajo N°" . $aviso->trabajo->trabajo_id : "Reporte Aviso N°" . $aviso->aviso_id }}
+    </title>
     <style>
         @page {
             size: A4;
@@ -140,64 +142,70 @@
     </div>
 
     <header>
-        <h1>Reporte de trabajo N°{{ $trabajo->trabajo_id }}</h1>
-        <div class="subtitle">BTZ-APP · Trabajo finalizado</div>
+        <h1>
+            {{ $esTrabajo ? "Reporte Trabajo N°" . $aviso->trabajo->trabajo_id : "Reporte Aviso N°" . $aviso->aviso_id }}
+        </h1>
+        @if ($esTrabajo)
+            <div class="subtitle">BTZ-APP · Trabajo finalizado</div>
+        @endif
     </header>
 
     <div class="info-grid">
         <div>
             <span class="info-label">Operario</span>
-            <span class="info-value">{{ $trabajo->aviso->usuario->nombre }}</span>
+            <span class="info-value">{{ $aviso->usuario->nombre }}</span>
         </div>
         <div>
             <span class="info-label">Cliente</span>
-            <span class="info-value">{{ $trabajo->aviso->cliente->nombre }}</span>
+            <span class="info-value">{{ $aviso->cliente->nombre }}</span>
         </div>
         <div>
             <span class="info-label">Fecha</span>
-            <span class="info-value">{{ \Carbon\Carbon::parse(data_get($trabajo->aviso, 'fecha'))->format('d/m/Y') }}</span>
+            <span class="info-value">{{ \Carbon\Carbon::parse(data_get($aviso, 'fecha'))->format('d/m/Y') }}</span>
         </div>
         <div>
             <span class="info-label">Estado</span>
-            <span class="info-value">Finalizado</span>
+            <span class="info-value">{{ data_get($aviso, 'estado') }}</span>
         </div>
     </div>
 
-    <section>
-        <h2>Desperfecto encontrado</h2>
-        <p>{{ $trabajo->desperfecto }}</p>
-    </section>
+    @if ($esTrabajo)
+        <section>
+            <h2>Desperfecto encontrado</h2>
+            <p>{{ $aviso->trabajo->desperfecto }}</p>
+        </section>
 
-    <section>
-        <h2>Reparaciones realizadas</h2>
-        <p>{{ $trabajo->trabajo_realizado }}</p>
-    </section>
+        <section>
+            <h2>Reparaciones realizadas</h2>
+            <p>{{ $aviso->trabajo->trabajo_realizado }}</p>
+        </section>
 
-    <section>
-        <h2>Materiales utilizados</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Material</th>
-                    <th>Cantidad</th>
-                    <th>Detalle</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($trabajo->materiales as $material)
+        <section>
+            <h2>Materiales utilizados</h2>
+            <table>
+                <thead>
                     <tr>
-                        <td>{{ $material->nombre }}</td>
-                        <td>{{ $material->pivot->cantidad }}</td>
-                        <td>{{ $material->detalle }}</td>
+                        <th>Material</th>
+                        <th>Cantidad</th>
+                        <th>Detalle</th>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="3" class="muted">No se utilizaron materiales.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </section>
+                </thead>
+                <tbody>
+                    @forelse ($aviso->trabajo->materiales as $material)
+                        <tr>
+                            <td>{{ $material->nombre }}</td>
+                            <td>{{ $material->pivot->cantidad }}</td>
+                            <td>{{ $material->detalle }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="3" class="muted">No se utilizaron materiales.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </section>
+    @endif
 
     <footer>Reporte generado el {{ now()->format('d/m/Y H:i') }}</footer>
 

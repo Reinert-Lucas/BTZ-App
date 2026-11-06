@@ -21,9 +21,7 @@ use Illuminate\Support\Facades\Auth;
 
 class WebAuthController extends Controller
 {
-    public function __construct(private readonly AuthService $service)
-    {
-    }
+    public function __construct(private readonly AuthService $service) {}
     public function login(LoginUserRequest $request)
     {
         if (!Auth::attempt($request->validated())) {
@@ -52,10 +50,10 @@ class WebAuthController extends Controller
         $request->session()->regenerateToken();
         return redirect()->route('login');
     }
-    public function showLogin()
+    /* public function showLogin()
     {
         return Auth::check()
             ? redirect()->route('admin.dashboard')
             : view('index');
-    }
+    } */
 }

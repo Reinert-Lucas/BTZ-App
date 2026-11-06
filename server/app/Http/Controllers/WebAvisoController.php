@@ -126,16 +126,26 @@ class WebAvisoController extends Controller
     }
     public function show(int $aviso)
     {
-        $trabajo = Trabajo::with('materiales', 'aviso.usuario', 'aviso.cliente')->where('aviso_id', $aviso)->firstOrFail();
+        $avisoObtenido = $this->service->show($aviso);
+        $esTrabajo = false;
+        if ($avisoObtenido->estado === 'finalizado') {
+            $esTrabajo = true;
+        }
         return view('admin.trabajo', [
-            'trabajo' => $trabajo,
+            'aviso' => $avisoObtenido,
+            'esTrabajo' => $esTrabajo
         ]);
     }
     public function pdf(int $aviso)
     {
-        $trabajo = Trabajo::with('materiales', 'aviso.usuario', 'aviso.cliente')->where('aviso_id', $aviso)->firstOrFail();
+        $avisoObtenido = $this->service->show($aviso);
+        $esTrabajo = false;
+        if ($avisoObtenido->estado === 'finalizado') {
+            $esTrabajo = true;
+        }
         return view('admin.trabajo-pdf', [
-            'trabajo' => $trabajo,
+            'aviso' => $avisoObtenido,
+            'esTrabajo' => $esTrabajo
         ]);
     }
     public function create()

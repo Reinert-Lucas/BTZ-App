@@ -141,7 +141,7 @@ class AvisoService
     }
     public function show(int $aviso)
     {
-        return Aviso::findOrFail($aviso);
+        return Aviso::with('trabajo', 'trabajo.materiales')->findOrFail($aviso);
     }
     public function create(array $avisoValidado)
     {
@@ -152,13 +152,13 @@ class AvisoService
     }
     public function update(array $newAviso, Aviso $aviso)
     {
-        $aviso = DB::transaction(function () use ($newAviso, $aviso) {
-            // Mismo lock que TrabajoController::store: si el operario está cargando el
-            // trabajo en este instante, uno espera al otro y no queda un aviso
-            // "cancelado" que ya tiene trabajo cargado.
+        [$actualizado, $debeNotificar] = DB::transaction(function () use ($newAviso, $aviso) {
+            // Mismo lock que TrabajoController::store.
             $actual = Aviso::whereKey($aviso->getKey())->lockForUpdate()->firstOrFail();
-            $nuevoEstado = $newAviso['estado'] ?? $actual->estado;
+            $estadoAnterior = $actual->estado;
+            $nuevoEstado = $newAviso['estado'] ?? $estadoAnterior;
             $tieneTrabajo = $actual->trabajo()->exists();
+
             abort_if(
                 $nuevoEstado === 'finalizado' && !$tieneTrabajo,
                 409,
@@ -169,14 +169,29 @@ class AvisoService
                 409,
                 'No se puede reabrir un aviso que ya tiene un trabajo cargado.'
             );
+            // El operario del aviso es quien hizo el trabajo: no se reasigna el historial.
+            abort_if(
+                $tieneTrabajo
+                    && isset($newAviso['usuario_id'])
+                    && (int) $newAviso['usuario_id'] !== (int) $actual->usuario_id,
+                409,
+                'No se puede cambiar el operario de un aviso con trabajo cargado.'
+            );
+
             $actual->update($newAviso);
-            return $actual;
+
+            $reasignado = $actual->wasChanged('usuario_id');
+            $reactivado = $estadoAnterior === 'cancelado' && $actual->estado === 'pendiente';
+
+            return [$actual, $actual->estado === 'pendiente' && ($reasignado || $reactivado)];
         });
+
         // La notificación se envía recién cuando la transacción ya hizo commit.
-        if ($aviso->wasChanged('usuario_id') && $aviso->estado === 'pendiente') {
-            $this->notificarAsignacion($aviso);
+        if ($debeNotificar) {
+            $this->notificarAsignacion($actualizado);
         }
-        return $aviso->fresh();
+
+        return $actualizado->fresh();
     }
     public function destroy(int $aviso): bool
     {

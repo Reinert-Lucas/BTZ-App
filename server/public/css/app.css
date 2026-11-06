@@ -44,6 +44,7 @@
     justify-self: center;
     text-align: center;
 }
+
 @media (max-width: 768px) {
     .login-form {
         width: 100%;
@@ -164,7 +165,7 @@
 
 .material-icon {
     width: 25px;
-    height: 25x;
+    height: 25px;
 }
 
 .progress {
@@ -279,6 +280,7 @@
     width: 1.2em;
     height: 1.2em;
 }
+
 .pdf-button {
     background-color: var(--bg-gray);
     border-radius: 8px;
