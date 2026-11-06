@@ -20,11 +20,14 @@ class BtzFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
+        android.util.Log.i(TAG, "Firebase generó un token nuevo; intentando registrarlo en la API.")
         FcmTokenRegistrar.registrar(applicationContext)
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
+        val avisoId = message.data["aviso_id"]
+        android.util.Log.i(TAG, "Mensaje FCM recibido: aviso_id=$avisoId, claves=${message.data.keys}.")
         createNotificationChannel()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(
@@ -32,10 +35,10 @@ class BtzFirebaseMessagingService : FirebaseMessagingService() {
                 Manifest.permission.POST_NOTIFICATIONS
             ) != PackageManager.PERMISSION_GRANTED
         ) {
+            android.util.Log.w(TAG, "Mensaje FCM recibido, pero falta el permiso POST_NOTIFICATIONS.")
             return
         }
 
-        val avisoId = message.data["aviso_id"]
         val openIntent = Intent(this, OperarioActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             avisoId?.let { putExtra("AVISO_ID", it) }
@@ -60,6 +63,7 @@ class BtzFirebaseMessagingService : FirebaseMessagingService() {
             avisoId?.hashCode() ?: System.currentTimeMillis().toInt(),
             notification
         )
+        android.util.Log.i(TAG, "Notificación local mostrada para aviso_id=$avisoId.")
     }
 
     private fun createNotificationChannel() {
@@ -75,5 +79,6 @@ class BtzFirebaseMessagingService : FirebaseMessagingService() {
 
     companion object {
         private const val CHANNEL_ID = "avisos_asignados"
+        private const val TAG = "BtzFCM"
     }
 }
