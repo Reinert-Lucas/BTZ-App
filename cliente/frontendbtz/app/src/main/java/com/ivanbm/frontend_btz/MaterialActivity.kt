@@ -116,14 +116,6 @@ class MaterialActivity : AppCompatActivity() {
 
                     val ultimoElementoVisible =
                         layoutManager.findLastVisibleItemPosition()
-
-                    if (
-                        ultimoElementoVisible >= totalElementos - 1 &&
-                        !cargandoMateriales &&
-                        hayMasMateriales
-                    ) {
-                        cargarMateriales()
-                    }
                 }
             }
         )

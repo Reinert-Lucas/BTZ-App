@@ -3,16 +3,16 @@
 @section('content')
     <section class="cards-section">
         <article class="admin-card" data-route="{{ route('admin.usuarios.index') }}">
-            <img src="{{ asset('imgs/tarjeta_usuarios.png') }}" alt="Gestion de Usuarios" class="admin-card-img">
+            <img src="{{ asset('imgs/tarjeta_usuarios.webp') }}" alt="Gestion de Usuarios" class="admin-card-img">
         </article>
         <article class="admin-card" data-route="{{ route('admin.avisos.index') }}">
-            <img src="{{ asset('imgs/tarjeta_avisos.png') }}" alt="Gestion de Avisos" class="admin-card-img">
+            <img src="{{ asset('imgs/tarjeta_avisos.webp') }}" alt="Gestion de Avisos" class="admin-card-img">
         </article>
         <article class="admin-card" data-route="{{ route('admin.materiales.index') }}">
-            <img src="{{ asset('imgs/tarjeta_materiales.png') }}" alt="Gestion de Materiales" class="admin-card-img">
+            <img src="{{ asset('imgs/tarjeta_materiales.webp') }}" alt="Gestion de Materiales" class="admin-card-img">
         </article>
         <article class="admin-card" data-route="{{ route('admin.clientes.index') }}">
-            <img src="{{ asset('imgs/tarjeta_clientes.png') }}" alt="Gestion de Clientes" class="admin-card-img">
+            <img src="{{ asset('imgs/tarjeta_clientes.webp') }}" alt="Gestion de Clientes" class="admin-card-img">
         </article>
     </section>
     <section class="stats-section">

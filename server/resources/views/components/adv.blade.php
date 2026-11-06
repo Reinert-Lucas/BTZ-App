@@ -1,6 +1,5 @@
-{{-- FORMULARIO PARA LA BUSQUEDA AVANZADA --}}
 @php
-    $rutaCompleta = "admin.$ruta.index" 
+    $rutaCompleta = "admin.$ruta.index";
 @endphp
 <form method="GET" action="{{ route($rutaCompleta) }}" class="adv-form">
     <div id="filters">
@@ -22,82 +21,79 @@
         <select class="form-select filter-type">
             <option value="">Seleccionar...</option>
             @foreach ($filtros as $filtro)
+                {{-- Opciones como lista [valor, etiqueta]: conserva el orden alfabético --}}
                 <option data-tipo="{{ $filtro['type'] }}" value="{{ $filtro['field'] }}"
-                    data-options="{{ json_encode($filtro['options'] ?? []) }}">{{ $filtro['label'] }}</option>
+                    data-options="{{ json_encode(collect($filtro['options'] ?? [])->map(fn($etiqueta, $valor) => [$valor, $etiqueta])->values()) }}">
+                    {{ $filtro['label'] }}
+                </option>
             @endforeach
         </select>
-        <div class="filter-value">
-        </div>
-        <button type="button" class="remove-filter">
-            X
-        </button>
+        <div class="filter-value"></div>
+        <button type="button" class="remove-filter">X</button>
     </div>
 </template>
 
 <script>
-    const filters = document.getElementById("filters");
-    const template = document.getElementById("filter-template");
-    document
-        .getElementById("add-filter")
-        .addEventListener("click", () => {
-            const clone = template.content.cloneNode(true);
-            filters.appendChild(clone);
-        });
+    const filters = document.getElementById('filters');
+    const template = document.getElementById('filter-template');
 
-    filters.addEventListener("change", async e => {
-        if (!e.target.classList.contains("filter-type")) {
+    document.getElementById('add-filter').addEventListener('click', () => {
+        filters.appendChild(template.content.cloneNode(true));
+    });
+
+    filters.addEventListener('change', (e) => {
+        if (!e.target.classList.contains('filter-type')) {
             return;
         }
-        const container =
-            e.target.parentElement.querySelector(".filter-value");
-        switch (e.target.selectedOptions[0].dataset.tipo) {
-            case "select":
-                const options = JSON.parse(
-                    e.target.selectedOptions[0].dataset.options
-                );
-                let html = `
-        <select
-            class="form-select select-adpt"
-            name="${e.target.value}">
-            <option value="">Seleccionar...</option>
-    `;
-                for (const [value, label] of Object.entries(options)) {
-                    html += `
-            <option value="${value}">
-                ${label}
-            </option>
-        `;
+
+        const container = e.target.closest('.filter-row').querySelector('.filter-value');
+        const opcion = e.target.selectedOptions[0];
+        const campo = e.target.value;
+
+        container.replaceChildren();
+        if (!campo) {
+            return;
+        }
+
+        switch (opcion.dataset.tipo) {
+            case 'select': {
+                const select = document.createElement('select');
+                select.className = 'form-select select-adpt';
+                select.name = campo;
+                select.add(new Option('Seleccionar...', ''));
+                // new Option() trata la etiqueta como texto: nunca interpreta HTML.
+                for (const [valor, etiqueta] of JSON.parse(opcion.dataset.options || '[]')) {
+                    select.add(new Option(etiqueta, valor));
                 }
-                html += `</select>`;
-                container.innerHTML = html;
+                container.appendChild(select);
                 break;
-            case "checkbox":
-                container.innerHTML = `
-                <div class="form-check">
-                    <input
-                        type="checkbox"
-                        class="form-check-input"
-                        value="1"
-                        name="${e.target.value}"
-                        id="${e.target.value}">
-                </div>
-                `
+            }
+            case 'checkbox': {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'form-check';
+                const input = document.createElement('input');
+                input.type = 'checkbox';
+                input.className = 'form-check-input';
+                input.value = '1';
+                input.name = campo;
+                input.id = campo;
+                wrapper.appendChild(input);
+                container.appendChild(wrapper);
                 break;
-            default:
-                container.innerHTML = `
-                <input
-                    class="form-control text-input"
-                    type="${e.target.selectedOptions[0].dataset.tipo}"
-                    name="${e.target.value}">
-            `;
-                break;
+            }
+            default: {
+                const input = document.createElement('input');
+                input.className = 'form-control text-input';
+                input.type = opcion.dataset.tipo;
+                input.name = campo;
+                container.appendChild(input);
+            }
         }
     });
-    filters.addEventListener("click", e => {
-        if (e.target.classList.contains("remove-filter")) {
-            e.target
-                .closest(".filter-row")
-                .remove();
+
+    filters.addEventListener('click', (e) => {
+        if (e.target.classList.contains('remove-filter')) {
+            e.target.closest('.filter-row').remove();
         }
     });
 </script>
