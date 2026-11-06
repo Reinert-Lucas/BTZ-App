@@ -24,7 +24,8 @@ class AvisoRequest extends FormRequest
         $aviso = $this->route('aviso'); // null al crear, modelo al actualizar
 
         return [
-            'fecha' => ['required', 'date'],
+            // Formato estricto: 'date' aceptaba textos como "tomorrow" y MySQL fallaba con un 500.
+            'fecha' => ['required', 'date_format:Y-m-d'],
             'hora' => ['required', 'date_format:H:i,H:i:s'],
             'direccion' => ['required', 'string', 'max:100'],
             'telefono' => ['required', 'string', 'max:20'],

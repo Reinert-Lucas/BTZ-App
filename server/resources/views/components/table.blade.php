@@ -18,10 +18,15 @@
             @forelse ($rows as $row)
             @php
             $id = data_get($row, $parameter . '_id');
-            $eliminado = data_get($row, 'eliminated_at')
+            $eliminado = data_get($row, 'deleted_at')
             @endphp
 
-            <tr>
+            <tr 
+            {{-- Si el resource es aviso, al clickear redirigir a admin.trabajos.show --}}
+            @if ($resource === 'avisos')
+                onclick="window.location='{{ route('admin.trabajos.show', [$parameter => $id]) }}'"
+            @endif
+            |>  
                 @foreach ($columns as $column)
                 @switch($column['field'])
                 @case('estado')
@@ -52,6 +57,12 @@
                 @case('fecha')
                 <td data-label="{{ $column['label'] }}">
                     {{ \Carbon\Carbon::parse(data_get($row, $column['field']))->format('d/m/Y') }}
+                </td>
+                @break
+
+                @case('mensaje')
+                <td data-label="{{ $column['label'] }}" class="td-mensaje">
+                    {{ Str::limit(data_get($row, $column['field']), 50) }}
                 </td>
                 @break
 
