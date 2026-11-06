@@ -12,7 +12,7 @@
         android:id="@+id/ivLogoCentral"
         android:layout_width="220dp"
         android:layout_height="220dp"
-        android:src="@drawable/logo_btz_2"
+        android:src="@drawable/icon_btz"
         android:layout_marginBottom="32dp"/>
 
     <TextView

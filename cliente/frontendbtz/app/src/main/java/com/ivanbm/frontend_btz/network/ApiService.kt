@@ -50,9 +50,15 @@ interface ApiService {
     // CLIENTES ------------------------------------------------------------------------------
 
     // Obtener todos los clientes
+
     @GET("clientes")
     fun obtenerClientes(
-        @Query("page") pagina: Int
+        @Query("page") pagina: Int,
+        @Query("cliente_id") clienteId: Int? = null,
+        @Query("nombre") nombre: String? = null,
+        @Query("email") email: String? = null,
+        @Query("asegurado") asegurado: Boolean? = null,
+        @Query("asegurado_detalle") aseguradoDetalle: String? = null
     ): Call<ClientesResponse>
 
     // Obtener un cliente
@@ -85,10 +91,15 @@ interface ApiService {
 
     // USUARIOS -------------------------------------------------------------------------------
 
-    // Obtener todos los usuarios
+    // Obtener usuarios
+
     @GET("usuarios")
     fun obtenerUsuarios(
-        @Query("page") pagina: Int
+        @Query("page") pagina: Int,
+        @Query("usuario_id") usuarioId: Int? = null,
+        @Query("nombre") nombre: String? = null,
+        @Query("dni") dni: String? = null,
+        @Query("rol") rol: String? = null
     ): Call<UsuariosResponse>
 
     // Obtener un usuario
@@ -158,27 +169,34 @@ interface ApiService {
 
     // MATERIALES --------------------------------------------------------------------------------
 
+    //Obtener avisos
     @GET("materiales")
     fun obtenerMateriales(
-        @Query("page") pagina: Int
+        @Query("page") pagina: Int,
+        @Query("material_id") materialId: Int? = null,
+        @Query("nombre") nombre: String? = null
     ): Call<MaterialesResponse>
 
+    //obtener un aviso
     @GET("materiales/{id}")
     fun obtenerMaterial(
         @Path("id") id: Int
     ): Call<MaterialResponse>
 
+    //crear material
     @POST("materiales")
     fun crearMaterial(
         @Body request: MaterialRequest
     ): Call<MaterialResponse>
 
+    //editar material
     @PUT("materiales/{id}")
     fun actualizarMaterial(
         @Path("id") id: Int,
         @Body request: MaterialRequest
     ): Call<MaterialResponse>
 
+    //eliminar material
     @DELETE("materiales/{id}")
     fun eliminarMaterial(
         @Path("id") id: Int
