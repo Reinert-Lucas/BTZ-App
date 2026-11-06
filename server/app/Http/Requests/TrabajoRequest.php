@@ -2,15 +2,24 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Aviso;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class TrabajoRequest extends FormRequest
 {
+    /**
+     * Solo el operario asignado puede cargar el trabajo. Si el aviso no existe o es de otro
+     * operario la respuesta es la misma (403): no se revela qué IDs existen.
+     * El controller vuelve a verificar dentro del lock (fuente de verdad).
+     */
     public function authorize(): bool
     {
-        return true;
+        $aviso = Aviso::find($this->integer('aviso_id'));
+
+        return $aviso !== null
+            && (int) $aviso->usuario_id === (int) $this->user()?->usuario_id;
     }
 
     /**

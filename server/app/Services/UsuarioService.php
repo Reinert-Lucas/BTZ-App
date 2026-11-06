@@ -25,9 +25,7 @@ class UsuarioService
             ->when($request->rol, function ($query, $rol) {
                 $query->where('rol', $rol);
             })
-            ->when($request->eliminados, function ($query) {
-                $query->onlyTrashed();
-            })
+            ->when($request->boolean('eliminados'), fn($query) => $query->onlyTrashed())
             ->orderBy('usuario_id', 'desc')
             ->paginate(10)
             ->withQueryString();
@@ -49,6 +47,12 @@ class UsuarioService
         if (empty($newUsuario['password'])) {
             unset($newUsuario['password']);
         }
+        abort_if(
+            $usuario->rol === 'operario' && $nuevoRol !== 'operario'
+                && $usuario->aviso()->where('estado', 'pendiente')->exists(),
+            409,
+            'El usuario tiene avisos pendientes. Reasígnalos antes de cambiarle el rol.'
+        );
         return DB::transaction(function () use ($usuario, $newUsuario) {
             $usuario->update($newUsuario);
             // Contraseña nueva => se invalidan los tokens de API existentes.

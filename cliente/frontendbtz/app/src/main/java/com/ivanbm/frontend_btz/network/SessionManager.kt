@@ -51,4 +51,18 @@ object SessionManager {
             .remove(CLAVE_ROL)
             .apply()
     }
+    private lateinit var appContext: Context
+
+    fun inicializar(context: Context) {
+        appContext = context.applicationContext
+        preferencias = appContext.getSharedPreferences(NOMBRE_PREFERENCIAS, Context.MODE_PRIVATE)
+    }
+    
+    fun expirarSesion() {
+        cerrarSesion()
+        val intent = android.content.Intent(appContext, com.ivanbm.frontend_btz.LoginActivity::class.java).apply {
+            flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        appContext.startActivity(intent)
+    }
 }

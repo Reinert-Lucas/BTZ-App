@@ -774,14 +774,14 @@ class CrearAvisoActivity : AppCompatActivity() {
 
     private fun crearAviso() {
 
-        val fechaIngresada = editTextFechaAviso.text.toString()
-
+        val fechaIngresada = editTextFechaAviso.text.toString().trim()
+        if (fechaIngresada.isEmpty()) {
+            editTextFechaAviso.error = "Ingrese la fecha"
+            editTextFechaAviso.requestFocus()
+            return
+        }
         val partesFecha = fechaIngresada.split("/")
-
-        val fechaParaBackend =
-            "${partesFecha[2]}-${partesFecha[1]}-${partesFecha[0]}"
-
-        val fecha = fechaParaBackend
+        val fecha = "${partesFecha[2]}-${partesFecha[1]}-${partesFecha[0]}"
 
         val hora =
             editTextHoraAviso.text.toString().trim()

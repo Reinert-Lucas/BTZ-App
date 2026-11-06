@@ -24,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'isAdmin' => isAdmin::class,
         ]);
+        $middleware->web(append: [\App\Http\Middleware\SecurityHeaders::class]);
 
         // Rate limit general de la API (el limiter 'api' se define en AppServiceProvider).
         $middleware->throttleApi();
@@ -99,6 +100,7 @@ return Application::configure(basePath: dirname(__DIR__))
             [$status, $message] = match ($e->errorInfo[1] ?? null) {
                 1062 => [409, 'Ya existe un registro con esos datos'],
                 1451, 1452 => [409, 'La operación entra en conflicto con registros relacionados'],
+                1205, 1213 => [503, 'El servidor está ocupado, intenta nuevamente en unos instantes'],
                 default => [500, 'Error al procesar la solicitud'],
             };
 
