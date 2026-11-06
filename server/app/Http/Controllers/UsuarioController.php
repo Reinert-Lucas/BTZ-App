@@ -8,6 +8,7 @@ use App\Models\Usuario;
 use App\Services\UsuarioService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class UsuarioController extends Controller
 {
@@ -55,6 +56,10 @@ class UsuarioController extends Controller
     }
     public function saveFcmToken(Request $request)
     {
+        Log::warning('Solicitud de registro FCM recibida por la API.', [
+            'usuario_id' => $request->user()?->usuario_id,
+        ]);
+
         $datos = $request->validate([
             'token' => ['required', 'string', 'max:255'],
         ]);
