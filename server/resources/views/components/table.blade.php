@@ -8,7 +8,13 @@
         <thead>
             <tr>
                 @foreach ($columns as $column)
-                <th>{{ $column['label'] }}</th>
+                    @switch($column['label'])
+                        @case('Observacion')
+                            @break
+                        @default
+                            <th>{{ $column['label'] }}</th>
+                            @break
+                    @endswitch
                 @endforeach
                 <th class="text-center">Acciones</th>
             </tr>
@@ -24,9 +30,10 @@
             <tr 
             {{-- Si el resource es aviso, al clickear redirigir a admin.trabajos.show --}}
             @if ($resource === 'avisos')
-                onclick="window.location='{{ route('admin.trabajos.show', [$parameter => $id]) }}'"
+                onclick="if (!event.target.closest('a, button, form')) window.location='{{ route('admin.trabajos.show', [$parameter => $id]) }}'"
+                class="avisos-row"
             @endif
-            |>  
+            >
                 @foreach ($columns as $column)
                 @switch($column['field'])
                 @case('estado')
@@ -62,8 +69,14 @@
 
                 @case('mensaje')
                 <td data-label="{{ $column['label'] }}" class="td-mensaje">
-                    {{ Str::limit(data_get($row, $column['field']), 50) }}
+                    {{ Str::limit(data_get($row, $column['field']), 20) }}
                 </td>
+                @break
+
+                @case('observacion')
+                {{-- <td data-label="{{ $column['label'] }}" class="td-mensaje">
+                    {{ Str::limit(data_get($row, $column['field']), 20) }}
+                </td> --}}
                 @break
 
                 @case('hora')

@@ -192,6 +192,10 @@
     background: #EEF2FF;
 }
 
+.avisos-row:hover {
+    cursor: pointer;
+}
+
 /* ESTADOS Y URGENCIAS */
 .status,
 .urgency,
