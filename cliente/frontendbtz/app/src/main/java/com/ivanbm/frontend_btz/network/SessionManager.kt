@@ -12,13 +12,6 @@ object SessionManager {
 
     private lateinit var preferencias: android.content.SharedPreferences
 
-    fun inicializar(context: Context) {
-        preferencias = context.getSharedPreferences(
-            NOMBRE_PREFERENCIAS,
-            Context.MODE_PRIVATE
-        )
-    }
-
     fun guardarToken(token: String) {
         preferencias.edit()
             .putString(CLAVE_TOKEN, token)
