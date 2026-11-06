@@ -665,7 +665,7 @@ class TrabajoActivity : AppCompatActivity() {
         editTextTrabajoRealizado.isEnabled = false
         editTextDesperfectoTrabajo.isEnabled = false
 
-        // Ocultar las indicaciones pensadas para completar el formulario
+        // Ocultar las indicaciones para completar el formulario
         findViewById<TextView>(R.id.textViewSubtituloTrabajo)
             .visibility = View.GONE
 
@@ -673,6 +673,12 @@ class TrabajoActivity : AppCompatActivity() {
             .visibility = View.GONE
 
         findViewById<TextView>(R.id.textViewAyudaMaterialesTrabajo)
+            .visibility = View.GONE
+        findViewById<TextView>(R.id.textViewEtiquetaMaterialTrabajo)
+            .visibility = View.GONE
+        findViewById<TextView>(R.id.textViewEtiquetaCantidadMaterialTrabajo)
+            .visibility = View.GONE
+        findViewById<TextView>(R.id.textViewListaMaterialesTrabajo)
             .visibility = View.GONE
 
         // Ocultar los controles para agregar o finalizar el trabajo

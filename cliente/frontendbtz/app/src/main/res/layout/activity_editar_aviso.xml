@@ -392,8 +392,7 @@
                     android:textSize="15sp"
                     android:textStyle="bold"
                     app:backgroundTint="#C62828"
-                    app:cornerRadius="14dp"
-                    app:strokeWidth="1dp" />
+                    app:cornerRadius="14dp" />
 
             </LinearLayout>
 
