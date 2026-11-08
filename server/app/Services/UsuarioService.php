@@ -113,5 +113,9 @@ class UsuarioService
                 ->update(['fcm_token' => null]);
             $usuario->forceFill(['fcm_token' => $token])->save();
         });
+
+        Log::info('Token FCM registrado para usuario.', [
+            'usuario_id' => $usuario->usuario_id,
+        ]);
     }
 }

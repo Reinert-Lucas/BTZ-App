@@ -56,6 +56,7 @@ class LoginActivity : AppCompatActivity() {
                 }
 
                 "operario" -> {
+                    FcmTokenRegistrar.registrar(applicationContext)
                     abrirPanel(OperarioActivity::class.java)
                     return
                 }

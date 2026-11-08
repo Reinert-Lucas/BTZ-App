@@ -15,10 +15,14 @@ object FcmTokenRegistrar {
     fun registrar(context: Context) {
         SessionManager.inicializar(context.applicationContext)
 
-        if (SessionManager.obtenerToken().isNullOrEmpty()) return
+        if (SessionManager.obtenerToken().isNullOrEmpty()) {
+            Log.w(TAG, "No se registra el token FCM: no hay sesión de API.")
+            return
+        }
 
         FirebaseMessaging.getInstance().token
             .addOnSuccessListener { fcmToken ->
+                Log.i(TAG, "Token FCM obtenido; enviando registro a la API.")
                 RetrofitClient.api
                     .guardarTokenFcm(FcmTokenRequest(fcmToken))
                     .enqueue(object : Callback<Void> {
@@ -27,11 +31,15 @@ object FcmTokenRegistrar {
                             call: Call<Void>,
                             response: Response<Void>
                         ) {
+                            val endpoint = call.request().url.toString()
                             if (!response.isSuccessful) {
+                                val errorBody = response.errorBody()?.string()
                                 Log.e(
                                     TAG,
-                                    "No se pudo registrar el token FCM: HTTP ${response.code()}"
+                                    "No se pudo registrar el token FCM: HTTP ${response.code()}, URL=$endpoint, respuesta=$errorBody"
                                 )
+                            } else {
+                                Log.i(TAG, "Token FCM registrado en la API: HTTP ${response.code()}, URL=$endpoint.")
                             }
                         }
 
@@ -39,7 +47,11 @@ object FcmTokenRegistrar {
                             call: Call<Void>,
                             t: Throwable
                         ) {
-                            Log.e(TAG, "Error al registrar el token FCM", t)
+                            Log.e(
+                                TAG,
+                                "Error al registrar el token FCM en ${call.request().url}",
+                                t
+                            )
                         }
                     })
             }

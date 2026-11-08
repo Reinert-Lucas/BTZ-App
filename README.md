@@ -81,3 +81,14 @@ gestión con panel web y aplicación móvil.
 
 Crear Admin
 * php artisan usuarios:crear-admin dni "Nombre Apellido" nro
+
+Pruebas de notificaciones en Android
+
+-   Desde la carpeta `server`, ejecutar `composer dev` (en Windows también
+    puedes ejecutar `dev.bat`). Se abren ventanas separadas para el servidor
+    Laravel, accesible desde la red local, y el worker de notificaciones.
+-   La app Android debe usar la IP local de la computadora en su `BASE_URL`
+    (por ejemplo, `http://192.168.0.7:8000/api/`), y el teléfono y la
+    computadora deben estar conectados a la misma red.
+-   En Android 13 o posterior, aceptar el permiso de notificaciones. Cierra
+    las ventanas del servidor y de la cola para detener los procesos.

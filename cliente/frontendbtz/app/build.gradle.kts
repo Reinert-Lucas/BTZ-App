@@ -23,7 +23,7 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "BASE_URL", "\"http://192.168.100.5:8000/api/\"")
+            buildConfigField("String", "BASE_URL", "\"http://192.168.0.7:8000/api/\"")
         }
         release {
             buildConfigField("String", "BASE_URL", "\"https://TU-DOMINIO/api/\"")
