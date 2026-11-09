@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ListadoRequest;
 use App\Http\Requests\MaterialRequest;
 use App\Http\Resources\MaterialResource;
 use App\Models\Material;
@@ -11,7 +12,7 @@ use Illuminate\Http\Request;
 class WebMaterialController extends Controller
 {
     public function __construct(private readonly MaterialService $service) {}
-    public function index(Request $request)
+    public function index(ListadoRequest $request)
     {
         $materiales = $this->service->index($request);
         $columns = [

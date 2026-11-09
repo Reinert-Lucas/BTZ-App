@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AvisoRequest;
+use App\Http\Requests\ListadoRequest;
 use App\Http\Resources\AvisoResource;
 use App\Http\Resources\TrabajoResource;
 use App\Models\Aviso;
@@ -15,7 +16,7 @@ use Illuminate\Http\Request;
 class WebAvisoController extends Controller
 {
     public function __construct(private readonly AvisoService $service) {}
-    public function index(Request $request)
+    public function index(ListadoRequest $request)
     {
         $avisos = $this->service->index($request);
         $columns = [

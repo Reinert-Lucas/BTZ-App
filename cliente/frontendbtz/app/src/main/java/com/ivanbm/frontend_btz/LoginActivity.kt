@@ -26,12 +26,6 @@ import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
 
-    private val notificationPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) {
-        FcmTokenRegistrar.registrar(applicationContext)
-    }
-
     private lateinit var etUsuario: EditText
     private lateinit var etPassword: EditText
     private lateinit var btnIngresar: Button
@@ -140,7 +134,7 @@ class LoginActivity : AppCompatActivity() {
 
                         if (usuarioLogueado?.rol.equals("operario", ignoreCase = true)) {
                             try {
-                                registrarNotificaciones()
+                                FcmTokenRegistrar.registrar(applicationContext)
                             } catch (e: Exception) {
                                 android.util.Log.e(
                                     "LoginActivity",
@@ -188,19 +182,6 @@ class LoginActivity : AppCompatActivity() {
                 println("ERROR DE CONEXIÓN: ${t.message}")
             }
         })
-    }
-
-    private fun registrarNotificaciones() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-            ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.POST_NOTIFICATIONS
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-        } else {
-            FcmTokenRegistrar.registrar(applicationContext)
-        }
     }
 
     private fun mostrarError() {

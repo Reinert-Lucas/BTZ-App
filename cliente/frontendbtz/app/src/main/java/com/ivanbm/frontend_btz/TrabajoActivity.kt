@@ -26,6 +26,7 @@ import com.ivanbm.frontend_btz.model.Trabajo
 import com.ivanbm.frontend_btz.model.TrabajoRequest
 import com.ivanbm.frontend_btz.model.TrabajoResponse
 import com.ivanbm.frontend_btz.network.RetrofitClient
+import com.ivanbm.frontend_btz.utils.mensajeError
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -575,14 +576,9 @@ class TrabajoActivity : AppCompatActivity() {
                         finish()
 
                     } else {
-
-                        val mensajeError =
-                            response.errorBody()?.string()
-                                ?: "No se pudo finalizar el trabajo"
-
                         Toast.makeText(
                             this@TrabajoActivity,
-                            mensajeError,
+                            response.mensajeError("No se pudo finalizar el trabajo"),
                             Toast.LENGTH_LONG
                         ).show()
                     }

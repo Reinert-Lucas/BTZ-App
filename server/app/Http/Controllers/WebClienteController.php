@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ClienteRequest;
+use App\Http\Requests\ListadoRequest;
 use App\Http\Resources\ClienteResource;
 use App\Models\Cliente;
 use App\Services\ClienteService;
@@ -11,7 +12,7 @@ use Illuminate\Http\Request;
 class WebClienteController extends Controller
 {
     public function __construct(private readonly ClienteService $service) {}
-    public function index(Request $request)
+    public function index(ListadoRequest $request)
     {
         $clientes = $this->service->index($request);
         $columns = [

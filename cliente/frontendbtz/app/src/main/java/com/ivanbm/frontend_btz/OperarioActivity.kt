@@ -32,6 +32,15 @@ import com.ivanbm.frontend_btz.network.SessionManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.Manifest
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
+import com.ivanbm.frontend_btz.notifications.FcmTokenRegistrar
 
 class OperarioActivity : AppCompatActivity() {
 
@@ -56,6 +65,15 @@ class OperarioActivity : AppCompatActivity() {
 
     private var opcionNavegacionSeleccionada = "pendiente"
     private var opcionNavegacionAnteriorBuscar = "pendiente"
+
+    private val permisoNotificaciones = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { concedido ->
+        FcmTokenRegistrar.registrar(applicationContext)
+        if (!concedido) {
+            mostrarDialogoAjustesNotificaciones()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -125,6 +143,7 @@ class OperarioActivity : AppCompatActivity() {
         }
 
         cargarAvisosOperario(1)
+        verificarPermisoNotificaciones()
     }
 
     override fun onResume() {
@@ -223,7 +242,49 @@ class OperarioActivity : AppCompatActivity() {
             }
         )
     }
+    private fun verificarPermisoNotificaciones() {
+        // Android 12 o inferior: no hay permiso en tiempo de ejecución.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            FcmTokenRegistrar.registrar(applicationContext)
+            return
+        }
 
+        val concedido = ContextCompat.checkSelfPermission(
+            this, Manifest.permission.POST_NOTIFICATIONS
+        ) == PackageManager.PERMISSION_GRANTED
+
+        when {
+            concedido -> FcmTokenRegistrar.registrar(applicationContext)
+
+            // El usuario ya lo rechazó una vez: explicamos antes de volver a pedir.
+            shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) -> {
+                AlertDialog.Builder(this)
+                    .setTitle("Activar notificaciones")
+                    .setMessage("Necesitamos enviarte una notificación cuando se te asigne un nuevo aviso.")
+                    .setNegativeButton("Ahora no", null)
+                    .setPositiveButton("Activar") { _, _ ->
+                        permisoNotificaciones.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    }
+                    .show()
+            }
+
+            else -> permisoNotificaciones.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
+
+    private fun mostrarDialogoAjustesNotificaciones() {
+        AlertDialog.Builder(this)
+            .setTitle("Notificaciones desactivadas")
+            .setMessage("Sin notificaciones no sabrás cuándo se te asigna un aviso. Puedes activarlas en los ajustes de la app.")
+            .setNegativeButton("Más tarde", null)
+            .setPositiveButton("Abrir ajustes") { _, _ ->
+                startActivity(
+                    Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                        .putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+                )
+            }
+            .show()
+    }
     private fun configurarBotonesFiltro() {
 
         buttonAvisosPendientesOperario.setOnClickListener {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ListadoRequest;
 use App\Http\Requests\MaterialRequest;
 use App\Http\Resources\MaterialResource;
 use App\Models\Material;
@@ -10,10 +11,8 @@ use Illuminate\Http\Request;
 
 class MaterialController extends Controller
 {
-    public function __construct(private readonly MaterialService $service)
-    {
-    }
-    public function index(Request $request)
+    public function __construct(private readonly MaterialService $service) {}
+    public function index(ListadoRequest $request)
     {
         $materiales = $this->service->index($request);
         return MaterialResource::collection($materiales)->additional([
