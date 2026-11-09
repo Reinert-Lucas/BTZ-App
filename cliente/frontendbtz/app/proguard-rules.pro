@@ -19,3 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Gson (de)serializa los modelos por reflexión usando el nombre del campo.
+-keepattributes Signature, *Annotation*
+-keep class com.ivanbm.frontend_btz.model.** { *; }

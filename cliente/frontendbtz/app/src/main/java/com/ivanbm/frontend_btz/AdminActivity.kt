@@ -158,9 +158,12 @@ class AdminActivity : AppCompatActivity() {
                         recyclerView.layoutManager as LinearLayoutManager
 
                     val totalElementos = layoutManager.itemCount
+                    val ultimoElementoVisible = layoutManager.findLastVisibleItemPosition()
 
-                    val ultimoElementoVisible =
-                        layoutManager.findLastVisibleItemPosition()
+                    // cargarAvisos() ya se protege con cargandoAvisos / hayMasAvisos.
+                    if (ultimoElementoVisible >= totalElementos - 3) {
+                        cargarAvisos()
+                    }
                 }
             }
         )

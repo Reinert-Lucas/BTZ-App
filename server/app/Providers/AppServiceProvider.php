@@ -26,10 +26,16 @@ class AppServiceProvider extends ServiceProvider
             Route::pattern($parametro, '[0-9]+');
         }
 
-        RateLimiter::for('login', fn(Request $request) => [
-            Limit::perMinute(20)->by($request->ip()),
-            Limit::perMinute(5)->by($request->ip() . '|' . mb_strtolower((string) $request->input('dni'))),
-        ]);
+        RateLimiter::for('login', function (Request $request) {
+            // input() puede ser un array (dni[]=x): no se castea a string sin comprobar.
+            $dni = $request->input('dni');
+            $dni = is_string($dni) ? mb_strtolower($dni) : '';
+
+            return [
+                Limit::perMinute(20)->by($request->ip()),
+                Limit::perMinute(5)->by($request->ip() . '|' . $dni),
+            ];
+        });
 
         // Límite general de la API: por usuario autenticado o, si no hay, por IP.
         RateLimiter::for('api', fn(Request $request) => Limit::perMinute(60)

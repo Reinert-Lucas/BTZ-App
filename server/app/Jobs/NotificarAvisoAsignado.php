@@ -15,6 +15,7 @@ class NotificarAvisoAsignado implements ShouldQueue
     use Queueable;
 
     public int $tries = 3;
+    public int $timeout = 30;
 
     /** @var array<int, int> */
     public array $backoff = [10, 60];
@@ -56,14 +57,14 @@ class NotificarAvisoAsignado implements ShouldQueue
         ]);
 
         try {
-            $messageId = $firebase->sendToToken(
+            $resultado = $firebase->sendToToken(
                 $usuario->fcm_token,
                 '✅ Nuevo Aviso Asignado',
                 'Se te ha asignado un nuevo aviso. Toca para ver los detalles.',
                 ['aviso_id' => (string) $aviso->aviso_id]
             );
             Log::info('Notificación FCM enviada.', $contexto + [
-                'fcm_message_id' => is_string($messageId) ? $messageId : null,
+                'fcm_message_id' => $resultado['name'] ?? null,
             ]);
         } catch (NotFound) {
             // Token dado de baja en FCM: se limpia. Cualquier otra excepción se reintenta.

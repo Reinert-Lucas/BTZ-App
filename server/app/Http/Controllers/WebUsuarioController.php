@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\ListadoRequest;
 use App\Http\Resources\UsuarioResource;
 use App\Models\Usuario;
 use App\Services\UsuarioService;
@@ -11,7 +12,7 @@ use Illuminate\Http\Request;
 class WebUsuarioController extends Controller
 {
     public function __construct(private readonly UsuarioService $service) {}
-    public function index(Request $request)
+    public function index(ListadoRequest $request)
     {
         $usuarios = $this->service->index($request);
         $columns = [

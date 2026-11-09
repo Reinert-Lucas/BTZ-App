@@ -111,21 +111,20 @@ class MaterialActivity : AppCompatActivity() {
                         recyclerView.layoutManager
                                 as LinearLayoutManager
 
-                    val totalElementos =
-                        layoutManager.itemCount
-
-                    val ultimoElementoVisible =
-                        layoutManager.findLastVisibleItemPosition()
+                    val totalElementos = layoutManager.itemCount
+                    val ultimoElementoVisible = layoutManager.findLastVisibleItemPosition()
+                    
+                    // cargarAvisos() ya se protege con cargandoAvisos / hayMasAvisos.
+                    if (ultimoElementoVisible >= totalElementos - 3) {
+                        cargarMateriales()
+                    }
                 }
             }
         )
-
-        cargarMateriales()
     }
 
     override fun onResume() {
         super.onResume()
-
         recargarMateriales()
     }
 
@@ -140,101 +139,75 @@ class MaterialActivity : AppCompatActivity() {
 
     private fun cargarMateriales() {
 
-        if (cargandoMateriales || !hayMasMateriales) {
-            return
-        }
+    if (cargandoMateriales || !hayMasMateriales) {
+        return
+    }
 
-        cargandoMateriales = true
+    cargandoMateriales = true
+    progressBarCargaMateriales.visibility = ProgressBar.VISIBLE
 
-        progressBarCargaMateriales.visibility =
-            ProgressBar.VISIBLE
+    val paginaSolicitada = paginaMaterialesActual
 
-        RetrofitClient.api
-            .obtenerMateriales(paginaMaterialesActual)
-            .enqueue(
-                object : Callback<MaterialesResponse> {
+    RetrofitClient.api
+        .obtenerMateriales(paginaSolicitada)          // <-- antes: paginaMaterialesActual
+        .enqueue(
+            object : Callback<MaterialesResponse> {
 
-                    override fun onResponse(
-                        call: Call<MaterialesResponse>,
-                        response: Response<MaterialesResponse>
-                    ) {
+                override fun onResponse(
+                    call: Call<MaterialesResponse>,
+                    response: Response<MaterialesResponse>
+                ) {
+                    progressBarCargaMateriales.visibility = ProgressBar.GONE
+                    cargandoMateriales = false
 
-                        progressBarCargaMateriales.visibility =
-                            ProgressBar.GONE
-
-                        cargandoMateriales = false
-
-                        if (!response.isSuccessful) {
-
-                            Toast.makeText(
-                                this@MaterialActivity,
-                                "Error HTTP ${response.code()}",
-                                Toast.LENGTH_LONG
-                            ).show()
-
-                            return
-                        }
-
-                        val respuesta =
-                            response.body()
-
-                        if (
-                            respuesta != null &&
-                            respuesta.status
-                        ) {
-
-                            if (
-                                paginaMaterialesActual == 1
-                            ) {
-
-                                materialAdapter
-                                    .actualizarMateriales(
-                                        respuesta.data
-                                    )
-
-                            } else {
-
-                                materialAdapter
-                                    .agregarMateriales(
-                                        respuesta.data
-                                    )
-                            }
-
-                            hayMasMateriales =
-                                respuesta.meta.current_page <
-                                        respuesta.meta.last_page
-
-                            if (hayMasMateriales) {
-                                paginaMaterialesActual++
-                            }
-
-                        } else {
-
-                            Toast.makeText(
-                                this@MaterialActivity,
-                                "No se pudieron obtener los materiales",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                    }
-
-                    override fun onFailure(
-                        call: Call<MaterialesResponse>,
-                        t: Throwable
-                    ) {
-
-                        progressBarCargaMateriales.visibility =
-                            ProgressBar.GONE
-
-                        cargandoMateriales = false
-
+                    if (!response.isSuccessful) {
                         Toast.makeText(
                             this@MaterialActivity,
-                            "Error de conexión: ${t.message}",
+                            "Error HTTP ${response.code()}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        return
+                    }
+
+                    val respuesta = response.body()
+
+                    if (respuesta != null && respuesta.status) {
+
+                        if (paginaSolicitada == 1) {   // <-- antes: paginaMaterialesActual
+                            materialAdapter.actualizarMateriales(respuesta.data)
+                        } else {
+                            materialAdapter.agregarMateriales(respuesta.data)
+                        }
+
+                        hayMasMateriales =
+                            respuesta.meta.current_page < respuesta.meta.last_page
+
+                        // Se calcula desde la respuesta, no con ++ (evita desfases)
+                        paginaMaterialesActual = respuesta.meta.current_page + 1
+
+                    } else {
+                        Toast.makeText(
+                            this@MaterialActivity,
+                            "No se pudieron obtener los materiales",
                             Toast.LENGTH_LONG
                         ).show()
                     }
                 }
-            )
-    }
+
+                override fun onFailure(
+                    call: Call<MaterialesResponse>,
+                    t: Throwable
+                ) {
+                    progressBarCargaMateriales.visibility = ProgressBar.GONE
+                    cargandoMateriales = false
+
+                    Toast.makeText(
+                        this@MaterialActivity,
+                        "Error de conexión: ${t.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        )
+}
 }
