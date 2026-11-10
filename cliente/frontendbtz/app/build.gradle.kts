@@ -26,13 +26,10 @@ android {
             buildConfigField("String", "BASE_URL", "\"http://192.168.0.7:8000/api/\"")
         }
         release {
-        buildConfigField("String", "BASE_URL", "\"https://TU-DOMINIO/api/\"")
-        isMinifyEnabled = true
-        proguardFiles(
-            getDefaultProguardFile("proguard-android-optimize.txt"),
-            "proguard-rules.pro"
-        )
-    }
+            buildConfigField("String", "BASE_URL", "\"https://tu-dominio-real.com/api/\"")
+            isMinifyEnabled = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

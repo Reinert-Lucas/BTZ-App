@@ -23,3 +23,11 @@
 # Gson (de)serializa los modelos por reflexión usando el nombre del campo.
 -keepattributes Signature, *Annotation*
 -keep class com.ivanbm.frontend_btz.model.** { *; }
+
+-assumenosideeffects class android.util.Log {
+    public static int d(...);
+    public static int i(...);
+    public static int v(...);
+    public static int w(...);
+    public static int e(...);
+}

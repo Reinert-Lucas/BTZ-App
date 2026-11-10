@@ -19,6 +19,8 @@ import android.view.View
 import android.widget.ImageButton
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.ivanbm.frontend_btz.utils.mensajeError
+
 class EditarClienteActivity : AppCompatActivity() {
 
     private var clienteId: Int = -1
@@ -258,19 +260,20 @@ class EditarClienteActivity : AppCompatActivity() {
                     call: Call<Void>,
                     t: Throwable
                 ) {
-
                     android.util.Log.e(
                         "EDITAR_CLIENTE",
                         "Error al eliminar cliente",
                         t
                     )
-
-                    Toast.makeText(
-                        this@EditarClienteActivity,
-                        "Error de conexión: ${t.message}",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    mostrarCargando(false)
+                    if (!response.isSuccessful) {
+                        mostrarCargando(false)
+                        Toast.makeText(
+                            this@EditarClienteActivity,
+                            response.mensajeError("No se pudo eliminar el cliente"),
+                            Toast.LENGTH_LONG
+                        ).show()
+                        return
+                    }
                 }
             })
     }

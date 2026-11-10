@@ -151,18 +151,8 @@ class ClientesActivity : AppCompatActivity() {
                         ultimoElementoVisible >=
                                 cantidadElementos - 3
 
-                    if (
-                        cercaDelFinal &&
-                        !cargandoPagina &&
-                        paginaActual < ultimaPagina
-                    ) {
-
-                        paginaActual++
-
-                        cargarClientes(
-                            pagina = paginaActual,
-                            reemplazarLista = false
-                        )
+                    if (cercaDelFinal && !cargandoPagina && paginaActual < ultimaPagina) {
+                        cargarClientes(pagina = paginaActual + 1, reemplazarLista = false)
                     }
                 }
             }
@@ -211,8 +201,8 @@ class ClientesActivity : AppCompatActivity() {
                         respuesta.status
                     ) {
 
-                        ultimaPagina =
-                            respuesta.meta.last_page
+                        ultimaPagina = respuesta.meta.last_page
+                        paginaActual = respuesta.meta.current_page   // solo avanza si la petición tuvo éxito
 
                         if (reemplazarLista) {
 

@@ -18,6 +18,8 @@ import androidx.appcompat.app.AlertDialog
 import android.widget.ImageButton
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.ivanbm.frontend_btz.utils.mensajeError
+
 class EditarMaterialActivity : AppCompatActivity() {
 
     private lateinit var editTextNombreMaterial: EditText
@@ -293,11 +295,15 @@ class EditarMaterialActivity : AppCompatActivity() {
                         buttonGuardarMaterial.isEnabled =
                             true
 
-                        Toast.makeText(
-                            this@EditarMaterialActivity,
-                            "Error de conexión: ${t.message}",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        if (!response.isSuccessful) {
+                    mostrarCargando(false)
+                    Toast.makeText(
+                        this@EditarMaterialActivity,
+                        response.mensajeError("No se pudo actualizar el material"),
+                        Toast.LENGTH_LONG
+                    ).show()
+                    return
+                }
                     }
                 }
             )
@@ -376,11 +382,15 @@ class EditarMaterialActivity : AppCompatActivity() {
                         buttonEliminarMaterial.isEnabled =
                             true
 
-                        Toast.makeText(
-                            this@EditarMaterialActivity,
-                            "Error de conexión: ${t.message}",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        if (!response.isSuccessful) {
+                            mostrarCargando(false)
+                            Toast.makeText(
+                                this@EditarMaterialActivity,
+                                response.mensajeError("No se pudo eliminar el material"),
+                                Toast.LENGTH_LONG
+                            ).show()
+                            return
+                        }
                     }
                 }
             )

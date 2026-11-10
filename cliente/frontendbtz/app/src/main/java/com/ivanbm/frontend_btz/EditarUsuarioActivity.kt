@@ -25,6 +25,8 @@ import androidx.core.view.updatePadding
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.ivanbm.frontend_btz.utils.mensajeError
+
 class EditarUsuarioActivity : AppCompatActivity() {
 
     private var usuarioId: Int = -1
@@ -422,11 +424,15 @@ class EditarUsuarioActivity : AppCompatActivity() {
                     t
                 )
 
-                Toast.makeText(
-                    this@EditarUsuarioActivity,
-                    "Error de conexión: ${t.message}",
-                    Toast.LENGTH_LONG
-                ).show()
+                if (!response.isSuccessful) {
+                    mostrarCargando(false)
+                    Toast.makeText(
+                        this@EditarUsuarioActivity,
+                        response.mensajeError("No se pudo actualizar el usuario"),
+                        Toast.LENGTH_LONG
+                    ).show()
+                    return
+                }
             }
         })
     }
@@ -473,7 +479,7 @@ class EditarUsuarioActivity : AppCompatActivity() {
                         } else {
                             Toast.makeText(
                                 this@EditarUsuarioActivity,
-                                "No se pudo actualizar el usuario (HTTP ${response.code()})",
+                                "No se pudo eliminar el usuario (HTTP ${response.code()})",
                                 Toast.LENGTH_LONG
                             ).show()
                         }
@@ -503,11 +509,15 @@ class EditarUsuarioActivity : AppCompatActivity() {
                         t
                     )
 
-                    Toast.makeText(
-                        this@EditarUsuarioActivity,
-                        "Error de conexión: ${t.message}",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    if (!response.isSuccessful) {
+                        mostrarCargando(false)
+                        Toast.makeText(
+                            this@EditarUsuarioActivity,
+                            response.mensajeError("No se pudo eliminar el usuario"),
+                            Toast.LENGTH_LONG
+                        ).show()
+                        return
+                    }
                 }
             })
     }

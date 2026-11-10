@@ -39,6 +39,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.graphics.Color
 import android.widget.AdapterView
+import com.ivanbm.frontend_btz.utils.mensajeError
+
 class EditarAvisoActivity : AppCompatActivity() {
     private lateinit var editTextFechaEditarAviso: EditText
     private lateinit var editTextHoraEditarAviso: EditText
@@ -1444,11 +1446,15 @@ class EditarAvisoActivity : AppCompatActivity() {
                             t
                         )
 
-                        Toast.makeText(
-                            this@EditarAvisoActivity,
-                            "Error de conexión",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        if (!response.isSuccessful) {
+                            mostrarCargando(false)
+                            Toast.makeText(
+                                this@EditarAvisoActivity,
+                                response.mensajeError("No se pudo actualizar el aviso"),
+                                Toast.LENGTH_LONG
+                            ).show()
+                            return
+                        }
                     }
                 }
             )
@@ -1528,11 +1534,15 @@ class EditarAvisoActivity : AppCompatActivity() {
                             t
                         )
 
-                        Toast.makeText(
-                            this@EditarAvisoActivity,
-                            "Error de conexión",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        if (!response.isSuccessful) {
+                            mostrarCargando(false)
+                            Toast.makeText(
+                                this@EditarAvisoActivity,
+                                response.mensajeError("No se pudo eliminar el aviso"),
+                                Toast.LENGTH_LONG
+                            ).show()
+                            return
+                        }
                     }
                 }
             )
