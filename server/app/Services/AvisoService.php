@@ -169,7 +169,6 @@ class AvisoService
                 409,
                 'No se puede reabrir un aviso que ya tiene un trabajo cargado.'
             );
-            // El operario del aviso es quien hizo el trabajo: no se reasigna el historial.
             abort_if(
                 $tieneTrabajo
                     && isset($newAviso['usuario_id'])
@@ -177,6 +176,25 @@ class AvisoService
                 409,
                 'No se puede cambiar el operario de un aviso con trabajo cargado.'
             );
+
+            /* Un aviso pendiente necesita operario y cliente activos (evita avisos huérfanos
+            al reactivar un aviso cancelado cuyo operario/cliente fue eliminado). */
+            if ($nuevoEstado === 'pendiente') {
+                abort_if(
+                    Usuario::onlyTrashed()
+                        ->whereKey($newAviso['usuario_id'] ?? $actual->usuario_id)
+                        ->exists(),
+                    409,
+                    'El operario asignado está eliminado. Asigna un operario activo.'
+                );
+                abort_if(
+                    Cliente::onlyTrashed()
+                        ->whereKey($newAviso['cliente_id'] ?? $actual->cliente_id)
+                        ->exists(),
+                    409,
+                    'El cliente del aviso está eliminado. Restáuralo o elige otro.'
+                );
+            }
 
             $actual->update($newAviso);
 
