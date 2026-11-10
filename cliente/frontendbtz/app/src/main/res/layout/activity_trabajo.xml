@@ -324,6 +324,7 @@
                     android:layout_marginBottom="16dp" />
 
                 <TextView
+                    android:id="@+id/textViewEtiquetaMaterialTrabajo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Material"
@@ -348,6 +349,7 @@
                     android:textSize="14sp" />
 
                 <TextView
+                    android:id="@+id/textViewEtiquetaCantidadMaterialTrabajo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -393,6 +395,7 @@
                     android:background="#ECEAF3" />
 
                 <TextView
+                    android:id="@+id/textViewListaMaterialesTrabajo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Lista de materiales"
@@ -405,7 +408,13 @@
                     android:id="@+id/recyclerViewMaterialesTrabajo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="false" />
+                    android:nestedScrollingEnabled="false"
+                    android:clipToPadding="false"
+                    android:clipChildren="false"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="16dp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/buttonFinalizarTrabajo"
