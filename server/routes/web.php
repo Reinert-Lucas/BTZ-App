@@ -6,7 +6,6 @@ use App\Http\Controllers\WebAvisoController;
 use App\Http\Controllers\WebClienteController;
 use App\Http\Controllers\WebMaterialController;
 use App\Http\Controllers\WebUsuarioController;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,11 +18,9 @@ WEB ROUTES
 */
 // Routes [Direccion] <=> Controller [Filtros] <=> Service [Logica de Negocio] <=> DB [Persistencia]
 
-Route::get('/', fn() => Auth::check()
-    ? redirect()->route('admin.dashboard')
-    : view('index'))->name('login');
+Route::get('/', [WebAuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [WebAuthController::class, 'login'])->middleware('throttle:login')->name('admin.login');
-Route::get('/noaccess', fn() => view('noaccess'))->name('admin.noaccess');
+Route::view('/noaccess', 'noaccess')->name('admin.noaccess');
 Route::middleware(['auth'])->post('/logout', [WebAuthController::class, 'logout'])->name('admin.logout');
 
 Route::middleware(['auth', 'auth.session', 'isAdmin'])->prefix('admin')->name('admin.')->group(function () {

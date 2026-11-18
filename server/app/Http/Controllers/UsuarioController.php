@@ -57,7 +57,7 @@ class UsuarioController extends Controller
     }
     public function saveFcmToken(Request $request)
     {
-        Log::warning('Solicitud de registro FCM recibida por la API.', [
+        Log::info('Solicitud de registro FCM recibida por la API.', [
             'usuario_id' => $request->user()?->usuario_id,
         ]);
 

@@ -22,18 +22,18 @@ android {
     }
 
     buildTypes {
-        debug {
-            buildConfigField("String", "BASE_URL", "\"http://192.168.0.7:8000/api/\"")
-        }
-        release {
-        buildConfigField("String", "BASE_URL", "\"https://TU-DOMINIO/api/\"")
+    debug {
+        buildConfigField("String", "BASE_URL", "\"http://192.168.0.7:8000/api/\"")
+    }
+    release {
+        buildConfigField("String", "BASE_URL", "\"https://btz.tudominio.com/api/\"")
         isMinifyEnabled = true
         proguardFiles(
             getDefaultProguardFile("proguard-android-optimize.txt"),
             "proguard-rules.pro"
         )
     }
-    }
+    }   
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11

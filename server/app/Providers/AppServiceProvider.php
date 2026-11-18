@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -20,6 +21,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrapFour();
+
+        // Con HTTPS configurado en APP_URL, todas las URLs generadas salen en https.
+        if (str_starts_with((string) config('app.url'), 'https://')) {
+            URL::forceScheme('https');
+        }
 
         // IDs no numéricos => 404 limpio (en vez de TypeError/500).
         foreach (['usuario', 'cliente', 'material', 'aviso', 'usuario_id'] as $parametro) {

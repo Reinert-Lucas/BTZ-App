@@ -8,10 +8,8 @@
 
     <p class="text-center">
         No tienes permisos para acceder a esta página. <br />
-        Puedes descargar la App para tu movil haciendo click <a href="#">aquí</a>. <br />
-
-        Si el enlace anterior no funciona utiliza este:
-        https://descarga.com
+        Puedes descargar la App para tu movil haciendo click <a
+            href="https://drive.google.com/file/d/1WtEN9wIx71jh53-zsv9owVm_hpqNJRbP/view?usp=sharing">aquí</a>. <br />
     </p>
     <form action="{{ route('admin.logout') }}" method="POST" class="text-center">
         @csrf
