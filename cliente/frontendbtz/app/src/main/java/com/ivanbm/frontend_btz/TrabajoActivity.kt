@@ -519,16 +519,6 @@ class TrabajoActivity : AppCompatActivity() {
             val materialesSeleccionados =
                 materialTrabajoAdapter.obtenerMateriales()
 
-            if (materialesSeleccionados.isEmpty()) {
-                Toast.makeText(
-                    this,
-                    "Agregá al menos un material",
-                    Toast.LENGTH_SHORT
-                ).show()
-
-                return@setOnClickListener
-            }
-
             val materialesRequest =
                 materialesSeleccionados.map {
                     MaterialTrabajo(

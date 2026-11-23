@@ -41,7 +41,7 @@ class TrabajoController extends Controller
                 'aviso_id' => $aviso->aviso_id,
             ]);
             $trabajo->materiales()->attach(
-                collect($datos['materiales'])
+                collect($datos['materiales'] ?? [])
                     ->mapWithKeys(fn($m) => [$m['material_id'] => ['cantidad' => $m['cantidad']]])
                     ->all()
             );

@@ -109,13 +109,6 @@ class CrearClienteActivity : AppCompatActivity() {
             return
         }
 
-        if (email.isEmpty()) {
-
-            editTextEmailCliente.error = "Ingrese el email"
-            editTextEmailCliente.requestFocus()
-            return
-        }
-
         if (estaAsegurado && detalleAsegurado.isEmpty()) {
 
             editTextDetalleAseguradoCliente.error =
@@ -127,7 +120,7 @@ class CrearClienteActivity : AppCompatActivity() {
 
         val request = ClienteRequest(
             nombre = nombre,
-            email = email,
+            email = email.ifBlank { null },
             asegurado = estaAsegurado,
             asegurado_detalle =
                 if (estaAsegurado) detalleAsegurado else null

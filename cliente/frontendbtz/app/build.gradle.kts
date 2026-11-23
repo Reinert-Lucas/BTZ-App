@@ -70,4 +70,7 @@ dependencies {
 
     // Firebase Cloud Messaging para notificaciones push
     implementation("com.google.firebase:firebase-messaging:24.1.2")
+
+    // Almacenamiento cifrado para token de sesión
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
 }

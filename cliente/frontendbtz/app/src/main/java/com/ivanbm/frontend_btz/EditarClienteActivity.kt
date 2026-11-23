@@ -126,14 +126,9 @@ class EditarClienteActivity : AppCompatActivity() {
             return
         }
 
-        if (email.isEmpty()) {
-            editTextEmailCliente.error = "Ingrese el email"
-            return
-        }
-
         val clienteRequest = ClienteRequest(
             nombre = nombre,
-            email = email,
+            email = email.ifBlank { null },
             asegurado = asegurado,
             asegurado_detalle = if (asegurado) detalle else null
         )
@@ -320,7 +315,7 @@ class EditarClienteActivity : AppCompatActivity() {
 
                         editTextNombreCliente.setText(cliente.nombre)
 
-                        editTextEmailCliente.setText(cliente.email)
+                        editTextEmailCliente.setText(cliente.email ?: "")
 
                         switchAseguradoCliente.isChecked =
                             cliente.asegurado

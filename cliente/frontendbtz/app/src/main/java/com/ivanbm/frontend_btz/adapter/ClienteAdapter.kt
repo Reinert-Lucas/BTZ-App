@@ -46,7 +46,7 @@ class ClienteAdapter(
         val cliente = clientes[position]
         holder.textViewNumeroCliente.text = "N°${cliente.id}"
         holder.textViewNombreCliente.text = cliente.nombre
-        holder.textViewEmailCliente.text = cliente.email
+        holder.textViewEmailCliente.text = cliente.email.orEmpty()
 
         if (cliente.asegurado) {
             holder.textViewAseguradoCliente.text = "Asegurado"

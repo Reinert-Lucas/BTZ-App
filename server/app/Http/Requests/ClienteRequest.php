@@ -19,8 +19,10 @@ class ClienteRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $asegurado = $this->boolean('asegurado');
+        $email = $this->input('email');
 
         $this->merge([
+            'email' => is_string($email) && trim($email) !== '' ? trim($email) : null,
             'asegurado' => $asegurado,
             'asegurado_detalle' => $asegurado ? $this->input('asegurado_detalle') : null,
         ]);
@@ -35,7 +37,7 @@ class ClienteRequest extends FormRequest
     {
         return [
             'nombre' => ['required', 'string', 'max:50'],
-            'email' => ['required', 'email', 'max:50'],
+            'email' => ['nullable', 'email', 'max:50'],
             'asegurado' => ['boolean'],
             'asegurado_detalle' => [
                 Rule::requiredIf(fn() => $this->boolean('asegurado')),

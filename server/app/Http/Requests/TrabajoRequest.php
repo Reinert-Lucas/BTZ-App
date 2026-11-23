@@ -36,7 +36,7 @@ class TrabajoRequest extends FormRequest
                 Rule::exists('avisos', 'aviso_id')->whereNull('deleted_at'),
                 Rule::unique('trabajos', 'aviso_id'),
             ],
-            'materiales' => ['required', 'array', 'min:1'],
+            'materiales' => ['nullable', 'array'],
             'materiales.*.material_id' => [
                 'required',
                 'integer',
