@@ -26,7 +26,7 @@ android {
         buildConfigField("String", "BASE_URL", "\"http://192.168.0.7:8000/api/\"")
     }
     release {
-        buildConfigField("String", "BASE_URL", "\"https://btz.tudominio.com/api/\"")
+        buildConfigField("String", "BASE_URL", "\"http://192.168.0.7:8000/api/\"")
         isMinifyEnabled = true
         proguardFiles(
             getDefaultProguardFile("proguard-android-optimize.txt"),
