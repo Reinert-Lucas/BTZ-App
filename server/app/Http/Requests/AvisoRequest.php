@@ -28,7 +28,7 @@ class AvisoRequest extends FormRequest
             'fecha' => ['required', 'date_format:Y-m-d'],
             'hora' => ['required', 'date_format:H:i,H:i:s'],
             'direccion' => ['required', 'string', 'max:255'],
-            'telefono' => ['required', 'string', 'max:50'],
+            'telefono' => ['required', 'string', 'max:255'],
             'mensaje' => ['nullable', 'string', 'max:2000'],
             'observacion' => ['nullable', 'string', 'max:2000'],
             // Estado obligatorio solo al actualizar.

@@ -14,7 +14,7 @@ return new class extends Migration
 
         Schema::table('avisos', function (Blueprint $table) {
             $table->string('direccion', 255)->change();
-            $table->string('telefono', 50)->change();
+            $table->string('telefono', 255)->change();
         });
     }
 
