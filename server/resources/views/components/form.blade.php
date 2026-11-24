@@ -26,12 +26,12 @@
                         @switch($input['type'])
                             @case('select')
                                 @php
-                                    $actual = old($input['field'], $isUpdate ? ${$parameter}?->{$input['field']} : '');
+                                    $actual = old($input['field'], $isUpdate ? ${$parameter}?->{$input['field']} : ($input['default'] ?? ''));
                                 @endphp
                                 <select class="form-select" id="{{ $input['field'] }}" name="{{ $input['field'] }}" required>
                                     <option value="" disabled @selected($actual === '' || $actual === null)>Seleccionar...</option>
                                     @foreach ($input['options'] as $value => $text)
-                                        <option value="{{ $value }}" @selected($actual !== '' && $actual !== null && $actual == $value)>
+                                        <option value="{{ $value }}" @selected((string) $actual !== '' && $actual !== null && (string) $actual === (string) $value)>
                                             {{ $text }}
                                         </option>
                                     @endforeach
@@ -39,7 +39,7 @@
                             @break
 
                             @case('textarea')
-                                <textarea class="form-control" id="{{ $input['field'] }}" name="{{ $input['field'] }}" rows="4"
+                                <textarea class="form-control" id="{{ $input['field'] }}" name="{{ $input['field'] }}" rows="{{ $input['rows'] ?? 4 }}"
                                     placeholder="{{ $input['label'] }}">{{ old($input['field'], $isUpdate ? ${$parameter}?->{$input['field']} : '') }}</textarea>
                             @break
 
@@ -51,7 +51,8 @@
                                 @endif
                                 <input class="form-control" type="{{ $input['type'] }}" id="{{ $input['field'] }}"
                                     name="{{ $input['field'] }}" placeholder="{{ $input['label'] }}"
-                                    value="{{ old($input['field'], $isUpdate ? ${$parameter}?->{$input['field']} : '') }}">
+                                    value="{{ old($input['field'], $isUpdate ? ${$parameter}?->{$input['field']} : '') }}"
+                                    @if(isset($input['maxlength'])) maxlength="{{ $input['maxlength'] }}" @endif>
                         @endswitch
                         @error($input['field'])
                             <div class="text-danger small mt-1">

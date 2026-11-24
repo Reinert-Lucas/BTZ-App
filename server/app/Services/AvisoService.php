@@ -31,14 +31,15 @@ class AvisoService
         $inputs = [
             ['label' => 'Fecha', 'field' => 'fecha', 'type' => 'date'],
             ['label' => 'Hora', 'field' => 'hora', 'type' => 'time'],
-            ['label' => 'Direccion', 'field' => 'direccion', 'type' => 'text'],
-            ['label' => 'Telefono', 'field' => 'telefono', 'type' => 'tel'],
-            ['label' => 'Mensaje', 'field' => 'mensaje', 'type' => 'textarea'],
-            ['label' => 'Observacion', 'field' => 'observacion', 'type' => 'textarea'],
+            ['label' => 'Direccion', 'field' => 'direccion', 'type' => 'text', 'maxlength' => 255],
+            ['label' => 'Telefono', 'field' => 'telefono', 'type' => 'tel', 'maxlength' => 255],
+            ['label' => 'Mensaje', 'field' => 'mensaje', 'type' => 'textarea', 'rows' => 6],
+            ['label' => 'Observacion', 'field' => 'observacion', 'type' => 'textarea', 'rows' => 4],
             [
                 'label' => 'Urgencia',
                 'field' => 'urgencia',
                 'type' => 'select',
+                'default' => 'urgente',
                 'options' => [
                     'urgente' => 'Urgente',
                     'media' => 'Media',

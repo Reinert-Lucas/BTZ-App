@@ -190,7 +190,7 @@ class CrearAvisoActivity : AppCompatActivity() {
             findViewById(R.id.editTextObservacionAviso)
 
         editTextMensajeAviso.filters = arrayOf(
-            android.text.InputFilter.LengthFilter(255)
+            android.text.InputFilter.LengthFilter(2000)
         )
 
         editTextObservacionAviso.filters = arrayOf(

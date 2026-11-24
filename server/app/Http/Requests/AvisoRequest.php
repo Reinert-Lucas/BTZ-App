@@ -27,9 +27,9 @@ class AvisoRequest extends FormRequest
             // Formato estricto: 'date' aceptaba textos como "tomorrow" y MySQL fallaba con un 500.
             'fecha' => ['required', 'date_format:Y-m-d'],
             'hora' => ['required', 'date_format:H:i,H:i:s'],
-            'direccion' => ['required', 'string', 'max:100'],
-            'telefono' => ['required', 'string', 'max:20'],
-            'mensaje' => ['nullable', 'string', 'max:255'],
+            'direccion' => ['required', 'string', 'max:255'],
+            'telefono' => ['required', 'string', 'max:255'],
+            'mensaje' => ['nullable', 'string', 'max:2000'],
             'observacion' => ['nullable', 'string', 'max:255'],
             // Estado obligatorio solo al actualizar.
             'estado' => [
