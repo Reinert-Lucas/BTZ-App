@@ -194,7 +194,7 @@ class CrearAvisoActivity : AppCompatActivity() {
         )
 
         editTextObservacionAviso.filters = arrayOf(
-            android.text.InputFilter.LengthFilter(255)
+            android.text.InputFilter.LengthFilter(2000)
         )
 
         spinnerUrgenciaAviso =

@@ -32,9 +32,9 @@ class AvisoService
             ['label' => 'Fecha', 'field' => 'fecha', 'type' => 'date'],
             ['label' => 'Hora', 'field' => 'hora', 'type' => 'time'],
             ['label' => 'Direccion', 'field' => 'direccion', 'type' => 'text', 'maxlength' => 255],
-            ['label' => 'Telefono', 'field' => 'telefono', 'type' => 'tel', 'maxlength' => 255],
-            ['label' => 'Mensaje', 'field' => 'mensaje', 'type' => 'textarea', 'rows' => 6],
-            ['label' => 'Observacion', 'field' => 'observacion', 'type' => 'textarea', 'rows' => 4],
+            ['label' => 'Telefono', 'field' => 'telefono', 'type' => 'textarea', 'rows' => 1, 'maxlength' => 50, 'auto_grow' => true],
+            ['label' => 'Mensaje', 'field' => 'mensaje', 'type' => 'textarea', 'rows' => 4, 'maxlength' => 2000, 'auto_grow' => true],
+            ['label' => 'Observacion', 'field' => 'observacion', 'type' => 'textarea', 'rows' => 4, 'maxlength' => 2000, 'auto_grow' => true],
             [
                 'label' => 'Urgencia',
                 'field' => 'urgencia',

@@ -183,7 +183,7 @@
                     android:background="@drawable/bg_campo_formulario"
                     android:gravity="center_vertical|start"
                     android:hint="Ingresar teléfono"
-                    android:inputType="phone|textMultiLine"
+                    android:inputType="text|textMultiLine"
                     android:minLines="1"
                     android:paddingStart="12dp"
                     android:paddingTop="12dp"

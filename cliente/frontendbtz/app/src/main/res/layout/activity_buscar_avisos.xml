@@ -334,7 +334,7 @@
                     android:background="@drawable/bg_campo_formulario"
                     android:gravity="center_vertical|start"
                     android:hint="Teléfono"
-                    android:inputType="phone|textMultiLine"
+                    android:inputType="text|textMultiLine"
                     android:minHeight="50dp"
                     android:minLines="1"
                     android:paddingStart="12dp"

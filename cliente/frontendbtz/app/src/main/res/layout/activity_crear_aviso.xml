@@ -199,7 +199,7 @@
                     android:background="@drawable/bg_campo_formulario"
                     android:gravity="center_vertical|start"
                     android:hint="Número de teléfono"
-                    android:inputType="phone|textMultiLine"
+                    android:inputType="text|textMultiLine"
                     android:minLines="1"
                     android:paddingStart="14dp"
                     android:paddingTop="14dp"

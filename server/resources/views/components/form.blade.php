@@ -39,8 +39,10 @@
                             @break
 
                             @case('textarea')
-                                <textarea class="form-control" id="{{ $input['field'] }}" name="{{ $input['field'] }}" rows="{{ $input['rows'] ?? 4 }}"
-                                    placeholder="{{ $input['label'] }}">{{ old($input['field'], $isUpdate ? ${$parameter}?->{$input['field']} : '') }}</textarea>
+                                <textarea class="form-control {{ !empty($input['auto_grow']) ? 'js-auto-grow' : '' }}" id="{{ $input['field'] }}" name="{{ $input['field'] }}" rows="{{ $input['rows'] ?? 4 }}"
+                                    placeholder="{{ $input['label'] }}"
+                                    @if(!empty($input['maxlength'])) maxlength="{{ $input['maxlength'] }}" @endif
+                                    @if(!empty($input['auto_grow'])) style="overflow:hidden; resize:none;" @endif>{{ old($input['field'], $isUpdate ? ${$parameter}?->{$input['field']} : '') }}</textarea>
                             @break
 
                             @default
@@ -70,3 +72,30 @@
         </div>
     </form>
 </div>
+
+@once
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function autoGrow(field) {
+                field.style.height = 'auto';
+                field.style.height = field.scrollHeight + 'px';
+            }
+
+            function initAutoGrowFields(root) {
+                (root || document).querySelectorAll('.js-auto-grow').forEach(function (field) {
+                    if (field.dataset.autoGrowBound === '1') {
+                        autoGrow(field);
+                        return;
+                    }
+                    field.dataset.autoGrowBound = '1';
+                    field.addEventListener('input', function () {
+                        autoGrow(field);
+                    });
+                    autoGrow(field);
+                });
+            }
+
+            initAutoGrowFields(document);
+        });
+    </script>
+@endonce
