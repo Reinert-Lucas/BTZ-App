@@ -27,7 +27,7 @@
         <p>Introduce tus credenciales para ingresar al sitio</p>
         <input name="dni" id="dni" type="text" inputmode="numeric" pattern="\d*" max="8"
             class="@error('dni') is-invalid @enderror form-control" placeholder="DNI (Sin puntos)">
-        <input type="password" name="password" id="password" class="@error('dni') is-invalid @enderror form-control"
+        <input type="text" name="password" id="password" class="@error('dni') is-invalid @enderror form-control"
             placeholder="Contraseña">
         <input type="submit" value="Ingresar" class="btn btn-login">
         @error('dni')

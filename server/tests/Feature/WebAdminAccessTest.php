@@ -28,11 +28,16 @@ test('the user edit form preloads the stored password', function () {
     $this->actingAs($admin)
         ->get(route('admin.usuarios.edit', $usuario->usuario_id))
         ->assertOk()
+        ->assertSee('type="text" id="password"', false)
         ->assertSee('name="password"', false)
         ->assertSee('value="password123"', false);
 });
 
 test('an administrator can log in through the web form', function () {
+    $this->get(route('login'))
+        ->assertOk()
+        ->assertSee('type="text" name="password"', false);
+
     Usuario::factory()->create([
         'rol' => 'admin',
         'dni' => '12345678',

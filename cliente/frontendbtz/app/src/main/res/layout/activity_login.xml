@@ -58,7 +58,7 @@
         android:paddingHorizontal="16dp"
         android:textColor="#000000"
         android:textColorHint="#999999"
-        android:inputType="textPassword"
+        android:inputType="text"
         android:cursorVisible="true"
         android:layout_marginBottom="24dp" />
 

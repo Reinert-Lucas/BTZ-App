@@ -188,7 +188,7 @@
                         android:layout_height="52dp"
                         android:background="@drawable/bg_campo_formulario"
                         android:hint="Mínimo 8 caracteres"
-                        android:inputType="textPassword"
+                        android:inputType="text"
                         android:paddingStart="14dp"
                         android:paddingEnd="14dp"
                         android:singleLine="true"
