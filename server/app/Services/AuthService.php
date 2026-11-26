@@ -5,10 +5,7 @@ namespace App\Services;
 use App\Models\Usuario;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthService
@@ -16,11 +13,7 @@ class AuthService
     public function login(array $credentials): array
     {
         $usuario = Usuario::where('dni', $credentials['dni'])->first();
-        // Siempre se ejecuta UN solo Hash::check (exista o no el DNI): el tiempo de
-        // respuesta no revela si el DNI existe. 
-        $hash = $usuario?->password ?? $this->hashSenuelo();
-        $passwordValida = Hash::check($credentials['password'], $hash);
-        if (!$usuario || !$passwordValida) {
+        if (!$usuario || $usuario->password !== $credentials['password']) {
             throw new AuthenticationException('Credenciales incorrectas');
         }
         return DB::transaction(function () use ($usuario) {
@@ -45,13 +38,5 @@ class AuthService
         if ($token instanceof PersonalAccessToken) {
             $token->delete();
         }
-    }
-    /** Hash con el mismo costo configurado que los hashes reales (bcrypt rounds). */
-    private function hashSenuelo(): string
-    {
-        return Cache::rememberForever(
-            'auth.hash_senuelo',
-            fn() => Hash::make(Str::random(32))
-        );
     }
 }

@@ -5,7 +5,6 @@ use App\Models\Cliente;
 use App\Models\Material;
 use App\Models\Usuario;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\Sanctum;
 
 uses(RefreshDatabase::class);
@@ -35,7 +34,7 @@ test('an administrator can create update and soft delete a user', function () {
 
     $response->assertCreated()->assertJsonPath('data.nombre', 'Nuevo operario');
     $usuarioId = $response->json('data.id');
-    $this->assertTrue(Hash::check('password123', Usuario::findOrFail($usuarioId)->password));
+    $this->assertSame('password123', Usuario::findOrFail($usuarioId)->password);
 
     $this->putJson('/api/usuarios/' . $usuarioId, [
         'nombre' => 'Operario actualizado',

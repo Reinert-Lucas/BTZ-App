@@ -19,12 +19,6 @@ class Usuario extends Authenticatable
     protected $fillable = ['nombre', 'password', 'dni', 'telefono', 'rol'];
     protected $hidden = ['password', 'fcm_token'];
 
-    // Única fuente de hasheo: el cast 'hashed' (no vuelve a hashear un valor ya hasheado).
-    protected function casts(): array
-    {
-        return ['password' => 'hashed'];
-    }
-
     public function aviso(): HasMany
     {
         return $this->hasMany(Aviso::class, 'usuario_id');

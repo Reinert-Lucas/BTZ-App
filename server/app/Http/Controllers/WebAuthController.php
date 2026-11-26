@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Usuario;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Resources\UsuarioResource;
 use App\Services\AuthService;
@@ -26,13 +27,18 @@ class WebAuthController extends Controller
 
     public function login(LoginUserRequest $request)
     {
-        if (!Auth::attempt($request->validated())) {
+        $credentials = $request->validated();
+        $usuario = Usuario::where('dni', $credentials['dni'])->first();
+
+        if (!$usuario || $usuario->password !== $credentials['password']) {
             return back()
                 ->withErrors([
                     'dni' => 'Credenciales incorrectas.',
                 ])
                 ->onlyInput('dni');
         }
+
+        Auth::login($usuario);
         $request->session()->regenerate();
         return redirect()->route('admin.dashboard');
     }

@@ -6,7 +6,6 @@ use App\Models\Usuario;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Password;
 
 class CrearAdmin extends Command
 {
@@ -20,12 +19,12 @@ class CrearAdmin extends Command
             'dni' => $this->argument('dni'),
             'nombre' => $this->argument('nombre'),
             'telefono' => $this->argument('telefono'),
-            'password' => $this->secret('Contraseña (mínimo 8 caracteres)'),
+            'password' => $this->secret('Contraseña'),
         ], [
             'dni' => ['required', 'digits_between:7,8', Rule::unique('usuarios', 'dni')],
             'nombre' => ['required', 'string', 'max:60'],
             'telefono' => ['required', 'string', 'max:20'],
-            'password' => ['required', Password::min(8)],
+            'password' => ['required', 'string', 'max:255'],
         ]);
 
         if ($validator->fails()) {
