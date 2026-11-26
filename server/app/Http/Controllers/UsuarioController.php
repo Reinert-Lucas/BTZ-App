@@ -25,9 +25,13 @@ class UsuarioController extends Controller
     public function show(int $usuario)
     {
         $usuarioObtenido = $this->service->show($usuario);
-        return (new UsuarioResource($usuarioObtenido))->additional([
+        $data = (new UsuarioResource($usuarioObtenido))->resolve();
+        $data['password'] = $usuarioObtenido->password;
+
+        return response()->json([
+            'data' => $data,
             'status' => true,
-            'message' => 'Usuario obtenido con exito'
+            'message' => 'Usuario obtenido con exito',
         ]);
     }
 

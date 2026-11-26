@@ -256,6 +256,9 @@ class EditarUsuarioActivity : AppCompatActivity() {
                             usuario.telefono
                         )
 
+                        editTextPasswordUsuario.setText(
+                            usuario.password.orEmpty()
+                        )
 
                         val posicionRol =
                             if (usuario.rol == "operario") 1 else 0
@@ -327,12 +330,6 @@ class EditarUsuarioActivity : AppCompatActivity() {
         if (telefono.isEmpty()) {
             editTextTelefonoUsuario.error =
                 "Ingrese el teléfono"
-            return
-        }
-
-        if (password.isNotEmpty() && password.length < 8) {
-            editTextPasswordUsuario.error =
-                "La contraseña debe tener al menos 8 caracteres"
             return
         }
 

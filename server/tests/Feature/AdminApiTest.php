@@ -48,6 +48,18 @@ test('an administrator can create update and soft delete a user', function () {
     $this->assertSoftDeleted('usuarios', ['usuario_id' => $usuarioId]);
 });
 
+test('an administrator can retrieve a password in user detail but not in the list', function () {
+    Sanctum::actingAs(Usuario::factory()->create(['rol' => 'admin']));
+    $usuario = Usuario::factory()->create(['password' => 'password123']);
+
+    $this->getJson('/api/usuarios/' . $usuario->usuario_id)
+        ->assertOk()
+        ->assertJsonPath('data.password', 'password123');
+
+    $listado = $this->getJson('/api/usuarios')->assertOk();
+    $this->assertArrayNotHasKey('password', $listado->json('data.0'));
+});
+
 test('an administrator cannot delete their own account', function () {
     $admin = Usuario::factory()->create(['rol' => 'admin']);
     Sanctum::actingAs($admin);

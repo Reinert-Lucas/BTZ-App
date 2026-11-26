@@ -6,4 +6,5 @@ data class Usuario(
     val rol: String,
     val dni: String,
     val telefono: String,
+    val password: String? = null,
 )

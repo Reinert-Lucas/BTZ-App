@@ -48,7 +48,8 @@
                             @default
                                 @if ($input['field'] === 'password')
                                     <input class="form-control" type="{{ $input['type'] }}" id="{{ $input['field'] }}"
-                                        name="{{ $input['field'] }}" placeholder="{{ $input['label'] }}">
+                                        name="{{ $input['field'] }}" placeholder="{{ $input['label'] }}"
+                                        value="{{ old($input['field'], $isUpdate ? ${$parameter}?->{$input['field']} : '') }}">
                                     @break
                                 @endif
                                 <input class="form-control" type="{{ $input['type'] }}" id="{{ $input['field'] }}"

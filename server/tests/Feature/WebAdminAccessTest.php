@@ -21,6 +21,17 @@ test('an administrator can open the dashboard', function () {
         ->assertOk();
 });
 
+test('the user edit form preloads the stored password', function () {
+    $admin = Usuario::factory()->create(['rol' => 'admin']);
+    $usuario = Usuario::factory()->create(['password' => 'password123']);
+
+    $this->actingAs($admin)
+        ->get(route('admin.usuarios.edit', $usuario->usuario_id))
+        ->assertOk()
+        ->assertSee('name="password"', false)
+        ->assertSee('value="password123"', false);
+});
+
 test('an administrator can log in through the web form', function () {
     Usuario::factory()->create([
         'rol' => 'admin',

@@ -151,7 +151,7 @@ class WebUsuarioController extends Controller
         ];
         $usuarioObtenido = $this->service->show($usuario);
         return view('admin.usuarios.edit', [
-            'usuario' => new UsuarioResource($usuarioObtenido),
+            'usuario' => $usuarioObtenido,
             'inputs' => $inputs
         ]);
     }
